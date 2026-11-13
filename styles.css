@@ -6,7 +6,7 @@
   --border: #e3e0d6;
   --text: #1f1e1d;
   --muted: #6b6a66;
-  --white: var(--white);
+  --white: #ffffff;
 
   /* One highlight color: US flag blue. Red only for crossed-out items */
   --flag-blue: #0a3161;
@@ -212,10 +212,11 @@ body {
 .card {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  min-height: 120px;
+  gap: 10px;          /* space between type, title and description */
+  min-height: 130px;
   text-align: left;
-  padding: 18px;
+  padding: 22px;
+  line-height: 1.4;   /* space between lines when text wraps */
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -245,10 +246,10 @@ body {
   box-shadow: 0 6px 16px rgba(10, 49, 97, 0.35);
 }
 
-/* Lighten the small text so it stays readable on blue */
+/* Small text on the blue card: near-white so it's easy to read */
 .card.active .card-type,
 .card.active .card-desc {
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 /* Empty future slots: dashed and faded, not clickable */
