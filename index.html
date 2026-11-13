@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Intern Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- defer: download now, run after the HTML is ready (keeps this order) -->
+  <script src="data/prompts.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <!-- The whole page is one CSS Grid:
+       row 1: page title + action cards (full width)
+       row 2: progress stepper (full width)
+       row 3: sidebar | forms | output -->
+  <div class="layout">
+
+    <!-- ===== ROW 1: page title + action cards ===== -->
+    <section class="actions-top">
+      <h1 class="page-title">Intern Dashboard</h1>
+      <h2 class="section-title">Actions</h2>
+
+      <!-- A list of cards. type="button" stops them acting as submit buttons -->
+      <ul class="card-grid">
+        <!-- Active card (solid blue) -->
+        <li>
+          <button class="card active" type="button">
+            <span class="card-type">form</span>
+            <span class="card-title">CIC template</span>
+            <span class="card-desc">Fill in fields to build a CIC note.</span>
+          </button>
+        </li>
+        <li>
+          <button class="card" type="button">
+            <span class="card-type">form</span>
+            <span class="card-title">Business startup steps</span>
+            <span class="card-desc">Check off the 10 steps to start a business.</span>
+          </button>
+        </li>
+        <li>
+          <button class="card" type="button">
+            <span class="card-type">parser</span>
+            <span class="card-title">Zoom summary</span>
+            <span class="card-desc">Paste a Zoom summary to fill session notes.</span>
+          </button>
+        </li>
+        <li>
+          <button class="card" type="button">
+            <span class="card-type">form</span>
+            <span class="card-title">Follow-up email</span>
+            <span class="card-desc">Draft a follow-up after a meeting.</span>
+          </button>
+        </li>
+        <li>
+          <button class="card" type="button">
+            <span class="card-type">lookup</span>
+            <span class="card-title">Prompt library</span>
+            <span class="card-desc">Search saved prompts by topic.</span>
+          </button>
+        </li>
+        <li>
+          <button class="card" type="button">
+            <span class="card-type">form</span>
+            <span class="card-title">My template</span>
+            <span class="card-desc">Paste your own template; it fills from the other cards.</span>
+          </button>
+        </li>
+
+        <!-- Empty slots for future cards (8 total) -->
+        <li class="card card-empty">
+          <span class="card-title">Coming soon</span>
+          <span class="card-desc">Slot for a future action.</span>
+        </li>
+        <li class="card card-empty">
+          <span class="card-title">Coming soon</span>
+          <span class="card-desc">Slot for a future action.</span>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ===== ROW 2: startup stepper (sample: steps 1-3 done, 4 now) =====
+         An ordered list, because the steps happen in order.
+         done = solid bar, now = half bar, no class = not started -->
+    <section class="page-progress" aria-labelledby="progress-title">
+      <div class="page-progress-text">
+        <h2 class="page-progress-title" id="progress-title">Business startup progress</h2>
+        <span class="page-progress-count">3 of 10 done</span>
+      </div>
+
+      <ol class="stepper">
+        <li class="step done"><div class="step-bar"></div><span>Choose a name<small>Step 1</small></span></li>
+        <li class="step done"><div class="step-bar"></div><span>Domain name<small>Step 2</small></span></li>
+        <li class="step done"><div class="step-bar"></div><span>Entity type<small>Step 3</small></span></li>
+        <li class="step now"><div class="step-bar"></div><span>Name availability · now<small>Step 4</small></span></li>
+        <li class="step"><div class="step-bar"></div><span>Secure or form<small>Step 5</small></span></li>
+        <li class="step"><div class="step-bar"></div><span>File with ACC<small>Step 6</small></span></li>
+        <li class="step"><div class="step-bar"></div><span>AZ Dept. of Revenue<small>Step 7</small></span></li>
+        <li class="step"><div class="step-bar"></div><span>Local taxes &amp; license<small>Step 8</small></span></li>
+        <li class="step"><div class="step-bar"></div><span>Federal EIN / TIN<small>Step 9</small></span></li>
+        <li class="step"><div class="step-bar"></div><span>Bank account<small>Step 10</small></span></li>
+      </ol>
+    </section>
+
+    <!-- ===== LEFT: sidebar (client forms checklist + logo) ===== -->
+    <aside class="sidebar">
+      <!-- Forms to give to the client. Later these will come from Google Drive;
+           for now: placeholder names, and "Open" links that go nowhere. -->
+      <fieldset class="checklist-group">
+        <legend class="checklist-heading">Forms to give to client</legend>
+        <div class="checklist">
+          <div class="form-row">
+            <label class="checklist-item"><input type="checkbox"><span>Form 1</span></label>
+            <a class="form-open" href="#">Open</a>
+          </div>
+          <div class="form-row">
+            <label class="checklist-item"><input type="checkbox"><span>Form 2</span></label>
+            <a class="form-open" href="#">Open</a>
+          </div>
+          <div class="form-row">
+            <label class="checklist-item"><input type="checkbox"><span>Form 3</span></label>
+            <a class="form-open" href="#">Open</a>
+          </div>
+          <div class="form-row">
+            <label class="checklist-item"><input type="checkbox"><span>Form 4</span></label>
+            <a class="form-open" href="#">Open</a>
+          </div>
+        </div>
+        <p class="sidebar-hint">Forms will load from Google Drive.</p>
+      </fieldset>
+
+      <p class="sidebar-note">Nothing is saved. Refreshing clears everything.</p>
+
+      <!-- Logo pinned to the bottom of the sidebar -->
+      <img class="sidebar-logo" src="images/sbdc-logo.svg" alt="America's SBDC">
+    </aside>
+
+    <!-- ===== CENTER: forms ===== -->
+    <main class="main">
+      <!-- For the skeleton, every form is shown stacked so you can
+           review them all. Later, JS will show only the active card's form. -->
+      <div class="form-area">
+
+        <!-- CIC template -->
+        <form class="form-panel">
+          <h2 class="section-title">CIC template</h2>
+          <div class="field">
+            <label for="cic-name">Name</label>
+            <input type="text" id="cic-name" placeholder="Client Name" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="cic-businessName">Business name</label>
+            <input type="text" id="cic-businessName" placeholder="Business Name" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="cic-businessType">Business type</label>
+            <input type="text" id="cic-businessType" placeholder="Business Type" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="cic-annualSales">Annual sales</label>
+            <!-- inputmode shows a number keypad on phones -->
+            <input type="text" id="cic-annualSales" placeholder="Annual Sales" inputmode="decimal" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="cic-naics">NAICS code</label>
+            <!-- NAICS codes are 2 to 6 digits -->
+            <input type="text" id="cic-naics" placeholder="NAICS Code" inputmode="numeric" maxlength="6" autocomplete="off">
+          </div>
+        </form>
+
+        <!-- Business startup steps (sample: first 3 checked) -->
+        <form class="form-panel">
+          <h2 class="section-title">Business startup steps</h2>
+          <!-- fieldset + legend group the checkboxes under one label -->
+          <fieldset class="checklist-group">
+            <legend class="checklist-heading">Steps completed</legend>
+            <div class="checklist">
+              <label class="checklist-item"><input type="checkbox" checked><span>1. Choose A Name</span></label>
+              <label class="checklist-item"><input type="checkbox" checked><span>2. Purchase A Domain Name or See Numbers 3, 4, and 5 Below</span></label>
+              <label class="checklist-item"><input type="checkbox" checked><span>3. Choose An Entity Type</span></label>
+              <label class="checklist-item"><input type="checkbox"><span>4. Check Name Availability With the Arizona Corporation Commission</span></label>
+              <label class="checklist-item"><input type="checkbox"><span>5. Secure the Name or Form the Entity - You Choose</span></label>
+              <label class="checklist-item"><input type="checkbox"><span>6. File with the Arizona Corporation Commission Corporations Division</span></label>
+              <label class="checklist-item"><input type="checkbox"><span>7. Arizona Department of Revenue</span></label>
+              <label class="checklist-item"><input type="checkbox"><span>8. City or County Taxes and Business Licensing</span></label>
+              <label class="checklist-item"><input type="checkbox"><span>9. Federal EIN or TIN - Internal Revenue Service</span></label>
+              <label class="checklist-item"><input type="checkbox"><span>10. Business Bank Account</span></label>
+            </div>
+          </fieldset>
+        </form>
+
+        <!-- Zoom summary: paste in, button fills the output -->
+        <form class="form-panel">
+          <h2 class="section-title">Zoom summary</h2>
+          <div class="field">
+            <label for="zoom-summary">Paste the Zoom meeting summary</label>
+            <textarea id="zoom-summary" rows="8" placeholder="Paste Zoom summary here"></textarea>
+          </div>
+          <button class="btn" type="button">Fill output</button>
+        </form>
+
+        <!-- My template: staff paste their own wording with [Field] tags -->
+        <form class="form-panel">
+          <h2 class="section-title">My template</h2>
+          <div class="field">
+            <label for="custom-template">Your template</label>
+            <textarea id="custom-template" rows="8" placeholder="Hi [Client Name], thanks for meeting about [Business Name]. Your next steps: [Client Next Steps]"></textarea>
+          </div>
+
+          <!-- Click a tag to add it to the template (works once JS is added) -->
+          <fieldset class="checklist-group">
+            <legend class="checklist-heading">Available fields</legend>
+            <div class="tag-list">
+              <button class="tag" type="button">[Client Name]</button>
+              <button class="tag" type="button">[Business Name]</button>
+              <button class="tag" type="button">[Business Type]</button>
+              <button class="tag" type="button">[Annual Sales]</button>
+              <button class="tag" type="button">[NAICS Code]</button>
+              <button class="tag" type="button">[Current Step]</button>
+              <button class="tag" type="button">[Purpose of Session]</button>
+              <button class="tag" type="button">[Business Description]</button>
+              <button class="tag" type="button">[Client Next Steps]</button>
+              <button class="tag" type="button">[Advisor Next Steps]</button>
+              <button class="tag" type="button">[Impact Area]</button>
+            </div>
+          </fieldset>
+        </form>
+
+        <!-- Not designed yet (no inputs, so <section> instead of <form>) -->
+        <section class="form-panel">
+          <h2 class="section-title">Follow-up email</h2>
+          <p class="placeholder-text">Form not designed yet.</p>
+        </section>
+
+        <section class="form-panel">
+          <h2 class="section-title">Prompt library</h2>
+          <p class="placeholder-text">Form not designed yet.</p>
+        </section>
+
+      </div>
+    </main>
+
+    <!-- ===== RIGHT: output panel ===== -->
+    <aside class="output">
+      <h2 class="section-title">Output</h2>
+
+      <!-- CIC output: empty fields show [Placeholders].
+           Layout: client header, then label/value sections. -->
+      <div class="output-box">
+        <div class="client-head">
+          <p class="client-name">[Client Name]</p>
+          <p class="client-sub">[Business Name] · [Business Type]</p>
+        </div>
+
+        <h3 class="kv-heading">Business details</h3>
+        <dl class="kv">
+          <dt>Business</dt>
+          <dd>[Business Name]</dd>
+          <dt>Type</dt>
+          <dd>[Business Type]</dd>
+          <dt>NAICS code</dt>
+          <dd>[NAICS Code]</dd>
+        </dl>
+
+        <h3 class="kv-heading">Financial picture</h3>
+        <dl class="kv">
+          <dt>Annual sales</dt>
+          <dd>[Annual Sales]</dd>
+        </dl>
+      </div>
+
+      <!-- Zoom summary output. Long labels, so each label sits above its value -->
+      <div class="output-box">
+        <h3 class="kv-heading">Session notes</h3>
+        <dl class="kv-stack">
+          <dt>PURPOSE OF THIS SESSION:</dt>
+          <dd>[Purpose of this session]</dd>
+          <dt>BRIEF DESCRIPTION OF THE BUSINESS AND/OR OWNERS:</dt>
+          <dd>[Brief description of the business and/or owners]</dd>
+          <dt>NEXT STEPS &amp; FOLLOW-UP ACTIONS - CLIENT:</dt>
+          <dd>[Client next steps]</dd>
+          <dt>NEXT STEPS &amp; FOLLOW-UP ACTIONS - ADVISOR:</dt>
+          <dd>[Advisor next steps]</dd>
+          <dt>IMPACT AREA:</dt>
+          <dd>[Impact area]</dd>
+        </dl>
+      </div>
+
+      <!-- My template output: the staff member's template with tags filled in -->
+      <div class="output-box">
+        <h3 class="kv-heading">My template</h3>
+        <pre class="output-text">Hi [Client Name], thanks for meeting about [Business Name].
+
+Your next steps:
+[Client Next Steps]</pre>
+      </div>
+    </aside>
+
+  </div>
+</body>
+</html>

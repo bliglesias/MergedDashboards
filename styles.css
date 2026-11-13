@@ -1,0 +1,563 @@
+/* ===== Colors and basics ===== */
+:root {
+  --bg: #faf9f5;          /* warm off-white page */
+  --panel: #f0eee6;       /* sidebar / output background */
+  --card: var(--white);
+  --border: #e3e0d6;
+  --text: #1f1e1d;
+  --muted: #6b6a66;
+  --white: var(--white);
+
+  /* One highlight color: US flag blue. Red only for crossed-out items */
+  --flag-blue: #0a3161;
+  --flag-blue-hover: rgba(10, 49, 97, 0.06); /* faint blue, on hover */
+  --flag-red: #b31942;
+  --radius: 10px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* ===== Main page grid (desktop: 3 columns) ===== */
+.layout {
+  display: grid;
+  grid-template-columns: 220px 1fr 320px;
+  /* row 1: cards, row 2: progress bar, row 3: everything else */
+  grid-template-rows: auto auto 1fr;
+  min-height: 100vh;
+}
+
+/* ===== Action cards across the top ===== */
+.actions-top {
+  grid-column: 1 / -1; /* full width, like the progress bar */
+  padding: 20px 24px 8px;
+  background: var(--bg);
+}
+
+/* Main page heading */
+.page-title {
+  margin: 0 0 16px;
+  font-size: 1.4rem;
+  color: var(--flag-blue);
+}
+
+/* Less space under the cards since the progress bar follows */
+.actions-top .card-grid {
+  margin-bottom: 12px;
+}
+
+/* ===== Full-width progress bar across the top ===== */
+.page-progress {
+  grid-column: 1 / -1; /* stretch from the first column line to the last */
+  padding: 14px 24px;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+}
+
+/* Title on the left, count on the right */
+.page-progress-text {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+  font-size: 0.85rem;
+}
+
+.page-progress-title {
+  margin: 0;
+  font-size: inherit; /* it's an <h2> now, but should stay small */
+  font-weight: 700;
+}
+
+.page-progress-count {
+  font-weight: 600;
+  color: var(--flag-blue);
+}
+
+/* Stepper: one column per step, all equal width */
+.stepper {
+  list-style: none; /* it's an <ol>: the numbers are already in the labels */
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 6px;
+}
+
+/* Each step: short bar on top, label underneath */
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.step-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--border);
+}
+
+/* Small "Step 4" line under the label */
+.step small {
+  display: block;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+/* Done: solid blue bar, darker label */
+.step.done {
+  color: var(--text);
+}
+
+.step.done .step-bar {
+  background: var(--flag-blue);
+}
+
+/* Current step: blue label, bar filled halfway */
+.step.now {
+  color: var(--flag-blue);
+}
+
+.step.now .step-bar {
+  background: linear-gradient(90deg, var(--flag-blue) 50%, var(--border) 50%);
+}
+
+/* ===== Sidebar ===== */
+/* Flex column so the logo can be pushed to the bottom */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+  padding: 20px 16px;
+}
+
+/* margin-top: auto takes up all leftover space above the logo,
+   which pushes it to the bottom of the sidebar */
+.sidebar-logo {
+  margin-top: auto;
+  padding-top: 24px;
+  width: 100%;
+  max-width: 180px;
+  height: auto;
+}
+
+/* Form name (checkbox) on the left, "Open" link on the right */
+.form-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.form-row .checklist-item {
+  flex: 1; /* checkbox row takes the leftover space */
+}
+
+.form-open {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--flag-blue);
+  text-decoration: none;
+}
+
+.form-open:hover {
+  text-decoration: underline;
+}
+
+.sidebar-hint {
+  margin: 8px 0 0;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.sidebar-note {
+  margin-top: 24px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* ===== Center column ===== */
+.main {
+  padding: 24px;
+}
+
+.section-title {
+  font-size: 1rem;
+  margin: 0 0 12px;
+}
+
+/* Cards wrap automatically: as many 220px+ columns as will fit */
+.card-grid {
+  list-style: none; /* it's a <ul>: remove bullets and indent */
+  padding: 0;
+  margin-top: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 120px;
+  text-align: left;
+  padding: 18px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+/* Card buttons fill their whole list item */
+.card-grid > li > .card {
+  width: 100%;
+  height: 100%;
+}
+
+/* Hover: faint see-through blue over the whole card */
+.card:hover {
+  background: var(--flag-blue-hover);
+  border-color: var(--flag-blue);
+}
+
+/* Active card: solid blue, white text, lifted with a shadow */
+.card.active {
+  background: var(--flag-blue);
+  border-color: var(--flag-blue);
+  color: var(--white);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(10, 49, 97, 0.35);
+}
+
+/* Lighten the small text so it stays readable on blue */
+.card.active .card-type,
+.card.active .card-desc {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Empty future slots: dashed and faded, not clickable */
+.card-empty {
+  border-style: dashed;
+  background: transparent;
+  color: var(--muted);
+  cursor: default;
+}
+
+.card-empty:hover {
+  background: transparent;
+  border-color: var(--border);
+}
+
+.card-type {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--flag-blue);
+}
+
+.card-title {
+  font-weight: 600;
+}
+
+.card-desc {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* Holds one form panel per card, stacked */
+.form-area {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+/* Form fields: label on top, input below */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.field label {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.field input,
+.field select {
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--white);
+  font: inherit;
+}
+
+/* Big paste box: full width, user can drag it taller */
+.field textarea {
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font: inherit;
+  resize: vertical;
+}
+
+/* Clickable field tags ("chips") that wrap onto new lines */
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--white);
+  font: inherit;
+  font-size: 0.8rem;
+  color: var(--flag-blue);
+  cursor: pointer;
+}
+
+.tag:hover {
+  background: var(--flag-blue-hover);
+  border-color: var(--flag-blue);
+}
+
+/* Plain blue button */
+.btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  background: var(--flag-blue);
+  color: var(--white);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+.field textarea:focus,
+.field input:focus,
+.field select:focus {
+  outline: 2px solid var(--flag-blue);
+  border-color: transparent;
+}
+
+/* fieldset groups checkboxes; remove its default border and spacing */
+.checklist-group {
+  border: none;
+  padding: 0;
+  margin: 0;
+  min-width: 0; /* lets it shrink inside narrow columns */
+}
+
+/* Checklist: one clickable row per step */
+.checklist-heading {
+  padding: 0;
+  margin: 0 0 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.checklist-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.checklist-item:hover {
+  background: var(--flag-blue-hover);
+}
+
+.checklist-item input {
+  margin-top: 3px;
+  accent-color: var(--flag-blue); /* blue checkmarks */
+}
+
+/* Checked steps get faded and crossed out with a red line */
+.checklist-item:has(input:checked) span {
+  color: var(--muted);
+  text-decoration: line-through;
+  text-decoration-color: var(--flag-red);
+  text-decoration-thickness: 2px;
+}
+
+/* ===== Output panel ===== */
+.output {
+  background: var(--panel);
+  border-left: 1px solid var(--border);
+  padding: 24px 16px;
+}
+
+.output-box {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+/* Output header: client name big, business on the line below */
+.client-head {
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.client-name {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--flag-blue);
+}
+
+.client-sub {
+  margin: 2px 0 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* Small uppercase section label, e.g. "BUSINESS DETAILS" */
+.kv-heading {
+  margin: 14px 0 8px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Label / value pairs in two columns:
+   left column is as wide as the longest label, right takes the rest */
+.kv {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 6px 14px;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.kv dt {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.kv dd {
+  margin: 0;
+  overflow-wrap: anywhere; /* long values wrap instead of overflowing */
+}
+
+/* Label above value, for labels too long for two columns */
+.kv-stack {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.kv-stack dt {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.kv-stack dd {
+  margin: 2px 0 12px;
+  overflow-wrap: anywhere;
+}
+
+/* Keeps the template's line breaks; wraps long lines */
+.output-text {
+  margin: 0;
+  font-family: inherit;
+  font-size: 0.9rem;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.placeholder-text {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* ===== Tablet: hide sidebar, 2 columns ===== */
+@media (max-width: 1024px) {
+  .layout {
+    grid-template-columns: 1fr 320px;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  /* 10 steps don't fit in one row here: 2 rows of 5 */
+  .stepper {
+    grid-template-columns: repeat(5, 1fr);
+    row-gap: 14px;
+  }
+}
+
+/* ===== Mobile: 1 column, output below the cards ===== */
+@media (max-width: 700px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .main {
+    padding: 16px;
+  }
+
+  .page-progress {
+    padding: 12px 16px;
+  }
+
+  .actions-top {
+    padding: 16px 16px 4px;
+  }
+
+  /* Phones: 5 rows of 2 */
+  .stepper {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .output {
+    border-left: none;
+    border-top: 1px solid var(--border);
+    padding: 16px;
+  }
+}
