@@ -21,62 +21,43 @@
       <h1 class="page-title">Intern Dashboard</h1>
       <h2 class="section-title">Actions</h2>
 
-      <!-- A list of cards. type="button" stops them acting as submit buttons -->
-      <ul class="card-grid">
-        <!-- Active card (solid blue) -->
-        <li>
-          <button class="card active" type="button">
-            <span class="card-type">form</span>
-            <span class="card-title">CIC template</span>
-            <span class="card-desc">Fill in fields to build a CIC note.</span>
-          </button>
-        </li>
-        <li>
-          <button class="card" type="button">
-            <span class="card-type">form</span>
-            <span class="card-title">Business startup steps</span>
-            <span class="card-desc">Check off the 10 steps to start a business.</span>
-          </button>
-        </li>
-        <li>
-          <button class="card" type="button">
-            <span class="card-type">parser</span>
-            <span class="card-title">Zoom summary</span>
-            <span class="card-desc">Paste a Zoom summary to fill session notes.</span>
-          </button>
-        </li>
-        <li>
-          <button class="card" type="button">
-            <span class="card-type">form</span>
-            <span class="card-title">Follow-up email</span>
-            <span class="card-desc">Draft a follow-up after a meeting.</span>
-          </button>
-        </li>
-        <li>
-          <button class="card" type="button">
-            <span class="card-type">lookup</span>
-            <span class="card-title">Prompt library</span>
-            <span class="card-desc">Search saved prompts by topic.</span>
-          </button>
-        </li>
-        <li>
-          <button class="card" type="button">
-            <span class="card-type">form</span>
-            <span class="card-title">My template</span>
-            <span class="card-desc">Paste your own template; it fills from the other cards.</span>
-          </button>
-        </li>
+      <!-- Empty list: app.js fills it from the `actions` array
+           using the two <template>s below -->
+      <ul class="card-grid" id="card-grid"></ul>
 
-        <!-- Empty slots for future cards (8 total) -->
+      <!-- Blueprint for one action card (not shown until JS copies it).
+           type="button" stops it acting as a submit button -->
+      <template id="card-template">
+        <li>
+          <button class="card" type="button">
+            <span class="card-type"></span>
+            <span class="card-title"></span>
+            <span class="card-desc"></span>
+          </button>
+        </li>
+      </template>
+
+      <!-- Blueprint for a link card: opens an outside website in a new tab.
+           It's an <a> (not a <button>) because it goes somewhere.
+           rel="noopener noreferrer" stops the new tab from reaching back
+           into this page and hides which page sent the visitor. -->
+      <template id="card-link-template">
+        <li>
+          <a class="card" href="" target="_blank" rel="noopener noreferrer">
+            <span class="card-type"></span>
+            <span class="card-title"></span>
+            <span class="card-desc"></span>
+          </a>
+        </li>
+      </template>
+
+      <!-- Blueprint for an unused slot (the grid always shows 8) -->
+      <template id="card-empty-template">
         <li class="card card-empty">
           <span class="card-title">Coming soon</span>
           <span class="card-desc">Slot for a future action.</span>
         </li>
-        <li class="card card-empty">
-          <span class="card-title">Coming soon</span>
-          <span class="card-desc">Slot for a future action.</span>
-        </li>
-      </ul>
+      </template>
     </section>
 
     <!-- ===== ROW 2: startup stepper (sample: steps 1-3 done, 4 now) =====
@@ -137,39 +118,79 @@
 
     <!-- ===== CENTER: forms ===== -->
     <main class="main">
-      <!-- For the skeleton, every form is shown stacked so you can
-           review them all. Later, JS will show only the active card's form. -->
+      <!-- Every panel has data-panel="<card id>". JS shows only the
+           panel whose id matches the active card and hides the rest. -->
       <div class="form-area">
 
-        <!-- CIC template -->
-        <form class="form-panel">
+        <!-- CIC template. Each input's `name` matches a field in app.js -->
+        <form class="form-panel" data-panel="cic">
           <h2 class="section-title">CIC template</h2>
           <div class="field">
             <label for="cic-name">Name</label>
-            <input type="text" id="cic-name" placeholder="Client Name" autocomplete="off">
+            <input type="text" id="cic-name" name="name" placeholder="Client Name" autocomplete="off">
           </div>
           <div class="field">
             <label for="cic-businessName">Business name</label>
-            <input type="text" id="cic-businessName" placeholder="Business Name" autocomplete="off">
+            <input type="text" id="cic-businessName" name="businessName" placeholder="Business Name" autocomplete="off">
           </div>
+          <!-- Dropdown + manual entry: a normal <select>. Picking
+               "Other (type it)" reveals the text box underneath.
+               The text box's name is the select's name + "Other";
+               app.js uses that pattern to find it. -->
           <div class="field">
             <label for="cic-businessType">Business type</label>
-            <input type="text" id="cic-businessType" placeholder="Business Type" autocomplete="off">
+            <select id="cic-businessType" name="businessType">
+              <option value="">Choose an industry</option>
+              <option>Retail</option>
+              <option>E-commerce</option>
+              <option>Restaurant / Food service</option>
+              <option>Food truck</option>
+              <option>Construction / Contractor</option>
+              <option>Professional services</option>
+              <option>Health care</option>
+              <option>Beauty / Personal care</option>
+              <option>Fitness / Wellness</option>
+              <option>Real estate</option>
+              <option>Transportation / Trucking</option>
+              <option>Automotive repair</option>
+              <option>Cleaning / Janitorial</option>
+              <option>Landscaping</option>
+              <option>Manufacturing</option>
+              <option>Technology / Software</option>
+              <option>Childcare / Education</option>
+              <option>Arts / Entertainment</option>
+              <option>Agriculture</option>
+              <option>Nonprofit</option>
+              <option value="other">Other (type it)</option>
+            </select>
+            <input type="text" name="businessTypeOther" placeholder="Type the industry" aria-label="Other business type" autocomplete="off" hidden>
           </div>
           <div class="field">
             <label for="cic-annualSales">Annual sales</label>
+            <select id="cic-annualSales" name="annualSales">
+              <option value="">Choose a range</option>
+              <option>Pre-revenue (startup)</option>
+              <option>Under $50,000</option>
+              <option>$50,000 - $99,999</option>
+              <option>$100,000 - $249,999</option>
+              <option>$250,000 - $499,999</option>
+              <option>$500,000 - $999,999</option>
+              <option>$1,000,000 - $4,999,999</option>
+              <option>$5,000,000 or more</option>
+              <option value="other">Other (type an amount)</option>
+            </select>
             <!-- inputmode shows a number keypad on phones -->
-            <input type="text" id="cic-annualSales" placeholder="Annual Sales" inputmode="decimal" autocomplete="off">
+            <input type="text" name="annualSalesOther" placeholder="e.g. $82,000" aria-label="Annual sales amount" inputmode="decimal" autocomplete="off" hidden>
           </div>
           <div class="field">
             <label for="cic-naics">NAICS code</label>
             <!-- NAICS codes are 2 to 6 digits -->
-            <input type="text" id="cic-naics" placeholder="NAICS Code" inputmode="numeric" maxlength="6" autocomplete="off">
+            <input type="text" id="cic-naics" name="naics" placeholder="NAICS Code" inputmode="numeric" maxlength="6" autocomplete="off">
           </div>
         </form>
 
         <!-- Business startup steps (sample: first 3 checked) -->
-        <form class="form-panel">
+        <form class="form-panel" data-panel="startup">
           <h2 class="section-title">Business startup steps</h2>
           <!-- fieldset + legend group the checkboxes under one label -->
           <fieldset class="checklist-group">
@@ -190,7 +211,7 @@
         </form>
 
         <!-- Zoom summary: paste in, button fills the output -->
-        <form class="form-panel">
+        <form class="form-panel" data-panel="zoom">
           <h2 class="section-title">Zoom summary</h2>
           <div class="field">
             <label for="zoom-summary">Paste the Zoom meeting summary</label>
@@ -200,7 +221,7 @@
         </form>
 
         <!-- My template: staff paste their own wording with [Field] tags -->
-        <form class="form-panel">
+        <form class="form-panel" data-panel="my-template">
           <h2 class="section-title">My template</h2>
           <div class="field">
             <label for="custom-template">Your template</label>
@@ -227,12 +248,12 @@
         </form>
 
         <!-- Not designed yet (no inputs, so <section> instead of <form>) -->
-        <section class="form-panel">
+        <section class="form-panel" data-panel="email">
           <h2 class="section-title">Follow-up email</h2>
           <p class="placeholder-text">Form not designed yet.</p>
         </section>
 
-        <section class="form-panel">
+        <section class="form-panel" data-panel="prompts">
           <h2 class="section-title">Prompt library</h2>
           <p class="placeholder-text">Form not designed yet.</p>
         </section>
@@ -244,33 +265,39 @@
     <aside class="output">
       <h2 class="section-title">Output</h2>
 
-      <!-- CIC output: empty fields show [Placeholders].
-           Layout: client header, then label/value sections. -->
-      <div class="output-box">
+      <!-- Shown when the active card has no output box yet -->
+      <p class="placeholder-text" id="output-empty" hidden>No output for this card yet.</p>
+
+      <!-- CIC output. Each data-field="..." spot is filled by JS with the
+           matching input's value, or its [Placeholder] when empty. -->
+      <div class="output-box" data-panel="cic">
         <div class="client-head">
-          <p class="client-name">[Client Name]</p>
-          <p class="client-sub">[Business Name] · [Business Type]</p>
+          <p class="client-name" data-field="name">[Client Name]</p>
+          <p class="client-sub">
+            <span data-field="businessName">[Business Name]</span> ·
+            <span data-field="businessType">[Business Type]</span>
+          </p>
         </div>
 
         <h3 class="kv-heading">Business details</h3>
         <dl class="kv">
           <dt>Business</dt>
-          <dd>[Business Name]</dd>
+          <dd data-field="businessName">[Business Name]</dd>
           <dt>Type</dt>
-          <dd>[Business Type]</dd>
+          <dd data-field="businessType">[Business Type]</dd>
           <dt>NAICS code</dt>
-          <dd>[NAICS Code]</dd>
+          <dd data-field="naics">[NAICS Code]</dd>
         </dl>
 
         <h3 class="kv-heading">Financial picture</h3>
         <dl class="kv">
           <dt>Annual sales</dt>
-          <dd>[Annual Sales]</dd>
+          <dd data-field="annualSales">[Annual Sales]</dd>
         </dl>
       </div>
 
       <!-- Zoom summary output. Long labels, so each label sits above its value -->
-      <div class="output-box">
+      <div class="output-box" data-panel="zoom">
         <h3 class="kv-heading">Session notes</h3>
         <dl class="kv-stack">
           <dt>PURPOSE OF THIS SESSION:</dt>
@@ -287,7 +314,7 @@
       </div>
 
       <!-- My template output: the staff member's template with tags filled in -->
-      <div class="output-box">
+      <div class="output-box" data-panel="my-template">
         <h3 class="kv-heading">My template</h3>
         <pre class="output-text">Hi [Client Name], thanks for meeting about [Business Name].
 

@@ -225,6 +225,11 @@ body {
   cursor: pointer;
 }
 
+/* Link cards (<a>): remove the default link underline */
+a.card {
+  text-decoration: none;
+}
+
 /* Card buttons fill their whole list item */
 .card-grid > li > .card {
   width: 100%;
@@ -412,8 +417,10 @@ body {
   accent-color: var(--flag-blue); /* blue checkmarks */
 }
 
-/* Checked steps get faded and crossed out with a red line */
-.checklist-item:has(input:checked) span {
+/* Checked steps get faded and crossed out with a red line.
+   Only inside form panels (the startup steps), so the sidebar's
+   "Forms to give to client" checkboxes stay plain when checked. */
+.form-panel .checklist-item:has(input:checked) span {
   color: var(--muted);
   text-decoration: line-through;
   text-decoration-color: var(--flag-red);
@@ -515,7 +522,6 @@ body {
   color: var(--muted);
   font-size: 0.9rem;
 }
-
 /* ===== Tablet: hide sidebar, 2 columns ===== */
 @media (max-width: 1024px) {
   .layout {

@@ -43,6 +43,8 @@ Files: index.html, styles.css, app.js, data/prompts.js
 - form: fields -> template fills live on every `input` event
 - parser: pasted text -> structure extracted into output boxes
 - lookup: keyword -> matching items from a static list
+- link: opens an outside site in a new tab (<a target="_blank">); no
+  panel, never "active", no data sent
 
 ## Cards
 1. CIC template (form). Fields: name, businessName, businessType,
@@ -73,6 +75,9 @@ Files: index.html, styles.css, app.js, data/prompts.js
    panel shows matching prompts from a static `promptLibrary` array
    ({title, tags, prompt}). Match on tags first, then title/prompt text.
    Clickable quick-tag chips built from all tags. Use 5 sample prompts.
+5. AZ business search (link, added by user). Opens the Arizona Corporation
+   Commission entity search (https://ecorp.azcc.gov/EntitySearch/Index).
+   Just a link: the site has login/captcha, so no automation or scraping.
 
 ## Data model
 - `actions` array, one object per card: id, type, title, fields,
