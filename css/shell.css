@@ -278,3 +278,50 @@ details.fold > summary:hover { border-color: #111; }
 #home .ll-sechead[hidden] + .row-cards { margin-top: 20px; }
 
 .fs-now{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-height:44px}.fs-now #fsName{font-weight:500}
+
+/* ---------- Intake Assistant card: polychrome sheen ----------
+   Makes the placeholder card easy to spot.
+   Rainbow border: the card gets two background layers, white inside
+   (padding-box) and a rainbow gradient underneath that only shows through
+   the transparent border (border-box). The rainbow slides slowly. */
+.tcard[data-tool="intake"] {
+  position: relative;
+  overflow: hidden;
+  border: 3px solid transparent !important;
+  background:
+    linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(120deg, #ff5f6d, #ffc371, #f9f871, #5ee7a5, #4facfe, #a66cff, #ff5f6d) border-box !important;
+  background-size: 100% 100%, 300% 300% !important;
+  animation: intake-sheen 6s linear infinite;
+}
+
+/* Shine: a soft see-through rainbow band that sweeps across the card. */
+.tcard[data-tool="intake"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg,
+    transparent 30%,
+    rgba(255, 95, 109, .12) 40%,
+    rgba(249, 248, 113, .16) 48%,
+    rgba(79, 172, 254, .12) 56%,
+    transparent 66%);
+  background-size: 250% 100%;
+  animation: intake-shine 4s ease-in-out infinite;
+  pointer-events: none; /* clicks pass through to the buttons */
+}
+
+@keyframes intake-sheen {
+  from { background-position: 0 0, 0% 50%; }
+  to   { background-position: 0 0, 300% 50%; }
+}
+@keyframes intake-shine {
+  from { background-position: 150% 0; }
+  to   { background-position: -100% 0; }
+}
+
+/* People who turn off motion in their system settings get a still rainbow. */
+@media (prefers-reduced-motion: reduce) {
+  .tcard[data-tool="intake"],
+  .tcard[data-tool="intake"]::after { animation: none; }
+}

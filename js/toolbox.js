@@ -53,11 +53,12 @@ function footHTML(t){const st=state(t),k=outsOf(t.id).length,now=Date.now();let 
  return `${L}<span class="tc-outs">${k?`${k} output${k===1?'':'s'}`:'Outputs'}${ic('arrow-right')}</span>`}
 function cardHTML(t){const st=state(t);
  const badge=t.soon?'<span class="badge bg-purple-lt tc-badge">Coming soon</span>':st.set?'<span class="badge bg-green-lt tc-badge">Ready</span>':t.isNew?'<span class="badge bg-blue-lt tc-badge">New</span>':'';
- const main=t.soon?(st.set?'Edit setup':'Setup'):st.set?'Run':'Setup';
+ let main=t.soon?(st.set?'Edit setup':'Setup'):st.set?'Run':'Setup';
+ if(t.href)main='Open'; // link cards (like Intake Assistant) just open a page
  return `<li class="tcell"><article class="tcard card" data-tool="${t.id}" id="tool-${t.id}" data-kw="${esc(t.kw)}" data-running="${st.n}" data-set="${st.set?1:0}">
   <div class="tc-body"><div class="tc-top"><span class="ttile">${ic(t.icon)}</span>${badge}</div>
   <h3 class="card-title" id="tt-${t.id}">${esc(t.title)}</h3><p class="tdesc">${esc(t.desc)}</p>
-  <div class="tc-acts"><button class="btn btn-primary btn-sm tc-main" type="button" aria-describedby="tt-${t.id}">${ic(main==='Run'?'player-play':'settings')}${main}</button>${st.set&&!t.soon?`<button class="btn btn-icon btn-ghost-secondary btn-sm tc-gear" type="button" aria-label="Change setup for ${esc(t.title)}" title="Change setup">${ic('settings')}</button>`:''}</div></div>
+  <div class="tc-acts"><button class="btn btn-primary btn-sm tc-main" type="button" aria-describedby="tt-${t.id}">${ic(main==='Run'?'player-play':main==='Open'?'arrow-right':'settings')}${main}</button>${st.set&&!t.soon&&!t.href?`<button class="btn btn-icon btn-ghost-secondary btn-sm tc-gear" type="button" aria-label="Change setup for ${esc(t.title)}" title="Change setup">${ic('settings')}</button>`:''}</div></div>
   <a class="tc-foot${st.n?' live':''}" href="#/outputs/${t.id}" aria-label="${esc(t.title)}: outputs and status">${footHTML(t)}</a></article></li>`}
 function renderCard(id){const t=T[id],el=$(`#tool-${id}`);if(!el)return;const f=document.activeElement,cls=f&&f.closest(`#tool-${id}`)?[...f.classList].find(c=>/^tc-(main|gear|foot)$/.test(c)):null;
  el.closest('.tcell').outerHTML=cardHTML(t);if(cls){const n=$(`#tool-${id} .${cls}`)||$(`#tool-${id} .tc-main`);n&&n.focus({preventScroll:true})}window.__filter&&$('#toolSearch').value&&window.__filter(true)}
@@ -88,7 +89,9 @@ function fieldHTML(t,f,val){const id=fid(t.id,f.id),req=f.req?' required aria-re
  return `<div class="${cls}" data-f="${f.id}"><div class="tm-lrow"><label class="form-label" for="${id}">${lab}</label>${f.sample?`<button class="btn btn-link btn-sm tm-sample" type="button" data-sample="${f.id}">Use example rows</button>`:''}</div>${ctl}${f.hint?`<div class="tm-hint">${esc(f.hint)}</div>`:''}</div>`}
 const defOf=f=>f.val!==undefined?f.val:f.type==='select'?f.opts[0][0]:f.type==='checks'?[]:'';
 function getVal(t,f){if(f.type==='checks')return $$(`#tm [name="${fid(t.id,f.id)}"]:checked`).map(i=>i.value);if(f.type==='radio'){const c=$(`#tm [name="${fid(t.id,f.id)}"]:checked`);return c?c.value:''}const e=$('#'+fid(t.id,f.id));return e?e.value.trim():''}
-function openModal(id,mode){const t=T[id];if(!t)return;cur={t,mode};const s=S[id]?.v||{},m=MEM[id]||{};
+function openModal(id,mode){const t=T[id];if(!t)return;
+ if(t.href){location.href=t.href;return} // link cards go to their page instead of opening the dialog
+cur={t,mode};const s=S[id]?.v||{},m=MEM[id]||{};
  $('#tmIcon').innerHTML=ic(t.icon);$('#tmTitle').textContent=(mode==='run'?'Run ':S[id]?'Change setup: ':'Set up ')+t.title;$('#tmDesc').textContent=t.desc;
  $('#tmSetup').innerHTML=t.setup.map(f=>fieldHTML(t,f,NAMEF.includes(f.id)&&!s[f.id]&&P.name?P.name:s[f.id]!==undefined?s[f.id]:defOf(f))).join('');$('#tmSetupSec').hidden=!t.setup.length;
  $('#tmRun').innerHTML=t.run.map(f=>fieldHTML(t,f,m[f.id]!==undefined?m[f.id]:f.from?(s[f.from]||defOf(f)):defOf(f))).join('');$('#tmRunSec').hidden=!t.run.length||!!t.soon;
