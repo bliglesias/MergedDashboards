@@ -1,4 +1,4 @@
-// data/Intake_assistant_prompts.js
+// js/Intake_assistant_prompts.js
 // Where the Prompt library gets its data: the Google Sheet tab,
 // published as CSV (File > Share > Publish to web > CSV).
 //

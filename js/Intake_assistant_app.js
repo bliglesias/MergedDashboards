@@ -205,7 +205,7 @@ function setupForm(action) {
 }
 
 // ===== PROMPT LIBRARY =====
-// Data comes from the Google Sheet link in data/Intake_assistant_prompts.js.
+// Data comes from the Google Sheet link in js/Intake_assistant_prompts.js.
 
 // The sheet columns this card can't work without (found by name in row 1)
 const TOPICS_COLUMN = "Related Niche Topics";
@@ -424,7 +424,7 @@ async function setupPromptLibrary() {
   });
 
   if (PROMPT_SHEET_URL === "") {
-    status.textContent = "Not connected yet: add the sheet link in data/Intake_assistant_prompts.js.";
+    status.textContent = "Not connected yet: add the sheet link in js/Intake_assistant_prompts.js.";
     return;
   }
 

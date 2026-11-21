@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Intern Dashboard</title>
-  <link rel="stylesheet" href="Intake_assistant_styles.css">
+  <link rel="stylesheet" href="../css/Intake_assistant_styles.css">
   <!-- defer: download now, run after the HTML is ready (keeps this order) -->
-  <script src="data/Intake_assistant_prompts.js" defer></script>
-  <script src="Intake_assistant_app.js" defer></script>
+  <script src="../js/Intake_assistant_prompts.js" defer></script>
+  <script src="../js/Intake_assistant_app.js" defer></script>
 </head>
 <body>
   <!-- The whole page is one CSS Grid:
@@ -113,7 +113,7 @@
       <p class="sidebar-note">Nothing is saved. Refreshing clears everything.</p>
 
       <!-- Logo pinned to the bottom of the sidebar -->
-      <img class="sidebar-logo" src="images/Intake_assistant_sbdc-logo.svg" alt="America's SBDC">
+      <img class="sidebar-logo" src="../assets/img/Intake_assistant_sbdc-logo.svg" alt="America's SBDC">
     </aside>
 
     <!-- ===== CENTER: forms ===== -->
@@ -254,7 +254,7 @@
         </section>
 
         <!-- Prompt library: type a topic, matching prompts appear as cards.
-             Data comes from the Google Sheet (see data/Intake_assistant_prompts.js). -->
+             Data comes from the Google Sheet (see js/Intake_assistant_prompts.js). -->
         <form class="form-panel" data-panel="prompts">
           <h2 class="section-title">Prompt library</h2>
           <div class="field">
