@@ -32,6 +32,12 @@ const NO_ACC = "Not needed (no ACC filing)";
 const NO_ACC_TYPES = ["Sole proprietorship (no ACC filing)", "General partnership (no ACC filing)"];
 const NO_ACC_STEPS = [4, 6];
 
+// The ACC says steps 7 to 10 can wait until the filing (step 6) is
+// approved. Those steps show WAIT_NOTE until step 6 is done.
+const ACC_FILING_STEP = 6;
+const AFTER_APPROVAL_STEPS = [7, 8, 9, 10];
+const WAIT_NOTE = "This step can wait until the ACC approves the filing in step 6.";
+
 const steps = [
   {
     title: "Choose A Name",
@@ -387,6 +393,7 @@ function renderStepDetails() {
 
     copy.querySelector(".step-summary-title").textContent = number + ". " + step.title;
     copy.querySelector(".step-todo").textContent = step.todo;
+    copy.querySelector(".step-note").textContent = WAIT_NOTE; // shown only on steps 7-10
 
     const link = copy.querySelector(".step-open");
     link.href = step.url;
@@ -661,6 +668,11 @@ function updateDetails() {
     details.classList.toggle("done", done);
     details.classList.toggle("flagged", isFlagged(index));
     details.querySelector(".step-more").hidden = !showsMore(index);
+
+    // Steps 7-10: "can wait" note while the ACC filing isn't done yet
+    const waitsForFiling = AFTER_APPROVAL_STEPS.includes(index + 1);
+    const filingDone = isDone(ACC_FILING_STEP - 1);
+    details.querySelector(".step-note").hidden = !waitsForFiling || filingDone;
 
     if (done) {
       status.textContent = "✓ Done";

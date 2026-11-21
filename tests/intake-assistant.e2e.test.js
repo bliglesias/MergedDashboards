@@ -18,6 +18,7 @@ const path = require("node:path");
 
 const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const PAGE = "file://" + path.join(__dirname, "..", "pages", "Intake_assistant_index.html");
+const NO_ACC_TEXT = "Not needed (no ACC filing)";
 const PORT = 9400 + Math.floor(Math.random() * 500); // any free-ish port
 
 // A made-up saved client, in the same shape the Toolbox's Clients page saves
@@ -318,4 +319,21 @@ test("step 5: a name reservation turns red once its end date has passed", async 
   })()`);
   assert.equal(await cardState(5), "flagged");
   assert.match(await text("#progress-summary"), /2020-01-01 \(expired\) \(not confirmed\)/);
+});
+
+// ----- Order of the steps -----
+
+test("steps 7-10 say they can wait until the ACC filing is approved", async () => {
+  await openFreshPage();
+  const noteShown = (n) => inPage(`!document.querySelectorAll(".step-detail")[${n - 1}].querySelector(".step-note").hidden`);
+
+  assert.equal(await noteShown(7), true, "step 6 not approved: note shows on step 7");
+  assert.equal(await noteShown(10), true, "and on step 10");
+  assert.equal(await noteShown(5), false, "never on steps 1-6");
+
+  await pick("#question-6", "Approved");
+  assert.equal(await noteShown(7), false, "approved: note goes away");
+
+  await pick("#question-6", NO_ACC_TEXT);
+  assert.equal(await noteShown(8), false, "no ACC filing needed: no note either");
 });

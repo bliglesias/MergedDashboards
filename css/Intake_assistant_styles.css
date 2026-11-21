@@ -414,6 +414,22 @@ body {
   line-height: 1.5;
 }
 
+/* "This step can wait…" note: soft gray box, so it reads as a tip,
+   not a warning (red and green already mean something on this page) */
+.step-note {
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: var(--panel);
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* Make sure [hidden] wins over the display rules above */
+.step-note[hidden] {
+  display: none;
+}
+
 /* The question and follow-up box fill the drop-down's width */
 .step-question,
 .step-more {
