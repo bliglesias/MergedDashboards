@@ -1,0 +1,620 @@
+<!doctype html>
+<!-- Third-party credits and licenses: see THIRD_PARTY_NOTICES.md -->
+<html lang="en" data-bs-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="only light">
+<meta name="theme-color" content="#FAFAF8">
+<title>Home · Advisor Toolbox · Maricopa SBDC</title>
+<meta name="description" content="Client intake and one-click tools for Maricopa SBDC advisors, in one place.">
+<link rel="icon" href="assets/img/p3-mark.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/tabler.min.css">
+<link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/p2.css">
+<link rel="stylesheet" href="css/p3.css">
+<link rel="stylesheet" href="css/flair.css">
+<link rel="stylesheet" href="css/leedlime.css">
+<link rel="stylesheet" href="css/shell.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+</head>
+<body data-space="shared">
+<a class="visually-hidden-focusable" href="#content">Skip to content</a>
+<div class="mob-top no-print">
+  <button class="btn btn-icon btn-ghost-secondary" id="menuBtn" aria-label="Menu" aria-controls="side" aria-expanded="false"><i data-icon="menu-2"></i></button>
+  <div class="ll-brandblock"><svg class="ll-wordmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2205 888" fill="none" role="img" aria-label="SBDC"><title>SBDC</title><g class="letters" fill="currentColor" transform="translate(0 760) scale(1 -1)"><path d="M204 -9Q184 -9 159.5 -5.0Q135 -1 113.5 5.0Q92 11 80 18Q73 22 69.5 26.5Q66 31 66 42L61 199Q61 219 74 219Q85 219 89 201L98 163Q132 20 225 20Q275 20 304.5 53.5Q334 87 334 148Q334 207 303.5 258.0Q273 309 206 359Q132 412 98.0 461.5Q64 511 64 567Q64 641 115.5 685.5Q167 730 247 730Q277 730 305.0 723.0Q333 716 351 703Q357 699 360.5 694.0Q364 689 364 681L367 530Q367 513 354 513Q345 513 341 527L334 552Q312 629 288.5 664.5Q265 700 221 700Q178 700 152.5 672.0Q127 644 127 593Q127 550 155.0 511.0Q183 472 253 416Q328 355 362.5 298.5Q397 242 397 178Q397 122 372.0 80.0Q347 38 303.5 14.5Q260 -9 204 -9Z M551 0Q536 0 536 11Q536 20 549 23L572 27Q593 31 599.5 38.0Q606 45 606 66V654Q606 675 599.5 682.0Q593 689 572 693L549 697Q536 700 536 709Q536 720 551 720H754Q804 720 843.0 699.0Q882 678 904.5 642.0Q927 606 927 560Q927 515 900.5 476.5Q874 438 824 412Q818 409 818.0 404.0Q818 399 825 397Q893 374 930.0 323.5Q967 273 967 204Q967 145 940.0 98.5Q913 52 865.5 26.0Q818 0 758 0ZM730 411Q783 411 818.5 452.5Q854 494 854 556Q854 618 820.0 656.5Q786 695 730 695Q677 695 677 655V466Q677 437 689.5 424.0Q702 411 730 411ZM745 25Q810 25 851.0 74.5Q892 124 892 207Q892 290 850.5 338.0Q809 386 739 386Q677 386 677 337V94Q677 25 745 25Z M1119 0Q1104 0 1104 11Q1104 20 1117 23L1140 27Q1174 33 1174 66V654Q1174 675 1167.5 682.0Q1161 689 1140 693L1117 697Q1104 700 1104 709Q1104 720 1119 720H1321Q1399 720 1456.0 674.5Q1513 629 1544.0 547.0Q1575 465 1575 357Q1575 248 1542.5 168.0Q1510 88 1451.0 44.0Q1392 0 1311 0ZM1315 26Q1404 26 1450.5 111.0Q1497 196 1497 357Q1497 517 1452.5 605.5Q1408 694 1321 694Q1245 694 1245 621V99Q1245 59 1261.5 42.5Q1278 26 1315 26Z M1991 -9Q1917 -9 1861.5 37.0Q1806 83 1775.5 166.5Q1745 250 1745 364Q1745 474 1778.5 556.5Q1812 639 1868.5 684.5Q1925 730 1994 730Q2035 730 2066.0 722.5Q2097 715 2121 703Q2133 696 2133 682L2136 530Q2136 513 2124 513Q2113 513 2110 526L2100 563Q2079 641 2051.5 671.0Q2024 701 1986 701Q1916 701 1869.5 614.5Q1823 528 1823 364Q1823 252 1846.5 175.0Q1870 98 1907.5 59.0Q1945 20 1987 20Q2032 20 2059.5 48.0Q2087 76 2106 156L2118 205Q2121 220 2134 218Q2145 216 2145 201L2141 39Q2141 25 2128 18Q2104 6 2071.5 -1.5Q2039 -9 1991 -9Z"/></g><rect class="accent" x="20" y="830" width="2165" height="38" rx="19"/></svg><b>Advisor Toolbox</b></div>
+  <span class="ms-auto badge bg-primary-lt mob-stat" id="mobDue" data-for="toolbox">No list yet</span>
+  <span class="ms-auto badge bg-primary-lt mob-stat" id="mobReady" data-for="intake">Not started</span>
+  <nav class="mob-pills" aria-label="Areas">
+    <a class="mpill" href="#/home" data-area="home">Home</a>
+    <a class="mpill" href="#/toolbox" data-area="toolbox"><span class="space-mark" data-space="toolbox" aria-hidden="true"></span>Toolbox</a>
+    <a class="mpill" href="#/intake/overview" data-area="intake"><span class="space-mark" data-space="intake" aria-hidden="true"></span>Client intake</a>
+  </nav>
+  <nav class="mob-sub" id="mobSub" aria-label="Pages in this area" hidden></nav>
+</div>
+<div class="app">
+<div class="ll-paint" aria-hidden="true"></div>
+<aside class="side no-print" id="side" aria-label="Pages">
+  <div class="logo"><svg class="ll-wordmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2205 888" fill="none" role="img" aria-label="SBDC"><title>SBDC</title><g class="letters" fill="currentColor" transform="translate(0 760) scale(1 -1)"><path d="M204 -9Q184 -9 159.5 -5.0Q135 -1 113.5 5.0Q92 11 80 18Q73 22 69.5 26.5Q66 31 66 42L61 199Q61 219 74 219Q85 219 89 201L98 163Q132 20 225 20Q275 20 304.5 53.5Q334 87 334 148Q334 207 303.5 258.0Q273 309 206 359Q132 412 98.0 461.5Q64 511 64 567Q64 641 115.5 685.5Q167 730 247 730Q277 730 305.0 723.0Q333 716 351 703Q357 699 360.5 694.0Q364 689 364 681L367 530Q367 513 354 513Q345 513 341 527L334 552Q312 629 288.5 664.5Q265 700 221 700Q178 700 152.5 672.0Q127 644 127 593Q127 550 155.0 511.0Q183 472 253 416Q328 355 362.5 298.5Q397 242 397 178Q397 122 372.0 80.0Q347 38 303.5 14.5Q260 -9 204 -9Z M551 0Q536 0 536 11Q536 20 549 23L572 27Q593 31 599.5 38.0Q606 45 606 66V654Q606 675 599.5 682.0Q593 689 572 693L549 697Q536 700 536 709Q536 720 551 720H754Q804 720 843.0 699.0Q882 678 904.5 642.0Q927 606 927 560Q927 515 900.5 476.5Q874 438 824 412Q818 409 818.0 404.0Q818 399 825 397Q893 374 930.0 323.5Q967 273 967 204Q967 145 940.0 98.5Q913 52 865.5 26.0Q818 0 758 0ZM730 411Q783 411 818.5 452.5Q854 494 854 556Q854 618 820.0 656.5Q786 695 730 695Q677 695 677 655V466Q677 437 689.5 424.0Q702 411 730 411ZM745 25Q810 25 851.0 74.5Q892 124 892 207Q892 290 850.5 338.0Q809 386 739 386Q677 386 677 337V94Q677 25 745 25Z M1119 0Q1104 0 1104 11Q1104 20 1117 23L1140 27Q1174 33 1174 66V654Q1174 675 1167.5 682.0Q1161 689 1140 693L1117 697Q1104 700 1104 709Q1104 720 1119 720H1321Q1399 720 1456.0 674.5Q1513 629 1544.0 547.0Q1575 465 1575 357Q1575 248 1542.5 168.0Q1510 88 1451.0 44.0Q1392 0 1311 0ZM1315 26Q1404 26 1450.5 111.0Q1497 196 1497 357Q1497 517 1452.5 605.5Q1408 694 1321 694Q1245 694 1245 621V99Q1245 59 1261.5 42.5Q1278 26 1315 26Z M1991 -9Q1917 -9 1861.5 37.0Q1806 83 1775.5 166.5Q1745 250 1745 364Q1745 474 1778.5 556.5Q1812 639 1868.5 684.5Q1925 730 1994 730Q2035 730 2066.0 722.5Q2097 715 2121 703Q2133 696 2133 682L2136 530Q2136 513 2124 513Q2113 513 2110 526L2100 563Q2079 641 2051.5 671.0Q2024 701 1986 701Q1916 701 1869.5 614.5Q1823 528 1823 364Q1823 252 1846.5 175.0Q1870 98 1907.5 59.0Q1945 20 1987 20Q2032 20 2059.5 48.0Q2087 76 2106 156L2118 205Q2121 220 2134 218Q2145 216 2145 201L2141 39Q2141 25 2128 18Q2104 6 2071.5 -1.5Q2039 -9 1991 -9Z"/></g><rect class="accent" x="20" y="830" width="2165" height="38" rx="19"/></svg><div><b>Advisor Toolbox</b><small>Maricopa SBDC · advisors</small></div></div>
+  <nav>
+  <a class="nl" href="#/home" data-nav="home" data-space="shared"><i data-icon="home"></i>Home</a>
+  <div class="nav-group" data-space="toolbox" data-area="toolbox">
+    <div class="sec space-sec"><span class="space-mark" aria-hidden="true"></span>Toolbox</div>
+    <a class="nl" href="#/toolbox/overview" data-nav="toolbox-overview" hidden><i data-icon="layout-dashboard"></i>Overview</a>
+    <a class="nl" href="#/toolbox" data-nav="toolbox"><i data-icon="tools"></i>Tools<span class="badge bg-green-lt" id="navRun" hidden></span></a>
+  </div>
+  <a class="nl" href="#/clients" data-nav="clients" data-space="shared"><i data-icon="users"></i>Clients<span class="badge bg-blue-lt" id="navClients" hidden></span></a>
+  <a class="nl" href="#/automations" data-nav="automations" data-space="shared"><i data-icon="bolt"></i>Automations<span class="badge bg-green-lt" id="navAuto" hidden></span></a>
+  <a class="nl" href="#/outputs" data-nav="outputs" data-space="shared"><i data-icon="inbox"></i>Outputs<span class="badge bg-blue-lt" id="navOut" hidden></span></a>
+  <a class="nl" href="#/intake/overview" data-nav="intake" data-space="intake"><i data-icon="forms"></i>Client intake<span class="badge bg-red-lt" id="navMissing" hidden></span></a>
+  </nav>
+  <div class="foot"><div class="mini">
+    <div class="d-flex justify-content-between"><b>Your week</b><span id="sideUses">0 runs</span></div>
+    <svg class="spark my-1" id="useSpark" viewBox="0 0 200 46" preserveAspectRatio="none" role="img" aria-label="Tool runs, last 7 days"></svg>
+    <div class="intake-only"><div class="d-flex justify-content-between mt-2"><b>Intake progress</b><span id="sideSec">0 of 5</span></div>
+    <div class="progress progress-sm my-2"><div class="progress-bar" id="sideBar" style="width:0%"></div></div></div>
+    <a class="mini-btn" href="#/outputs" hidden>Open Outputs →</a>
+  </div>
+  <details class="mini side-settings"><summary><b>Settings</b></summary><label class="form-label mt-2 mb-1" for="ai">AI tool the prompt buttons open</label><select class="form-select form-select-sm" id="ai" title="Which AI tool the AI prompt buttons open"><option value="gemini">Gemini (Maricopa account)</option><option value="chatgpt">ChatGPT</option><option value="copilot">Microsoft Copilot</option></select></details></div>
+</aside>
+
+
+<main class="main" id="content">
+  <header class="topbar no-print"><div class="crumbs"><div class="crumb"><span id="crumbArea">Advisor Toolbox</span> <span aria-hidden="true">/</span> <b id="crumbHere">Home</b></div><div class="crumb-title" id="crumbTitle">Home</div></div>
+    <div class="topsearch" data-for="toolbox"><div class="input-icon"><span class="input-icon-addon"><i data-icon="search"></i></span><input class="form-control" type="search" id="toolSearch" placeholder="Find a tool: loan, LLC…" aria-label="Find a tool"></div></div>
+    <div class="topsearch" data-for="intake"><div class="input-icon"><span class="input-icon-addon"><i data-icon="search"></i></span><input class="form-control" type="search" id="fieldSearch" placeholder="Find a question" aria-label="Find a form question"></div></div></header>
+  <nav class="subtabs no-print" id="intakeTabs" aria-label="Client intake pages" hidden>
+    <a class="chip" href="#/intake/overview" data-tab="intake-overview">Overview</a>
+    <a class="chip" href="#/intake/intake" data-tab="intake-intake">Intake &amp; brief</a>
+    <a class="chip" href="#/intake/bring" data-tab="intake-bring">What to bring</a>
+    <a class="chip" href="#/intake/questions" data-tab="intake-questions">Form questions</a>
+  </nav>
+
+  <!-- ============ HOME (shared) ============ -->
+  <div data-view="home" id="home" data-title="Home">
+  <div class="page-head">
+    <div>
+    <h1 class="hello" id="hello">Good day</h1>
+    <p class="hello-sub">One-click tools for the routine parts of your week. <button class="namebtn" id="setName" type="button">Set your name</button></p></div>
+  </div>
+
+  <div class="row row-cards">
+    <div class="col-12"><div class="card space-card h-100" data-space="toolbox"><div class="card-body">
+      <div class="d-flex align-items-center gap-2"><span class="tile g-blue"><i data-icon="tools"></i></span><h2 class="card-title m-0">Toolbox</h2><span class="ms-auto badge bg-secondary-lt" id="hDuePill">No list yet</span></div>
+      <p class="space-sub">Set a tool up once, then run it in one click.</p>
+      <div class="space-stats">
+        <div><div class="big" id="hRuns">0</div><div class="lbl">Tool runs, 7 days</div></div>
+        <div><div class="big" id="hBots">0</div><div class="lbl">Your bots on</div></div>
+        <div><div class="big" id="hOuts">0</div><div class="lbl">Outputs</div></div>
+      </div>
+      <div class="d-flex flex-wrap gap-2 mt-3"><a class="btn btn-primary btn-sm" href="#/toolbox">Open the tools</a><a class="btn btn-outline-secondary btn-sm" href="#/toolbox/follow" hidden>Follow-ups</a><a class="btn btn-ghost-secondary btn-sm" href="#/automations" hidden>Automations</a></div>
+    </div></div></div>
+  </div>
+
+  <div class="mt-3" data-space="toolbox">
+  <div class="row row-cards">
+    <div class="col-12"><div class="card kpi" id="dueCard"><div class="card-body">
+      <div class="d-flex align-items-center gap-2"><span class="tile g-purple"><i data-icon="users"></i></span><b>Follow-ups due</b><span class="ms-auto badge bg-secondary-lt" id="kSrc">No list</span></div>
+      <div id="dueEmpty" class="due-empty"><div><div class="big">—</div><div class="lbl">Paste your CIC export to see who is due for a follow-up.</div></div><button class="btn btn-primary" id="duePaste" type="button"><i data-icon="clipboard-list"></i>Paste CIC export</button></div>
+      <div id="dueFull" class="due-grid" hidden>
+        <div class="due-total"><div class="big" id="kTotal">—</div><div class="lbl" id="kTotalLbl"></div></div>
+        <div class="due-chart">
+          <svg class="dchart" id="kChart" viewBox="0 0 400 14" preserveAspectRatio="none" role="img" aria-label="Clients by days since last contact"></svg>
+          <div class="due-legend">
+            <div><span class="dot" style="background:#35d28a"></span><span>Under 30 days</span><b id="kRecent">—</b></div>
+            <div><span class="dot" style="background:#21d4fd"></span><span id="k30Lbl">30–59 days</span><b id="k30">—</b></div>
+            <div><span class="dot" style="background:#ffcd75"></span><span id="k60Lbl">60–89 days</span><b id="k60">—</b></div>
+            <div><span class="dot" style="background:#ee5d50"></span><span id="k90Lbl">90+ days</span><b id="k90">—</b></div>
+          </div>
+        </div>
+        <div class="due-acts">
+          <button class="btn btn-outline-secondary btn-sm kact" data-goto="graydot" type="button"><i data-icon="mail"></i>Gray Dot email</button>
+          <button class="btn btn-outline-secondary btn-sm kact" data-goto="checkin" type="button"><i data-icon="mail"></i>Check-in email</button>
+          <button class="btn btn-outline-secondary btn-sm kact" id="k90Ics" type="button"><i data-icon="calendar-plus"></i>Calendar reminders</button>
+        </div>
+      </div>
+    </div></div></div>
+  </div>
+  </div>
+
+  <div class="ll-sechead">
+    <h2 class="sec-title">Latest outputs</h2><p class="sec-sub">Results from your recent tool runs.</p>
+  </div>
+  <div class="card" data-space="toolbox"><div id="homeOuts" class="rows"></div></div>
+  <div class="ll-sechead" hidden>
+    <h2 class="sec-title">Before a first session</h2><p class="sec-sub">Client intake: the intake form, the client brief and what to bring.</p>
+  </div>
+  <div class="row row-cards">
+    <div class="col-12"><div class="card space-card h-100" data-space="intake"><div class="card-body">
+      <div class="d-flex align-items-center gap-2"><span class="tile g-blue"><i data-icon="forms"></i></span><h2 class="card-title m-0">Client intake</h2><span class="ms-auto badge bg-secondary-lt" id="hReadyPill">Not started</span></div>
+      <p class="space-sub">Get your next client ready for session 1: intake, client brief, what to bring.</p>
+      <div class="space-stats">
+        <div><div class="big" id="hReady">—</div><div class="lbl">Readiness</div></div>
+        <div><div class="big" id="hSec">0 of 5</div><div class="lbl">Sections done</div></div>
+        <div><div class="big" id="hAsk">—</div><div class="lbl">To ask about</div></div>
+      </div>
+      <div class="d-flex flex-wrap gap-2 mt-3"><a class="btn btn-primary btn-sm" href="#/intake/intake">Open the intake</a><a class="btn btn-outline-secondary btn-sm" href="#/intake/bring">What to bring</a><a class="btn btn-ghost-secondary btn-sm" href="#/intake/questions">Form questions</a></div>
+    </div></div></div>
+  </div>
+  </div>
+
+  <!-- ============ CLIENT INTAKE · OVERVIEW ============ -->
+  <div data-view="intake-overview" id="intake-overview" data-title="Overview" hidden>
+  <div class="page-head no-print">
+    <h1>Client Intake</h1>
+    <p>Get your next client ready for session 1. Readiness and the brief update as you fill in the intake.</p>
+  </div>
+  <div class="row row-cards no-print" id="kpis">
+    <div class="col-sm-6 col-xl-3"><div class="card kpi h-100"><div class="card-body">
+      <div class="d-flex align-items-center gap-2"><span class="tile g-blue"><i data-icon="target"></i></span><b>Readiness</b><span class="ms-auto badge" id="kReadyPill">Not started</span></div>
+      <div class="d-flex align-items-center justify-content-between gap-3"><div class="big" id="kReady">—</div><div class="ring" id="kRing" aria-hidden="true"></div></div>
+      <div class="lbl mt-1" id="kReadyLbl">Nothing entered yet</div>
+      <a class="btn btn-primary btn-sm mt-3" href="#/intake/intake" id="kStart">Start intake</a>
+      <svg class="spark mt-2" id="kSpark" viewBox="0 0 200 46" preserveAspectRatio="none" role="img" aria-label="Readiness as you fill the form, this session"></svg>
+    </div></div></div>
+    <div class="col-sm-6 col-xl-3"><div class="card kpi h-100"><div class="card-body">
+      <div class="d-flex align-items-center gap-2"><span class="tile g-red"><i data-icon="user-question"></i></span><b>To ask about</b></div>
+      <div class="big" id="kMissing">—</div>
+      <div class="lbl" id="kMissingLbl">Items to cover in session&nbsp;1</div>
+      <div class="progress progress-separated mt-3" style="height:6px">
+        <div class="progress-bar bg-success" id="kbOk" style="width:0%"></div>
+        <div class="progress-bar bg-warning" id="kbWarn" style="width:0%"></div>
+        <div class="progress-bar bg-danger" id="kbBad" style="width:0%"></div>
+      </div>
+      <div class="foot3"><div><span class="dot bg-success"></span>Ready<b id="kOk">—</b></div><div><span class="dot bg-warning"></span>Check<b id="kWarn">—</b></div><div><span class="dot bg-danger"></span>Missing<b id="kBad">—</b></div></div>
+    </div></div></div>
+    <div class="col-sm-6 col-xl-3"><div class="card kpi h-100"><div class="card-body">
+      <div class="d-flex align-items-center gap-2"><span class="tile g-green"><i data-icon="cash"></i></span><b>Funding</b><span class="ms-auto badge bg-secondary-lt" id="kFundPill">Not asked</span></div>
+      <div class="big" id="kFund" style="font-size:24px">—</div>
+      <div class="lbl" id="kFundLbl">Ask if they want a loan or other funding</div>
+      <div class="pillnote mt-3" id="kRoute"><i data-icon="users"></i><span>Routing shows here when there's a funding request</span></div>
+    </div></div></div>
+    <div class="col-sm-6 col-xl-3"><div class="card kpi h-100"><div class="card-body">
+      <div class="d-flex align-items-center gap-2"><span class="tile g-purple"><i data-icon="list-check"></i></span><b>Sections done</b></div>
+      <div class="big"><span id="kSec">0</span><span class="text-secondary" style="font-size:18px">/5</span></div>
+      <div class="lbl" id="kSecLbl">Next: About the client</div>
+      <details class="more"><summary>Show each section</summary><div id="kSecList"></div></details>
+    </div></div></div>
+  </div>
+
+  <div class="ll-sechead no-print">
+      <h2 class="sec-title no-print">Next steps</h2>
+  <p class="sec-sub no-print">Work through these in order. Each one opens its own page.</p>
+    </div>
+  <div class="card no-print"><div class="rows" id="steps">
+    <a class="rowlink" href="#/intake/intake"><span class="ri"><i data-icon="forms"></i></span><span class="rt"><b>1. Fill in the intake</b><span>Answer the questions; the client brief writes itself.</span></span><span class="rs" id="ovIntake">0 of 5 sections</span><i data-icon="arrow-right"></i></a>
+    <a class="rowlink" href="#/intake/bring"><span class="ri"><i data-icon="checklist"></i></span><span class="rt"><b>2. Send what to bring</b><span>A checklist and short info packet for the client.</span></span><span class="rs" id="ovBring">7 items · Idea</span><i data-icon="arrow-right"></i></a>
+    <a class="rowlink" href="#/intake/questions"><span class="ri"><i data-icon="list-check"></i></span><span class="rt"><b>3. Send the pre-session form</b><span>Email the Google Form to the client before session 1.</span></span><span class="rs">24 questions</span><i data-icon="arrow-right"></i></a>
+  </div></div>
+  </div>
+
+  <!-- ============ CLIENT INTAKE · INTAKE & BRIEF ============ -->
+  <section data-view="intake-intake" id="intake" data-title="Intake &amp; brief" hidden>
+    <div class="page-head no-print">
+      <h1>Intake &amp; brief</h1>
+      <p>Fill this in before or during the first call. Questions change with the client's answers, and the brief on the right builds itself as you type.</p>
+    </div>
+    <div class="card mb-3 no-print"><div class="card-body d-flex flex-wrap align-items-center gap-2" style="padding:16px 24px">
+      <span class="text-secondary me-2">Practice with a made-up client:</span>
+      <button class="btn btn-outline-primary btn-sm" data-example="idea" type="button">A · Food truck idea</button>
+      <button class="btn btn-outline-primary btn-sm" data-example="startup" type="button">B · New clothing line</button>
+      <button class="btn btn-outline-primary btn-sm" data-example="existing" type="button">C · Auto shop wants a loan</button>
+      <button class="btn btn-ghost-secondary btn-sm ms-auto" id="clearForm" type="button"><i data-icon="refresh"></i>Clear form</button>
+    </div></div>
+
+    <div class="row g-3">
+    <div class="col-lg-7 no-print">
+    <form id="f" autocomplete="off">
+      <fieldset class="card mb-3 sec" data-title="About the client"><div class="card-header"><h3 class="card-title"><span class="secnum">#</span> · About the client</h3><span class="badge ms-auto secpill">Not started</span></div>
+      <div class="progress progress-sm rounded-0"><div class="progress-bar secbar" style="width:0%"></div></div>
+      <div class="card-body">
+        <div class="row g-2">
+          <div class="col-md-6"><label class="form-label" for="client">Client name</label><input class="form-control" type="text" id="client" name="client"></div>
+          <div class="col-md-6"><label class="form-label" for="email">Client email</label><input class="form-control" type="email" id="email" name="email"></div>
+          <div class="col-md-6"><label class="form-label" for="biz">Business name (or working name)</label><input class="form-control" type="text" id="biz" name="biz"></div>
+          <div class="col-md-6"><label class="form-label" for="industry">What they sell / industry</label><input class="form-control" type="text" id="industry" name="industry"></div>
+          <div class="col-md-6"><label class="form-label" for="sdate">Session 1 date</label><input class="form-control" type="date" id="sdate" name="sdate" data-opt></div>
+          <div class="col-md-6"><label class="form-label" for="stime">Time (MST, Arizona)</label><input class="form-control" type="time" id="stime" name="stime" step="900" data-opt></div>
+        </div>
+        <label class="form-label mt-3">Where is the business today?</label>
+        <div class="form-selectgroup">
+          <label class="form-selectgroup-item"><input type="radio" name="stage" value="idea" class="form-selectgroup-input"><span class="form-selectgroup-label">Idea, no sales yet (pre-venture)</span></label>
+          <label class="form-selectgroup-item"><input type="radio" name="stage" value="startup" class="form-selectgroup-input"><span class="form-selectgroup-label">Just started selling (startup)</span></label>
+          <label class="form-selectgroup-item"><input type="radio" name="stage" value="existing" class="form-selectgroup-input"><span class="form-selectgroup-label">Established, steady sales</span></label>
+        </div>
+        <div class="row g-2 mt-1" data-show="stage:startup,existing">
+          <div class="col-md-6"><label class="form-label" for="years">How long in business?</label><input class="form-control" type="text" id="years" name="years" placeholder="e.g. 8 months, 6 years"></div>
+          <div class="col-md-6"><label class="form-label" for="owners">Owners / ownership split</label><input class="form-control" type="text" id="owners" name="owners" placeholder="e.g. sole owner, 50/50 partners"></div>
+        </div>
+        <label class="form-label mt-3">Looking for a loan or other funding?</label>
+        <div class="form-selectgroup">
+          <label class="form-selectgroup-item"><input type="radio" name="funding" value="yes" class="form-selectgroup-input"><span class="form-selectgroup-label">Yes</span></label>
+          <label class="form-selectgroup-item"><input type="radio" name="funding" value="maybe" class="form-selectgroup-input"><span class="form-selectgroup-label">Maybe later</span></label>
+          <label class="form-selectgroup-item"><input type="radio" name="funding" value="no" class="form-selectgroup-input"><span class="form-selectgroup-label">No</span></label>
+        </div>
+        <label class="form-label mt-3" for="goal">What area do they most need help with?</label>
+        <input class="form-control" type="text" id="goal" name="goal" placeholder="In the client's words">
+        <label class="form-label mt-3" for="expect">What do they expect from the SBDC?</label>
+        <input class="form-control" type="text" id="expect" name="expect" placeholder="e.g. help writing a business plan, finding a loan, meeting once a month">
+      </div></fieldset>
+
+      <fieldset class="card mb-3 sec" data-title="Legal setup & location"><div class="card-header"><h3 class="card-title"><span class="secnum">#</span> · Legal setup &amp; location</h3><span class="badge ms-auto secpill">Not started</span></div>
+      <div class="progress progress-sm rounded-0"><div class="progress-bar secbar" style="width:0%"></div></div>
+      <div class="card-body">
+        <label class="form-label">Registered an LLC or other entity?</label>
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+        <div class="form-selectgroup">
+          <label class="form-selectgroup-item"><input type="radio" name="llc" value="yes" class="form-selectgroup-input"><span class="form-selectgroup-label">Yes</span></label>
+          <label class="form-selectgroup-item"><input type="radio" name="llc" value="no" class="form-selectgroup-input"><span class="form-selectgroup-label">No</span></label>
+          <label class="form-selectgroup-item"><input type="radio" name="llc" value="unsure" class="form-selectgroup-input"><span class="form-selectgroup-label">Not sure</span></label>
+        </div>
+        <button type="button" class="btn btn-outline-primary btn-sm" id="accBtn"><i data-icon="search"></i>Check ACC entity search</button>
+        </div>
+        <label class="form-label mt-3">Have a federal EIN?</label>
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+        <div class="form-selectgroup">
+          <label class="form-selectgroup-item"><input type="radio" name="ein" value="yes" class="form-selectgroup-input"><span class="form-selectgroup-label">Yes</span></label>
+          <label class="form-selectgroup-item"><input type="radio" name="ein" value="no" class="form-selectgroup-input"><span class="form-selectgroup-label">No</span></label>
+          <label class="form-selectgroup-item"><input type="radio" name="ein" value="unsure" class="form-selectgroup-input"><span class="form-selectgroup-label">Not sure</span></label>
+        </div>
+        <a class="btn btn-outline-primary btn-sm" href="https://www.irs.gov/businesses/small-businesses-self-employed/apply-for-an-employer-identification-number-ein-online" target="_blank" rel="noopener"><i data-icon="external-link"></i>IRS EIN page</a>
+        </div>
+        <label class="form-label mt-3">Registered for an Arizona TPT license?</label>
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+        <div class="form-selectgroup">
+          <label class="form-selectgroup-item"><input type="radio" name="tpt" value="yes" class="form-selectgroup-input"><span class="form-selectgroup-label">Yes</span></label>
+          <label class="form-selectgroup-item"><input type="radio" name="tpt" value="no" class="form-selectgroup-input"><span class="form-selectgroup-label">No</span></label>
+          <label class="form-selectgroup-item"><input type="radio" name="tpt" value="unsure" class="form-selectgroup-input"><span class="form-selectgroup-label">Not sure</span></label>
+          <label class="form-selectgroup-item"><input type="radio" name="tpt" value="na" class="form-selectgroup-input"><span class="form-selectgroup-label">Not needed</span></label>
+        </div>
+        <a class="btn btn-outline-primary btn-sm" href="https://azdor.gov/business/transaction-privilege-tax" target="_blank" rel="noopener"><i data-icon="external-link"></i>ADOR TPT page</a>
+        </div>
+        <label class="form-label mt-3">Where does the business operate?</label>
+        <div class="form-selectgroup">
+          <label class="form-selectgroup-item"><input type="radio" name="place" value="online" class="form-selectgroup-input"><span class="form-selectgroup-label">Online / mobile only</span></label>
+          <label class="form-selectgroup-item"><input type="radio" name="place" value="home" class="form-selectgroup-input"><span class="form-selectgroup-label">From home</span></label>
+          <label class="form-selectgroup-item"><input type="radio" name="place" value="physical" class="form-selectgroup-input"><span class="form-selectgroup-label">Physical location</span></label>
+          <label class="form-selectgroup-item"><input type="radio" name="place" value="planned" class="form-selectgroup-input"><span class="form-selectgroup-label">Plans a physical location</span></label>
+        </div>
+        <div data-show="place:physical,planned" class="mt-2"><label class="form-label" for="sqft">Size of the space (square feet)</label><input class="form-control" type="number" id="sqft" name="sqft" min="0"></div>
+        <label class="form-label mt-3">Website or social media?</label>
+        <div class="form-selectgroup">
+          <label class="form-selectgroup-item"><input type="radio" name="online" value="both" class="form-selectgroup-input"><span class="form-selectgroup-label">Website and social</span></label>
+          <label class="form-selectgroup-item"><input type="radio" name="online" value="social" class="form-selectgroup-input"><span class="form-selectgroup-label">Social only</span></label>
+          <label class="form-selectgroup-item"><input type="radio" name="online" value="none" class="form-selectgroup-input"><span class="form-selectgroup-label">Neither yet</span></label>
+        </div>
+      </div></fieldset>
+
+      <fieldset class="card mb-3 sec" data-title="Money so far"><div class="card-header"><h3 class="card-title"><span class="secnum">#</span> · Money so far</h3><span class="badge ms-auto secpill">Not started</span></div>
+      <div class="progress progress-sm rounded-0"><div class="progress-bar secbar" style="width:0%"></div></div>
+      <div class="card-body">
+        <div class="row g-2">
+          <div class="col-md-4"><label class="form-label" for="invested">Own money invested ($)</label><input class="form-control" type="number" id="invested" name="invested" min="0"></div>
+          <div class="col-md-4"><label class="form-label" for="employees">Employees</label><input class="form-control" type="number" id="employees" name="employees" min="0"></div>
+          <div class="col-md-4" data-show="stage:startup,existing"><label class="form-label" for="revenue">Sales, last 12 months ($)</label><input class="form-control" type="number" id="revenue" name="revenue" min="0"></div>
+          <div class="col-md-4" data-show="stage:idea,startup"><label class="form-label" for="projection">Expected sales, first 12 mo ($)</label><input class="form-control" type="number" id="projection" name="projection" min="0"></div>
+        </div>
+        <div class="math mt-3" data-show="stage:idea,startup">
+          <div class="d-flex align-items-center gap-2"><i data-icon="calculator"></i><b>Basic numbers</b></div>
+          <div class="text-secondary small mb-2">Most new clients haven't run these yet. Even rough answers tell you where to start.</div>
+          <label class="form-label" for="unit">What's one sale? (a meal, a shirt, an hour of service, a table turn)</label>
+          <input class="form-control" type="text" id="unit" name="unit" placeholder="e.g. one plate">
+          <div class="row g-2 mt-1">
+            <div class="col-md-3 col-6"><label class="form-label" for="price">Price per sale ($)</label><input class="form-control" type="number" id="price" name="price" min="0" step="0.01"></div>
+            <div class="col-md-3 col-6"><label class="form-label" for="cost">Cost to make one ($)</label><input class="form-control" type="number" id="cost" name="cost" min="0" step="0.01"></div>
+            <div class="col-md-3 col-6"><label class="form-label" for="fixed">Monthly fixed costs ($)</label><input class="form-control" type="number" id="fixed" name="fixed" min="0" placeholder="rent, insurance…"></div>
+            <div class="col-md-3 col-6"><label class="form-label" for="volume">Sales per month</label><input class="form-control" type="number" id="volume" name="volume" min="0"></div>
+          </div>
+        </div>
+      </div></fieldset>
+
+      <fieldset class="card mb-3 sec" data-title="Funding" data-show="funding:yes,maybe"><div class="card-header"><h3 class="card-title"><span class="secnum">#</span> · Funding</h3><span class="badge ms-auto secpill">Not started</span></div>
+      <div class="progress progress-sm rounded-0"><div class="progress-bar secbar" style="width:0%"></div></div>
+      <div class="card-body">
+        <div class="row g-2">
+          <div class="col-md-6"><label class="form-label" for="amount">How much do they want? ($)</label><input class="form-control" type="number" id="amount" name="amount" min="0"><label class="form-check mt-2"><input class="form-check-input" type="checkbox" name="amountUnknown"><span class="form-check-label">They don't know yet</span></label></div>
+          <div class="col-md-6"><label class="form-label" for="use">What is the money for?</label><input class="form-control" type="text" id="use" name="use" placeholder="equipment, buildout, working capital…"></div>
+          <div class="col-md-6"><label class="form-label" for="credit">Do they know their personal credit score?</label>
+            <select class="form-select" id="credit" name="credit"><option value="">Not asked yet</option><option value="unknown">Doesn't know</option><option value="lt620">Below 620</option><option value="620">620 to 679</option><option value="680">680 to 719</option><option value="720">720 or higher</option></select></div>
+          <div class="col-md-6"><label class="form-label" for="liquid">Cash / liquid assets they could put in ($)</label><input class="form-control" type="number" id="liquid" name="liquid" min="0"></div>
+        </div>
+        <label class="form-check mt-3"><input class="form-check-input" type="checkbox" name="loanChecklist"><span class="form-check-label">Client has the loan checklist (send it before session 1 if not)</span></label>
+      </div></fieldset>
+
+      <fieldset class="card mb-3 sec" data-title="Assets & documents"><div class="card-header"><h3 class="card-title"><span class="secnum">#</span> · Assets &amp; documents</h3><span class="badge ms-auto secpill">Not started</span></div>
+      <div class="progress progress-sm rounded-0"><div class="progress-bar secbar" style="width:0%"></div></div>
+      <div class="card-body">
+        <label class="form-label" for="assets">Assets they own or will use (buildings, tools, equipment, vehicles) with what each cost</label>
+        <textarea class="form-control" rows="3" id="assets" name="assets" placeholder="One per line, e.g. Commercial oven – $4,200 (quote)"></textarea>
+        <label class="form-check mt-2"><input class="form-check-input" type="checkbox" name="proof"><span class="form-check-label">Has proof of equipment costs (receipts or quotes)</span></label>
+        <label class="form-label mt-3">Documents they have ready</label>
+        <div class="form-selectgroup">
+          <label class="form-selectgroup-item"><input type="checkbox" name="docs" value="Business plan" class="form-selectgroup-input"><span class="form-selectgroup-label">Business plan</span></label>
+          <label class="form-selectgroup-item"><input type="checkbox" name="docs" value="Pitch deck" class="form-selectgroup-input"><span class="form-selectgroup-label">Pitch deck</span></label>
+          <label class="form-selectgroup-item"><input type="checkbox" name="docs" value="Financial statements" class="form-selectgroup-input"><span class="form-selectgroup-label">Financial statements</span></label>
+          <label class="form-selectgroup-item"><input type="checkbox" name="docs" value="Business Model Canvas" class="form-selectgroup-input"><span class="form-selectgroup-label">Business Model Canvas</span></label>
+          <label class="form-selectgroup-item"><input type="checkbox" name="docs" value="Tax returns" class="form-selectgroup-input"><span class="form-selectgroup-label">Tax returns</span></label>
+        </div>
+        <label class="form-label mt-3" for="notes">Anything else (special comments)</label>
+        <textarea class="form-control" rows="2" id="notes" name="notes"></textarea>
+        <details class="mt-3 cic-extra" id="cicExtra">
+          <summary class="form-label mb-0" style="cursor:pointer">CIC record fields (optional)</summary>
+          <div class="text-secondary small mt-1 mb-2">The eRFC / CIC client fields. Leave blank what you don't know; "Copy for CIC" lists anything still missing.</div>
+          <div class="row g-2">
+            <div class="col-md-6"><label class="form-label" for="bizDesc">Business description (3-5 words)</label><input class="form-control" type="text" id="bizDesc" name="bizDesc" maxlength="60" placeholder="e.g. Family auto repair shop" data-opt></div>
+            <div class="col-md-6"><label class="form-label" for="website">Web site</label><input class="form-control" type="text" id="website" name="website" inputmode="url" placeholder="www.example.com" data-opt></div>
+            <div class="col-md-3 col-6"><label class="form-label" for="ft">Employees FT</label><input class="form-control" type="number" id="ft" name="ft" min="0" data-opt></div>
+            <div class="col-md-3 col-6"><label class="form-label" for="pt">Employees PT</label><input class="form-control" type="number" id="pt" name="pt" min="0" data-opt></div>
+            <div class="col-md-6"><label class="form-label" for="pl">Annual P/L, last 12 months ($)</label><input class="form-control" type="number" id="pl" name="pl" step="any" placeholder="profit, or negative for a loss" data-opt></div>
+            <div class="col-md-6"><label class="form-label" for="startDate">Start date</label><input class="form-control" type="date" id="startDate" name="startDate" data-opt></div>
+            <div class="col-md-6"><label class="form-label" for="naics">NAICS code (if known)</label><input class="form-control" type="text" id="naics" name="naics" inputmode="numeric" maxlength="6" placeholder="e.g. 811111" data-opt></div>
+          </div>
+          <label class="form-label mt-3">Assistance Requested (as on the eRFC; blank = suggested from their answers)</label>
+          <div class="form-selectgroup">
+            <label class="form-selectgroup-item"><input type="checkbox" name="assist" value="Business Accounting/Budget" class="form-selectgroup-input"><span class="form-selectgroup-label">Business Accounting/Budget</span></label>
+            <label class="form-selectgroup-item"><input type="checkbox" name="assist" value="Business Plan" class="form-selectgroup-input"><span class="form-selectgroup-label">Business Plan</span></label>
+            <label class="form-selectgroup-item"><input type="checkbox" name="assist" value="Buy/Sell a Business" class="form-selectgroup-input"><span class="form-selectgroup-label">Buy/Sell a Business</span></label>
+            <label class="form-selectgroup-item"><input type="checkbox" name="assist" value="Cash Flow Management" class="form-selectgroup-input"><span class="form-selectgroup-label">Cash Flow Management</span></label>
+            <label class="form-selectgroup-item"><input type="checkbox" name="assist" value="Customer Relations" class="form-selectgroup-input"><span class="form-selectgroup-label">Customer Relations</span></label>
+            <label class="form-selectgroup-item"><input type="checkbox" name="assist" value="eCommerce" class="form-selectgroup-input"><span class="form-selectgroup-label">eCommerce</span></label>
+            <label class="form-selectgroup-item"><input type="checkbox" name="assist" value="Financing/Capital" class="form-selectgroup-input"><span class="form-selectgroup-label">Financing/Capital</span></label>
+            <label class="form-selectgroup-item"><input type="checkbox" name="assist" value="Franchising" class="form-selectgroup-input"><span class="form-selectgroup-label">Franchising</span></label>
+            <label class="form-selectgroup-item"><input type="checkbox" name="assist" value="Government Contracting" class="form-selectgroup-input"><span class="form-selectgroup-label">Government Contracting</span></label>
+            <label class="form-selectgroup-item"><input type="checkbox" name="assist" value="Human Resources/Employees" class="form-selectgroup-input"><span class="form-selectgroup-label">Human Resources/Employees</span></label>
+            <label class="form-selectgroup-item"><input type="checkbox" name="assist" value="International Trade" class="form-selectgroup-input"><span class="form-selectgroup-label">International Trade</span></label>
+            <label class="form-selectgroup-item"><input type="checkbox" name="assist" value="Legal Issues" class="form-selectgroup-input"><span class="form-selectgroup-label">Legal Issues</span></label>
+            <label class="form-selectgroup-item"><input type="checkbox" name="assist" value="Managing Business" class="form-selectgroup-input"><span class="form-selectgroup-label">Managing Business</span></label>
+            <label class="form-selectgroup-item"><input type="checkbox" name="assist" value="Marketing/Sales" class="form-selectgroup-input"><span class="form-selectgroup-label">Marketing/Sales</span></label>
+            <label class="form-selectgroup-item"><input type="checkbox" name="assist" value="Start-up Assistance" class="form-selectgroup-input"><span class="form-selectgroup-label">Start-up Assistance</span></label>
+            <label class="form-selectgroup-item"><input type="checkbox" name="assist" value="Tax Planning" class="form-selectgroup-input"><span class="form-selectgroup-label">Tax Planning</span></label>
+            <label class="form-selectgroup-item"><input type="checkbox" name="assist" value="Technology/Computers" class="form-selectgroup-input"><span class="form-selectgroup-label">Technology/Computers</span></label>
+          </div>
+          <label class="form-label mt-3" for="specific">Specific assistance requested</label>
+          <textarea class="form-control" rows="2" id="specific" name="specific" placeholder="In the client's words, from the eRFC" data-opt></textarea>
+        </details>
+      </div></fieldset>
+    </form>
+    </div>
+
+    <div class="col-lg-5">
+      <div class="card brief-card">
+        <div class="card-header no-print"><h3 class="card-title">Client brief</h3><span class="badge bg-orange-lt ms-2" id="exBadge" hidden>Example client</span>
+          <div class="ms-auto btn-list">
+            <button class="btn btn-primary btn-sm" id="copyBrief" type="button"><i data-icon="copy"></i>Copy brief</button>
+            <button class="btn btn-outline-primary btn-sm" id="copyCIC" type="button">Copy for CIC</button>
+            <button class="btn btn-outline-secondary btn-sm" id="printBrief" type="button"><i data-icon="printer"></i>Print</button>
+            <button class="btn btn-ghost-secondary btn-sm" id="icsBrief" type="button"><i data-icon="calendar-plus"></i>Add to calendar</button>
+          </div>
+        </div>
+        <div class="card-body"><div id="brief" class="brief"></div></div>
+      </div>
+    </div>
+    </div>
+  </section>
+
+  <!-- ============ CLIENT INTAKE · WHAT TO BRING ============ -->
+  <section data-view="intake-bring" id="bring" data-title="What to bring" hidden>
+    <div class="page-head">
+      <h1>What to bring</h1>
+      <p class="blk-sub">Send the right list before session 1. Most new clients arrive about 10% prepared; a checklist up front changes that.</p>
+    </div>
+    <div class="card">
+      <div class="card-header no-print">
+        <ul class="nav nav-tabs card-header-tabs" role="tablist" aria-label="Client type">
+          <li class="nav-item"><a href="#/intake/bring" class="nav-link tab" role="tab" data-type="idea">Idea / pre-venture</a></li>
+          <li class="nav-item"><a href="#/intake/bring" class="nav-link tab" role="tab" data-type="startup">Startup</a></li>
+          <li class="nav-item"><a href="#/intake/bring" class="nav-link tab" role="tab" data-type="existing">Established</a></li>
+          <li class="nav-item"><a href="#/intake/bring" class="nav-link tab" role="tab" data-type="loan">Wants a loan</a></li>
+        </ul>
+      </div>
+      <div class="card-body">
+        <h2 class="card-title mb-2">Checklist <span class="badge bg-primary-lt ms-1" id="bringCount"></span></h2>
+        <ul id="bringList" class="ticks"></ul>
+        <details class="more" id="packetMore"><summary>What the client should know (info packet)</summary><div id="packet" class="packet"></div></details>
+        <div class="d-flex flex-wrap gap-2 mt-4 no-print">
+          <button class="btn btn-primary" id="copyPacket" type="button"><i data-icon="copy"></i>Copy as email text</button>
+          <button class="btn btn-ghost-secondary" id="mailPacket" type="button"><i data-icon="mail"></i>Open in email</button>
+          <button class="btn btn-ghost-secondary" id="printPacket" type="button"><i data-icon="printer"></i>Print</button>
+        </div>
+      </div>
+    </div>
+    <div class="ll-sechead no-print">
+      <h2 class="sec-title no-print">Related</h2>
+    </div>
+    <div class="card no-print"><div class="rows">
+      <a class="rowlink" href="pages/bmc.html?print=1" target="_blank" rel="noopener"><span class="ri"><i data-icon="presentation"></i></span><span class="rt"><b>Business Model Canvas</b><span>Blank one-page canvas to print or attach.</span></span><i data-icon="printer"></i></a>
+      <a class="rowlink" href="pages/loan-checklist.html?print=1" target="_blank" rel="noopener"><span class="ri"><i data-icon="file-text"></i></span><span class="rt"><b>Loan document checklist</b><span>What most lenders ask for, ready to print.</span></span><i data-icon="printer"></i></a>
+    </div></div>
+  </section>
+
+  <!-- ============ CLIENT INTAKE · FORM QUESTIONS ============ -->
+  <section data-view="intake-questions" id="questions" data-title="Form questions" class="no-print" hidden>
+    <div class="page-head">
+      <h1>Form questions</h1>
+      <p class="blk-sub">The intake questions as a one-page pre-session form, ready to paste into a Google Form, a Microsoft Form or a Center EX survey. Keep it to one page; long forms don't get finished.</p>
+    </div>
+    <div class="card"><ul class="rows">
+      <li class="rowlink"><span class="ri">1</span><span class="rt"><b>About you</b><span>Everyone · 7 questions, including stage, funding and what they expect</span></span></li>
+      <li class="rowlink"><span class="ri">2A</span><span class="rt"><b>Your numbers</b><span>Idea and startup · 4 questions</span></span></li>
+      <li class="rowlink"><span class="ri">2B</span><span class="rt"><b>Your business</b><span>Startup and established · 8 questions, including LLC, EIN and TPT</span></span></li>
+      <li class="rowlink"><span class="ri">3</span><span class="rt"><b>Funding</b><span>Only if they said yes or maybe · 4 questions</span></span></li>
+      <li class="rowlink"><span class="ri">4</span><span class="rt"><b>Uploads</b><span>Optional, everyone · 1 question</span></span></li>
+    </ul>
+    <div class="card-body" style="border-top:1px solid var(--line)">
+      <button class="btn btn-primary" id="copyQ" type="button"><i data-icon="copy"></i>Copy form questions</button>
+      <details class="more"><summary>Preview all 24 questions</summary><pre id="qText" class="qtext"></pre></details>
+    </div></div>
+
+    <div class="card mt-3" id="formSend"><div class="card-header"><h3 class="card-title"><span class="tile g-green me-2"><i data-icon="mail"></i></span>Send the intake form to a client</h3></div>
+    <div class="card-body">
+      <p class="blk-sub">Opens a draft in your Gmail with the form link in it. You read it and press Send. Nothing is sent from here.</p>
+      <div class="row g-3">
+        <div class="col-md-6"><label class="form-label" for="fsTo">Client email</label><input class="form-control" type="email" id="fsTo" autocomplete="off" placeholder="client@example.com"></div>
+        <div class="col-md-6"><span class="form-label">Form being sent</span><div class="fs-now"><span id="fsName">SBDC pre-session intake form</span><button class="btn btn-outline-secondary btn-sm" type="button" id="fsChange"><i data-icon="refresh"></i>Change form</button></div>
+          <div id="fsEdit" hidden><label class="form-label mt-2" for="fsLink">Google Form link</label><input class="form-control" type="url" id="fsLink" autocomplete="off" spellcheck="false" placeholder="https://forms.gle/..."><div class="d-flex gap-2 mt-2"><button class="btn btn-primary btn-sm" type="button" id="fsUse">Use this form</button><button class="btn btn-outline-secondary btn-sm" type="button" id="fsReset">Back to the SBDC form</button></div></div></div>
+      </div>
+      <div class="d-flex gap-2 flex-wrap mt-3"><button class="btn btn-primary" type="button" id="fsMail"><i data-icon="mail"></i>Email the form</button><button class="btn btn-outline-secondary" type="button" id="fsCopy"><i data-icon="copy"></i>Copy the message</button><button class="btn btn-outline-secondary" type="button" id="fsOpen"><i data-icon="external-link"></i>Open the form</button></div>
+    </div></div>
+
+    <div class="card mt-3" id="masterSheet"><div class="card-header"><h3 class="card-title"><span class="tile g-green me-2"><i data-icon="file-spreadsheet"></i></span>Keep every answer in one master sheet</h3></div>
+    <div class="card-body">
+      <p class="blk-sub">Point the form at one sheet so every new client lands in the same place, with one row per client.</p>
+      <div class="row g-3">
+        <div class="col-md-6"><b>Google Forms</b><ol class="ms-steps">
+          <li>Responses tab, then <b>Link to Sheets</b>. Pick your master sheet.</li>
+          <li>Three-dot menu, then <b>Get email notifications for new responses</b>, so each submission is sent to you.</li>
+          <li>Settings, then <b>Responses</b>: turn on <b>Collect email addresses</b> and <b>Send responders a copy</b> if you want the client to get one too.</li></ol></div>
+        <div class="col-md-6"><b>Microsoft Forms</b><ol class="ms-steps">
+          <li>Responses tab, then <b>Open results in Excel</b>. Keep that one workbook as the master sheet; new answers are added to it.</li>
+          <li>Three-dot menu, then <b>Settings</b>: turn on <b>Get email notification of each response</b>.</li>
+          <li>Need it in Google Sheets? Download the Excel file and import it, or use the Google Form route.</li></ol></div>
+      </div>
+      <div class="d-flex flex-wrap gap-2 mt-3">
+        <button class="btn btn-outline-primary" id="dlSheet" type="button"><i data-icon="file-spreadsheet"></i>Download master sheet columns (CSV)</button>
+      </div>
+      <p class="blk-sub mt-2 mb-0">The CSV has one column per form question, in the same order, so it opens in Excel or Google Sheets as a ready-made master sheet.</p>
+    </div></div>
+  </section>
+
+  <!-- ============ TOOLBOX · OVERVIEW ============ -->
+  <div data-view="toolbox-overview" id="toolbox-overview" data-title="Overview" hidden>
+  <div class="page-head">
+    <h1>Toolbox</h1>
+    <p>Shortcuts for the work that repeats every week. Follow-ups due are on <a href="#/home">Home</a>.</p>
+  </div>
+  <div class="row g-3 mt-1">
+    <div class="col-lg-7">
+      <div class="ll-sechead">
+      <h2 class="sec-title">Toolbox sections</h2><p class="sec-sub">Every tool is a card. Set it up once, then run it in one click.</p>
+    </div>
+      <div class="card"><div class="rows" id="ovSecs"></div></div>
+    </div>
+    <div class="col-lg-5">
+      <div class="ll-sechead">
+      <h2 class="sec-title">Latest outputs</h2><p class="sec-sub">Results from your recent runs.</p>
+    </div>
+      <div class="card" id="ovOutCard"><div id="ovOuts" class="rows"></div></div>
+    </div>
+  </div>
+  </div>
+
+  <!-- ============ TOOLBOX · TOOLS ============ -->
+  <div data-view="toolbox" id="toolbox" data-title="Tools" hidden>
+    <div class="page-head" id="tbHead"><h1>Toolbox</h1><p>Set up a tool once, then run it in one click. Results land in Outputs.</p>
+      <div class="secjump" id="secJump" role="navigation" aria-label="Jump to a section"></div></div>
+    <div id="searchHead" class="page-head" hidden><h1>Search results</h1><p id="searchSub">Tools matching your search.</p></div>
+    <div id="noMatch" class="text-secondary" hidden>No tools match that search.</div>
+    <div id="tbSecs"></div>
+  </div>
+
+  <!-- ============ CLIENTS (shared) ============ -->
+  <div data-view="clients" id="clients" data-title="Clients" hidden>
+    <div class="page-head d-flex flex-wrap align-items-end gap-3"><div class="me-auto"><h1>Clients</h1><p>Every client in one list, each with a grade for how ready the business is. It fills itself from the client intake, your Toolbox runs and lists you paste. Kept in this browser.</p></div></div>
+    <div class="card mb-3" id="clSheet" hidden></div>
+    <div class="card mb-3" id="clTools" hidden><div class="card-body d-flex gap-2 flex-wrap align-items-center">
+      <div class="input-icon cl-search"><span class="input-icon-addon"><i data-icon="search"></i></span><input class="form-control" type="search" id="clSearch" placeholder="Find a client" aria-label="Find a client"></div>
+      <button class="btn btn-outline-secondary ms-auto" type="button" data-cl="import"><i data-icon="file-spreadsheet"></i>Paste a list</button>
+      <button class="btn btn-outline-secondary" type="button" data-cl="intake"><i data-icon="forms"></i>Add the client intake</button>
+      <button class="btn btn-outline-secondary" type="button" data-cl="csv"><i data-icon="download"></i>Download CSV</button>
+      <button class="btn btn-outline-secondary" type="button" data-cl="json"><i data-icon="download"></i>Download JSON</button>
+    </div></div>
+    <div id="clBody"></div>
+  </div>
+
+  <!-- ============ OUTPUTS (shared) ============ -->
+  <div data-view="outputs" id="outputs" data-title="Outputs" hidden>
+    <div class="page-head d-flex flex-wrap align-items-end gap-3"><div class="me-auto"><h1>Outputs</h1><p>Every run's results, newest first. Times are Arizona time (MST). Kept in this browser for 30 days.</p></div>
+      <div class="d-flex gap-2 align-items-center otools"><label class="visually-hidden" for="oTool">Show outputs from</label><select class="form-select form-select-sm w-auto" id="oTool"><option value="">All tools</option></select>
+      <button class="btn btn-outline-danger btn-sm" id="oClear" type="button"><i data-icon="trash"></i>Clear outputs</button></div></div>
+    <div class="row row-cards" id="oKpis" data-space="toolbox">
+      <div class="col-4"><div class="card kpi h-100"><div class="card-body"><div class="d-flex align-items-center gap-2"><span class="tile g-blue"><i data-icon="inbox"></i></span><b>Outputs</b></div><div class="big" id="oN">0</div><div class="lbl" id="oNLbl">No runs yet</div></div></div></div>
+      <div class="col-4"><div class="card kpi h-100"><div class="card-body"><div class="d-flex align-items-center gap-2"><span class="tile g-green"><i data-icon="clipboard-check"></i></span><b>Done</b></div><div class="big" id="oDone">0</div><div class="lbl" id="oDoneLbl">ready to use</div></div></div></div>
+      <div class="col-4"><div class="card kpi h-100"><div class="card-body"><div class="d-flex align-items-center gap-2"><span class="tile g-amber"><i data-icon="alert-triangle"></i></span><b>Needs input</b></div><div class="big" id="oNeed">0</div><div class="lbl" id="oNeedLbl">scheduled runs waiting on you</div></div></div></div>
+    </div>
+    <div class="card opanel mt-3" data-space="toolbox"><ul class="rows olist" id="oList"></ul></div>
+  </div>
+
+  <!-- ============ AUTOMATIONS (shared) ============ -->
+  <section data-view="automations" id="automations" data-title="Automations" class="no-print" data-filter="all" hidden>
+    <div class="page-head"><h1>Automations</h1><p>Bots for Client Intake and the Toolbox. Times are Arizona time (MST).</p>
+      <div class="secjump afilter" role="group" aria-label="Show automations for">
+        <button class="chip" type="button" data-filter="all" aria-pressed="true">All</button>
+        <button class="chip" type="button" data-filter="intake" aria-pressed="false"><span class="space-mark" data-space="intake" aria-hidden="true"></span>Client Intake</button>
+        <button class="chip" type="button" data-filter="toolbox" aria-pressed="false"><span class="space-mark" data-space="toolbox" aria-hidden="true"></span>Toolbox</button>
+      </div></div>
+    <div class="row row-cards" id="aKpis" data-space="toolbox">
+      <div class="col-sm-4"><div class="card kpi h-100"><div class="card-body"><div class="d-flex align-items-center gap-2"><span class="tile g-green"><i data-icon="bolt"></i></span><b>Running</b></div><div class="big" id="aRun">0</div><div class="lbl" id="aRunLbl"></div></div></div></div>
+      <div class="col-sm-4"><div class="card kpi h-100"><div class="card-body"><div class="d-flex align-items-center gap-2"><span class="tile g-amber"><i data-icon="player-pause"></i></span><b>Paused</b></div><div class="big" id="aPause">0</div><div class="lbl" id="aPauseLbl"></div></div></div></div>
+      <div class="col-sm-4"><div class="card kpi h-100"><div class="card-body"><div class="d-flex align-items-center gap-2"><span class="tile g-blue"><i data-icon="clock"></i></span><b>Next run</b></div><div class="big big-sm" id="aNext">—</div><div class="lbl" id="aNextLbl"></div></div></div></div>
+    </div>
+    <div class="abots" data-area="toolbox" data-space="toolbox">
+    <div class="ll-sechead">
+      <h2 class="sec-title">Your Toolbox bots</h2><p class="sec-sub">Bots you turned on with "Run on schedule" in a tool. Switch one off to pause it. Run now runs it with its saved setup.</p>
+    </div>
+    <div class="card"><ul class="rows arows" id="botList"></ul></div>
+    </div>
+    <details class="fold" id="exBots">
+    <summary><span>See example bots</span><span class="badge bg-yellow-lt ex-badge">Examples</span></summary>
+    <div class="ll-sechead">
+      <h2 class="sec-title">Examples <span class="badge bg-yellow-lt ex-badge">Example</span></h2><p class="sec-sub">Ideas for bots in Client Intake and the Toolbox. Switches here are for trying things out.</p>
+    </div>
+    <div class="card"><ul class="rows arows" id="autoList"></ul></div>
+    </details>
+  </section>
+</main>
+</div>
+
+<nav class="mob-tabbar no-print" aria-label="Main">
+  <a href="#/home" data-area="home"><i data-icon="home"></i><span>Home</span></a>
+  <a href="#/toolbox" data-area="toolbox"><i data-icon="tools"></i><span>Toolbox</span></a>
+  <a href="#/automations" data-area="automations"><i data-icon="bolt"></i><span>Automations</span></a>
+  <a href="#/outputs" data-area="outputs"><i data-icon="inbox"></i><span>Outputs</span></a>
+  <a href="#/intake/overview" data-area="intake"><i data-icon="forms"></i><span>Intake</span></a>
+</nav>
+
+<dialog class="tmodal" id="tm" aria-labelledby="tmTitle" aria-describedby="tmDesc">
+  <form method="dialog" id="tmForm" novalidate>
+    <div class="tm-head"><span class="ttile" id="tmIcon"></span><div class="tm-ht"><h2 id="tmTitle">Tool</h2><p id="tmDesc"></p></div><button class="btn btn-icon btn-ghost-secondary tm-x" type="button" id="tmClose" aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="tm-body">
+      <div class="tm-soon" id="tmSoon" hidden><i data-icon="rocket"></i><span id="tmSoonTxt"></span></div>
+      <fieldset class="tm-sec" id="tmSetupSec"><legend>Setup <span>saved for next time</span></legend><div class="tm-grid" id="tmSetup"></div></fieldset>
+      <fieldset class="tm-sec" id="tmRunSec"><legend>This run</legend><div class="tm-grid" id="tmRun"></div></fieldset>
+      <div class="tm-sched" id="tmSchedBox">
+        <label class="form-check form-switch m-0"><input class="form-check-input" type="checkbox" role="switch" id="tmSched" aria-checked="false" aria-describedby="tmSchedHint"><span class="form-check-label">Run on schedule</span></label>
+        <p class="tm-hint" id="tmSchedHint">Adds a bot that runs this tool for you. Times are Arizona time (MST).</p>
+        <div class="tm-sopts" id="tmSchedOpts" hidden>
+          <label class="form-label">Repeat<select class="form-select" id="tmFreq"><option value="daily">Every day</option><option value="weekly" selected>Every week</option><option value="monthly">1st of each month</option></select></label>
+          <label class="form-label" id="tmDowWrap">Day<select class="form-select" id="tmDow"><option value="1">Monday</option><option value="2">Tuesday</option><option value="3">Wednesday</option><option value="4">Thursday</option><option value="5">Friday</option></select></label>
+          <label class="form-label">Time (MST)<input class="form-control" type="time" id="tmTime" value="08:00"></label>
+        </div>
+        <p class="tm-bots" id="tmBots" hidden></p>
+      </div>
+    </div>
+    <div class="tm-foot"><span class="tm-err" id="tmErr" role="alert"></span><button class="btn btn-ghost-secondary" type="button" id="tmCancel">Cancel</button><button class="btn btn-outline-secondary" type="button" id="tmSave">Save setup</button><button class="btn btn-primary" type="submit" id="tmRunBtn"><i data-icon="player-play"></i>Run</button></div>
+  </form>
+</dialog>
+<div class="toast2" id="toast" role="status" aria-live="polite"></div>
+<script src="js/icons.js"></script>
+<script src="js/shell.js"></script>
+<script src="js/cic.js"></script>
+<script src="js/p2.js"></script>
+<script src="js/tools.js"></script>
+<script src="js/dash.js"></script>
+<script src="js/grade.js"></script>
+<script src="js/toolbox.js"></script>
+<script src="js/mytools.js"></script>
+<script src="js/autos-data.js"></script>
+<script src="js/autos.js"></script>
+<script src="js/sbdc-api.js"></script>
+<script src="js/autos-server.js"></script>
+<script src="js/formsend.js"></script>
+<script src="js/clients.js"></script>
+<script src="js/client-link.js"></script>
+<script src="js/sheet-config.js"></script>
+<script src="js/sheet-store.js"></script>
+<script src="js/flair.js"></script>
+<script src="js/helper-settings.js"></script>
+</body>
+</html>

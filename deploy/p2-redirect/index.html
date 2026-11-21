@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="only light">
+<meta name="theme-color" content="#FAFAF8">
+<meta name="robots" content="noindex">
+<title>Client Intake has moved · Advisor Toolbox</title>
+<script>
+(function () {
+  var NEW = 'https://sbdc-p3-dd2e46.pages.dev';
+  var MAP = { '': '#/intake/overview', '#/': '#/intake/overview', '#/overview': '#/intake/overview', '#/intake': '#/intake/intake',
+    '#/bring': '#/intake/bring', '#/questions': '#/intake/questions', '#/automations': '#/automations' };
+  var path = location.pathname.replace(/\/index(\.html)?$/, '/');
+  var hash = MAP.hasOwnProperty(location.hash) ? MAP[location.hash] : (/^#\/intake\//.test(location.hash) ? location.hash : '#/intake/overview');
+  var to = path === '/' ? NEW + '/' + hash : NEW + path + location.search + location.hash;
+  location.replace(to);
+})();
+</script>
+<noscript><meta http-equiv="refresh" content="0; url=https://sbdc-p3-dd2e46.pages.dev/#/intake/overview"></noscript>
+<style>
+  html, body { margin: 0; background: #FAFAF8; color: #161616; font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .card { max-width: 440px; margin: 15vh auto 0; background: #fff; border: 1px solid #E7E5DF; border-radius: 18px; padding: 24px; }
+  h1 { font-size: 22px; margin: 0 0 8px; color: #111; -webkit-text-fill-color: #111; }
+  a { color: #111; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>Client Intake has moved</h1>
+  <p>Client Intake is now part of the Advisor Toolbox.</p>
+  <p><a href="https://sbdc-p3-dd2e46.pages.dev/#/intake/overview">Open Client Intake in the Advisor Toolbox</a></p>
+</div>
+</body>
+</html>

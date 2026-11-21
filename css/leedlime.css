@@ -1,0 +1,465 @@
+/* Leedlime-inspired light theme for the SBDC advisor dashboards.
+   Overrides Tabler / app.css / flair.css. No dark mode.
+   Heading color is solid (no background-clip:text) so in-app browsers
+   like Snapchat cannot hide the greeting.
+   The landscape painting is the full-page background. All text sits on
+   solid white or near-white cards so it stays readable.
+   P3 (Advisor Toolbox): warm ochre/olive circular icon tiles and a toolbox mark. */
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap");
+
+html, html:root, html[data-bs-theme], :root {
+  color-scheme: only light !important;
+  --bg: #FAFAF8;
+  --surface: #FFFFFF;
+  --surface-2: #F4F3EF;
+  --line: #E7E5DF;
+  --line-2: #D9D6CE;
+  --fg: #161616;
+  --muted: #6B6A64;
+  --faint: #8A887F;
+  --acc1: #111111;
+  --acc2: #111111;
+  --acc: #111111;
+  --acc-rgb: 17,17,17;
+  --ok: #3F6B28;
+  --ok-bg: #EAF6D8;
+  --lime: #B6E04A;
+  --warn: #8A6A16;
+  --warn-bg: #F8EFC3;
+  --bad: #9A2E24;
+  --bad-bg: #F8D9D6;
+  --tblr-primary: #111;
+  --tblr-primary-rgb: 17,17,17;
+  --tblr-body-bg: #FAFAF8;
+  --tblr-body-color: #161616;
+  --tblr-secondary: #6B6A64;
+  --tblr-secondary-color: #6B6A64;
+  --tblr-muted: #6B6A64;
+  --tblr-border-color: #E7E5DF;
+  --tblr-font-sans-serif: "DM Sans", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  /* P3 icon theme: warm ochre / olive, circular tiles */
+  --tile-bg: #F3E6C8;
+  --tile-fg: #6B4F1A;
+  --tile-radius: 50%;
+  --mark-bg: #C17A3A;
+}
+
+html, body {
+  background-color: #3a5a32 !important;
+  background-image: none !important;
+  color: #161616 !important;
+  font-family: "DM Sans", system-ui, sans-serif;
+  color-scheme: only light !important;
+}
+body:before, body:after { content: none !important; display: none !important; }
+
+a { color: #1A1A1A; }
+
+/* Full-viewport landscape — no cream wash, no background-attachment:fixed
+   (that breaks in some in-app browsers). */
+.ll-paint {
+  position: fixed;
+  inset: 0;
+  width: auto;
+  height: auto;
+  margin: 0;
+  border-radius: 0;
+  background: #3a5a32 url("../assets/img/landscape.webp") center / cover no-repeat;
+  box-shadow: none;
+  z-index: -1;
+  pointer-events: none;
+}
+.ll-paint:after { display: none; }
+
+.app { background: transparent; position: relative; z-index: 2; }
+.main { position: relative; z-index: 1; }
+
+/* Sidebar is a solid white card over the painting */
+.side {
+  width: 244px;
+  flex: 0 0 244px;
+  background: #fff !important;
+  border: 1px solid #E7E5DF !important;
+  border-right: 1px solid #E7E5DF !important;
+  border-radius: 22px;
+  margin: 24px 8px 24px 24px;
+  height: calc(100vh - 48px);
+  box-shadow: 0 10px 30px rgba(20, 20, 10, .10);
+  z-index: 3;
+  color: #161616;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+.side .logo b, .side a.nl, .side .logo small, .side .sec, .side .mini, .side .mini b { color: inherit; }
+.side .logo b { color: #111; font-family: "Instrument Serif", Georgia, serif; font-weight: 400; font-size: 22px; letter-spacing: -0.02em; }
+.side .logo small { color: #6B6A64; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; }
+.side .sec { color: #8A887F; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; font-weight: 600; }
+.side a.nl { color: #3A3A36; }
+.side a.nl>.icon:first-child {
+  color: var(--tile-fg);
+  background: var(--tile-bg);
+  border-radius: var(--tile-radius);
+  width: 28px;
+  height: 28px;
+  padding: 6px;
+  box-sizing: border-box;
+  flex: 0 0 28px;
+}
+.side a.nl:hover { background: #F4F3EF; color: #111; }
+.side a.nl.active {
+  background: #111 !important;
+  color: #fff !important;
+  box-shadow: none;
+}
+.side a.nl.active>.icon:first-child {
+  color: #fff;
+  background: rgba(255,255,255,.16);
+}
+
+/* Custom SBDC lettermark (not official SBDC/SBA artwork).
+   Inline SVG wordmark, themed by --mark-bg (moss on P2, ochre on P3). */
+.side .logo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 8px 18px;
+}
+.side .logo .ll-wordmark {
+  width: 118px;
+  height: auto;
+  display: block;
+  color: #111;
+}
+.ll-wordmark .accent { fill: var(--mark-bg); }
+.mob-top .ll-brandblock {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0;
+  min-width: 0;
+}
+.mob-top .ll-wordmark {
+  width: 78px;
+  height: auto;
+  display: block;
+  color: #111;
+}
+.side .logo .tile, .mob-top .tile {
+  background: var(--mark-bg) !important;
+  color: #fff;
+  overflow: hidden;
+  border-radius: var(--tile-radius) !important;
+  box-shadow: none !important;
+}
+.side .logo .tile img, .mob-top .tile img { width: 100%; height: 100%; display: block; object-fit: cover; }
+.side .mini { background: #fff; border: 1px solid #E7E5DF; color: #6B6A64; }
+.side .mini b { color: #111; }
+.side .mini .mini-btn { color: #111; }
+
+.main { max-width: 1180px; padding: 16px 32px 72px; background: transparent; }
+
+/* Opaque white header card — never a frosted or semi-transparent bar */
+.topbar {
+  background: #fff !important;
+  border: 1px solid #E7E5DF !important;
+  border-bottom: 1px solid #E7E5DF !important;
+  border-radius: 18px !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  color: #161616;
+  margin: 8px 0 16px !important;
+  height: auto;
+  min-height: 56px;
+  padding: 10px 16px;
+  box-shadow: 0 8px 24px rgba(20, 20, 10, .05);
+  top: 12px;
+}
+.crumb { color: #6B6A64; font-size: 12px; letter-spacing: .04em; }
+.crumb b { color: #111; font-weight: 600; }
+.aipick label, .aipick .text-secondary { color: #6B6A64 !important; }
+
+.mob-top {
+  background: #fff !important;
+  border-bottom: 1px solid #E7E5DF;
+  color: #111 !important;
+  z-index: 900;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+.mob-top b { color: #111; font-family: "Instrument Serif", Georgia, serif; font-weight: 400; }
+
+/* Solid heading color — never background-clip:text */
+.page-head h1, .hello, h1, h2.sec-title, .card-title, h2, h3, h4,
+.ll-sechead h2, .tsec-head h2, .sh-t h2 {
+  background: none !important;
+  -webkit-background-clip: border-box !important;
+  background-clip: border-box !important;
+  -webkit-text-fill-color: #111 !important;
+  color: #111 !important;
+}
+.page-head h1, .hello, h1 {
+  font-family: "Instrument Serif", Georgia, "Times New Roman", serif !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.03em;
+  font-size: 40px;
+  line-height: 1.15;
+}
+.hello-sub, .page-head p, .sec-sub, .blk-sub, .tdesc, .sh-t p { color: #6B6A64 !important; }
+.namebtn { color: #3F6B28 !important; }
+
+/* White / near-white solid panels for every text block over the painting */
+.card, .opanel, .tcard, .tc, .tmodal, dialog.tmodal, dialog.sbdc-dlg,
+.side .mini, .page-head, .ll-sechead, .tsec-head, .tsec-head.stuck, #noMatch {
+  background: #fff !important;
+  border: 1px solid #E7E5DF !important;
+  border-radius: 18px !important;
+  box-shadow: 0 8px 24px rgba(20, 20, 10, .06) !important;
+  color: #161616 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+.page-head {
+  padding: 20px 24px;
+  margin-bottom: 20px;
+}
+.ll-sechead {
+  padding: 14px 20px;
+  margin: 20px 0 12px;
+}
+.ll-sechead .sec-title { margin: 0 0 2px; }
+.ll-sechead .sec-sub { margin: 0; }
+.tsec-head, .tsec-head.stuck {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding: 12px 16px !important;
+  top: 12px;
+}
+.tsec-head:after { display: none !important; }
+#noMatch { display: block; padding: 16px 20px; margin-bottom: 16px; }
+.card-header, .card-footer { background: transparent !important; border-color: #E7E5DF !important; }
+.card-title, .card-body, .blk-title, .sec-title, legend, b, strong, h2, h3, h4 { color: #111; }
+
+
+/* Small uppercase labels */
+.kpi .card-body>.d-flex:first-child>b,
+.kpi .lbl, .lbl,
+.form-label, .tm-sec legend, .tm-hint,
+[class*="eyebrow"] {
+  font-size: 11px !important;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: #8A887F !important;
+}
+.kpi .big, .big { color: #111 !important; font-family: "Instrument Serif", Georgia, serif; font-weight: 400; }
+
+/* Lime / green accents */
+.tc-dot.on, .dot[style*="35d28a"], .dot[style*="#35d28a"] { background: #B6E04A !important; }
+.side a.nl.active { position: relative; }
+.badge, .apill, .bg-green-lt, .bg-success, .badge.bg-green-lt {
+  border-radius: 999px !important;
+  font-weight: 600;
+}
+.bg-green-lt, .badge.bg-green-lt, .bg-success {
+  background: #EAF6D8 !important;
+  color: #2F5D1E !important;
+}
+.bg-yellow-lt, .bg-warning { background: #F8EFC3 !important; color: #8A6A16 !important; }
+.bg-red-lt, .bg-danger { background: #F8D9D6 !important; color: #9A2E24 !important; }
+.bg-blue-lt, .bg-primary-lt { background: #F4F3EF !important; color: #111 !important; }
+.bg-secondary-lt { background: #F4F3EF !important; color: #6B6A64 !important; }
+
+/* Themed icon tiles — sage/moss rounded squares (status colors stay semantic) */
+.tile.g-blue, .tile.g-purple, .tile.g-red, .tile.g-amber, .tile.g-green,
+.kpi .tile, .rowlink .ri, .ttile, .arow .ttile, .tsec-head .sh-ico, .tool .ttile {
+  background: var(--tile-bg) !important;
+  color: var(--tile-fg) !important;
+  box-shadow: none !important;
+  border-radius: var(--tile-radius) !important;
+}
+.tile.g-red { background: #F8D9D6 !important; color: #9A2E24 !important; }
+.tile.g-amber { background: #F8EFC3 !important; color: #8A6A16 !important; }
+.tile.g-green { background: #EAF6D8 !important; color: #2F5D1E !important; }
+.rowlink .ri { display: inline-grid; place-items: center; }
+
+/* Buttons: black pills */
+.btn { border-radius: 999px !important; font-weight: 600; }
+.btn-primary, .btn-primary:hover, .btn-primary:focus {
+  background: #111 !important;
+  border: 0 !important;
+  color: #fff !important;
+  box-shadow: none !important;
+}
+.btn-outline-primary, .btn-outline-secondary,
+.btn-outline-primary:hover, .btn-outline-secondary:hover {
+  background: #fff !important;
+  border: 1px solid #D9D6CE !important;
+  color: #111 !important;
+}
+.btn-ghost-secondary, .btn-ghost-primary { color: #3A3A36 !important; }
+.btn-ghost-secondary:hover, .btn-ghost-primary:hover { background: #F4F3EF !important; }
+.btn-outline-danger { border-color: #E7B8B3 !important; color: #9A2E24 !important; background: #fff !important; }
+
+/* Forms */
+.form-control, .form-select, textarea, input[type=text], input[type=email], input[type=url], input[type=date], input[type=time], input[type=search], input[type=number] {
+  background-color: #fff !important;
+  border: 1px solid #D9D6CE !important;
+  color: #161616 !important;
+  border-radius: 12px !important;
+  color-scheme: light !important;
+}
+.form-control:focus, .form-select:focus {
+  border-color: #111 !important;
+  box-shadow: 0 0 0 3px rgba(17,17,17,.08) !important;
+}
+.form-control[readonly] { background-color: #F4F3EF !important; }
+.form-selectgroup-label { background: #fff !important; border-color: #D9D6CE !important; color: #3A3A36 !important; border-radius: 999px !important; }
+.form-selectgroup-input:checked + .form-selectgroup-label {
+  background: #111 !important;
+  border-color: #111 !important;
+  color: #fff !important;
+}
+.form-check-input { background-color: #fff; border-color: #D9D6CE; }
+.form-check-input:checked { background-color: #111; border-color: #111; }
+
+.rows>li, .rowlink { color: #161616; border-top-color: #E7E5DF !important; }
+.rowlink:hover { background: #F4F3EF; color: #111; }
+.table { color: #161616; --tblr-table-color: #161616; }
+
+.qtext, .brief, .packet, pre {
+  background: #F4F3EF !important;
+  border: 1px solid #E7E5DF !important;
+  color: #161616 !important;
+}
+.route { background: #EAF6D8; color: #2F5D1E; }
+.checkfirst {
+  background: #F8EFC3 !important;
+  border: 1px solid #E7D9A0 !important;
+  color: #6B5420 !important;
+  border-radius: 14px !important;
+}
+.checkfirst b { color: #6B5420 !important; }
+
+.progress { background: #EDECE7 !important; }
+.progress-bar, .progress-bar.bar-blue { background: #111 !important; }
+.progress-bar.bg-green, .progress-bar.bg-success, .progress-bar.bar-green { background: #3F6B28 !important; }
+
+.nav-tabs .nav-link { color: #6B6A64; }
+.nav-tabs .nav-link.active { color: #111; border-bottom: 2px solid #111; background: transparent; }
+
+.tcard, .tc { background: #fff !important; }
+.tc-acts .btn { border-radius: 999px !important; }
+.secjump .chip {
+  background: #F4F3EF !important;
+  border: 1px solid #E7E5DF !important;
+  color: #111 !important;
+  border-radius: 999px !important;
+}
+.secjump .chip span { color: #6B6A64 !important; }
+.secjump .chip:hover { background: var(--tile-bg) !important; }
+
+/* Injected API chip + dialogs */
+.sbdc-chip {
+  background: #fff !important;
+  color: #161616 !important;
+  border: 1px solid #E7E5DF !important;
+  box-shadow: 0 8px 24px rgba(20,20,10,.08);
+}
+.sbdc-chip b { color: #2F5D1E !important; }
+.sbdc-dlg { background: #fff !important; color: #161616 !important; }
+.sbdc-dlg::backdrop { background: rgba(20, 20, 10, .35); }
+.sbdc-dlg input, .sbdc-dlg textarea, .sbdc-dlg pre {
+  background: #FAFAF8 !important;
+  color: #161616 !important;
+  border: 1px solid #D9D6CE !important;
+}
+.sbdc-err { color: #9A2E24 !important; }
+
+dialog.tmodal, .tmodal {
+  background: #fff !important;
+  color: #161616 !important;
+  border: 1px solid #E7E5DF !important;
+  border-radius: 20px !important;
+}
+.tm-err { color: #9A2E24; }
+
+.toast2 { background: #111 !important; color: #fff !important; border-radius: 999px; }
+
+/* Phone: painting stays the full-page background; every text block is a card */
+@media (max-width: 991px) {
+  .ll-paint {
+    position: fixed;
+    inset: 0;
+    width: auto;
+    height: auto;
+    margin: 0;
+    border-radius: 0;
+    display: block;
+    z-index: -1;
+  }
+  .app { flex-direction: column; background: transparent; }
+  .side {
+    margin: 0;
+    width: auto;
+    flex: none;
+    height: auto;
+    border-radius: 0;
+    box-shadow: none;
+    background: #fff !important;
+  }
+  .side.open {
+    background: #fff !important;
+    box-shadow: 0 0 40px rgba(20, 20, 10, .25);
+    border-radius: 0 22px 22px 0;
+  }
+  .main { padding: 8px 16px 48px; max-width: none; }
+  .page-head { padding: 16px 18px; }
+  .page-head h1, .hello, h1 { font-size: 32px; }
+  .topbar {
+    background: #fff !important;
+    margin: 8px 0 14px !important;
+    padding: 12px 14px;
+    position: static;
+  }
+  .mob-top { background: #fff !important; }
+  .card, .tcard, .tc { width: 100%; }
+  .tsec-head, .tsec-head.stuck { top: 0; }
+}
+@media print {
+  .ll-paint, .side, .mob-top, .topbar, .sbdc-chip { display: none !important; }
+  body, html { background: #fff !important; color: #111 !important; }
+  .hello, h1 { color: #111 !important; -webkit-text-fill-color: #111 !important; }
+  .page-head, .ll-sechead, .tsec-head, .card { box-shadow: none !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+
+/* Kill leftover flair dark panels */
+.side .mini {
+  background: #fff !important;
+  background-image: none !important;
+  color: #6B6A64 !important;
+  border: 1px solid #E7E5DF !important;
+  overflow: hidden;
+}
+.side .mini:before { display: none !important; }
+.side .mini, .side .mini b { color: #111 !important; }
+.side .mini .mini-btn {
+  background: #111 !important;
+  color: #fff !important;
+  border-radius: 999px !important;
+  text-align: center;
+}
+.side .mini .mini-btn:hover { background: #333 !important; color: #fff !important; text-decoration: none !important; }
+.pillnote {
+  background: #F4F3EF !important;
+  color: #3A3A36 !important;
+  border: 1px solid #E7E5DF;
+  border-radius: 12px !important;
+}
+
+/* Checkbox lists in tool setup (homework, loan readiness): dark text on the light modal */
+.tm-checks .form-check, .tm-checks .form-check-label { color: #161616; }
