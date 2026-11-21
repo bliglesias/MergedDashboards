@@ -8,14 +8,21 @@
   --muted: #6b6a66;
   --white: #ffffff;
 
-  /* One highlight color: US flag blue. Red only for crossed-out items */
+  /* Highlight color: US flag blue, for the selected card */
   --flag-blue: #0a3161;
   --flag-blue-hover: rgba(10, 49, 97, 0.06); /* faint blue, on hover */
-  --flag-red: #b31942;
   --radius: 10px;
 
-  /* Step bars on the blue (selected) card */
-  --bar-on-blue: rgba(255, 255, 255, 0.3);
+  /* Green only means "done" */
+  --done-green: #2e7d32;
+  --done-green-hover: #276b2b;   /* a little darker, on hover */
+
+  /* Red only means "answered, but not confirmed" (e.g. "Later", "Taken") */
+  --flag-red: #b31942;
+  --flag-red-hover: #9a1538;     /* a little darker, on hover */
+
+  /* Step bars on a filled (green, red or blue) card */
+  --bar-on-color: rgba(255, 255, 255, 0.3);
 }
 
 * {
@@ -51,6 +58,40 @@ body {
   margin: 0 0 16px;
   font-size: 1.4rem;
   color: var(--flag-blue);
+}
+
+/* "Fill from a saved client": label, drop-down and note on one line
+   (they wrap onto new lines when the screen is narrow) */
+.client-pick {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+}
+
+.client-pick label {
+  font-weight: 600;
+}
+
+.client-pick select {
+  min-width: 240px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--white);
+  font: inherit;
+}
+
+.client-pick select:focus {
+  outline: 2px solid var(--flag-blue);
+  border-color: transparent;
+}
+
+.client-pick-note {
+  font-size: 0.8rem;
+  color: var(--muted);
 }
 
 /* "Business startup progress" on the left, "3 of 10 done" on the right */
@@ -99,12 +140,6 @@ body {
   cursor: pointer;
 }
 
-/* Card buttons fill their whole list item */
-.step-grid > li > .card {
-  width: 100%;
-  height: 100%;
-}
-
 /* Hover: faint see-through blue over the whole card */
 .card:hover {
   background: var(--flag-blue-hover);
@@ -125,15 +160,25 @@ body {
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--flag-blue);
+  color: var(--muted);
 }
 
 .card-title {
   font-weight: 600;
 }
 
+/* Step card colors:
+   white = not started or now, solid green = done, solid blue = selected.
+   Blue is ONLY for the selected card, green is ONLY for done. */
+
+/* Hover on a step card: darker gray edge (not blue) */
+.step-card:hover {
+  background: var(--card);
+  border-color: var(--muted);
+}
+
 /* Progress bar at the top of each card.
-   Gray = not started, half blue = now, solid blue = done */
+   Gray = not started, half green = now, white on a filled card */
 .step-bar {
   display: block;
   height: 6px;
@@ -142,14 +187,30 @@ body {
 }
 
 .step-card.now .step-bar {
-  background: linear-gradient(90deg, var(--flag-blue) 50%, var(--border) 50%);
+  background: linear-gradient(90deg, var(--done-green) 50%, var(--border) 50%);
 }
 
-.step-card.done .step-bar {
-  background: var(--flag-blue);
+/* Each card button fills its whole list item, so cards line up */
+.step-grid > li > .card {
+  width: 100%;
+  height: 100%;
 }
 
-/* "Not started" / "Now" / "Done" under the title */
+/* The step's answer, e.g. "Approved · 23673486".
+   One line only: long answers end with "…" instead of stretching the card. */
+.step-value {
+  font-size: 0.8rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Nothing answered yet: take up no space */
+.step-value:empty {
+  display: none;
+}
+
+/* "Not started" / "Now" / "✓ Done" under the title */
 .step-status {
   margin-top: auto; /* pushes it to the bottom so all cards line up */
   font-size: 0.75rem;
@@ -157,27 +218,66 @@ body {
   color: var(--muted);
 }
 
-.step-card.now .step-status,
-.step-card.done .step-status {
-  color: var(--flag-blue);
+.step-card.now .step-status {
+  color: var(--text);
 }
 
-/* On the blue selected card: white text, see-through white bars */
-.card.active .card-type,
-.card.active .step-status {
+/* Done: solid green card with white text */
+.step-card.done {
+  background: var(--done-green);
+  border-color: var(--done-green);
+  color: var(--white);
+}
+
+.step-card.done:hover {
+  background: var(--done-green-hover);
+  border-color: var(--done-green-hover);
+}
+
+/* Not confirmed: solid red card with white text */
+.step-card.flagged {
+  background: var(--flag-red);
+  border-color: var(--flag-red);
+  color: var(--white);
+}
+
+.step-card.flagged:hover {
+  background: var(--flag-red-hover);
+  border-color: var(--flag-red-hover);
+}
+
+/* Selected: solid blue card with white text.
+   Comes after the green and red rules so the selected card is always blue. */
+.step-card.active,
+.step-card.active:hover {
+  background: var(--flag-blue);
+  border-color: var(--flag-blue);
+  color: var(--white);
+}
+
+/* On a filled card (green, red or blue): near-white small text */
+.step-card.done .card-type,
+.step-card.done .step-status,
+.step-card.flagged .card-type,
+.step-card.flagged .step-status,
+.step-card.active .card-type,
+.step-card.active .step-status {
   color: rgba(255, 255, 255, 0.9);
 }
 
-.card.active .step-bar {
-  background: var(--bar-on-blue);
+/* On a filled card: see-through white bar, solid white when done */
+.step-card.done .step-bar,
+.step-card.flagged .step-bar,
+.step-card.active .step-bar {
+  background: var(--bar-on-color);
 }
 
-.card.active.now .step-bar {
-  background: linear-gradient(90deg, var(--white) 50%, var(--bar-on-blue) 50%);
-}
-
-.card.active.done .step-bar {
+.step-card.done .step-bar {
   background: var(--white);
+}
+
+.step-card.active.now .step-bar {
+  background: linear-gradient(90deg, var(--white) 50%, var(--bar-on-color) 50%);
 }
 
 /* ===== Sidebar ===== */
@@ -291,12 +391,13 @@ body {
   white-space: nowrap;
 }
 
-/* Done steps: title faded and crossed out with a red line */
-.step-detail.done .step-summary-title {
-  color: var(--muted);
-  text-decoration: line-through;
-  text-decoration-color: var(--flag-red);
-  text-decoration-thickness: 2px;
+/* "✓ Done" in green and "! Not confirmed" in red, to match the cards */
+.step-detail.done .step-summary-status {
+  color: var(--done-green);
+}
+
+.step-detail.flagged .step-summary-status {
+  color: var(--flag-red);
 }
 
 /* Inside an open drop-down: what to do, link button, checkbox */
@@ -311,6 +412,50 @@ body {
 .step-todo {
   margin: 0;
   line-height: 1.5;
+}
+
+/* The question and follow-up box fill the drop-down's width */
+.step-question,
+.step-more {
+  align-self: stretch;
+}
+
+/* [hidden] normally hides things, but display rules can override it.
+   This makes sure a hidden follow-up box really disappears. */
+.step-more[hidden] {
+  display: none;
+}
+
+/* Empty spots (e.g. step 1 has no question) take up no space */
+.step-question:empty {
+  display: none;
+}
+
+/* Form fields: label on top, box below */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.field input,
+.field select {
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--white);
+  font: inherit;
+}
+
+.field input:focus,
+.field select:focus {
+  outline: 2px solid var(--flag-blue);
+  border-color: transparent;
 }
 
 /* Plain blue button (also used for the <a> link buttons) */
@@ -388,15 +533,6 @@ body {
   margin-bottom: 12px;
 }
 
-/* Small uppercase section label, e.g. "STARTUP PROGRESS" */
-.kv-heading {
-  margin: 0 0 8px;
-  font-size: 0.7rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
 
 /* Keeps the summary's line breaks; wraps long lines */
 .output-text {

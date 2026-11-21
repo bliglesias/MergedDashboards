@@ -18,6 +18,22 @@
     <section class="actions-top" aria-labelledby="progress-title">
       <h1 class="page-title">Intake Assistant</h1>
 
+      <!-- Pick a client saved on the Toolbox's Clients page. Their answers
+           (LLC, EIN, TPT, website) tick the matching steps. JS fills the list. -->
+      <div class="client-pick">
+        <label for="client-pick">Fill from a saved client</label>
+        <select id="client-pick">
+          <option value="">Choose a client</option>
+        </select>
+        <span class="client-pick-note" id="client-pick-note"></span>
+      </div>
+
+      <!-- Blueprint for one <option> in a menu (clients, and the step
+           menus like "Entity type") -->
+      <template id="option-template">
+        <option></option>
+      </template>
+
       <!-- Title on the left, "3 of 10 done" on the right -->
       <div class="page-progress-text">
         <h2 class="page-progress-title" id="progress-title">Business startup progress</h2>
@@ -34,10 +50,14 @@
            no class = not started, active = the step open in the middle. -->
       <template id="step-card-template">
         <li>
+          <!-- The whole card is a button: clicking it opens this step
+               in the middle box -->
           <button class="card step-card" type="button">
             <span class="step-bar"></span>
             <span class="card-type step-number"></span>
             <span class="card-title step-title"></span>
+            <!-- The step's answer, e.g. "Approved · 23673486" (empty until answered) -->
+            <span class="step-value"></span>
             <span class="step-status"></span>
           </button>
         </li>
@@ -104,23 +124,45 @@
                    reach back into this page. -->
               <a class="btn step-open" href="" target="_blank" rel="noopener"></a>
 
-              <label class="checklist-item step-done">
-                <input type="checkbox">
-                <span>Mark this step done</span>
-              </label>
+              <!-- Empty spots that JS fills from the templates below:
+                   .step-question: the first question (a menu), e.g. "Filed yet?"
+                   .step-more:     the follow-up box, e.g. "Entity ID".
+                                   Only shown for some answers. -->
+              <div class="step-question"></div>
+              <div class="step-more"></div>
             </div>
           </details>
+        </template>
+
+        <!-- Blueprint for a typing field (label on top, box below).
+             JS can change type="text" to "date".
+             autocomplete="off": the browser won't suggest past entries. -->
+        <template id="text-field-template">
+          <div class="field">
+            <label></label>
+            <input type="text" autocomplete="off">
+          </div>
+        </template>
+
+        <!-- Blueprint for a menu field. JS adds one <option> per answer
+             after the empty "Choose one". -->
+        <template id="select-field-template">
+          <div class="field">
+            <label></label>
+            <select>
+              <option value="">Choose one</option>
+            </select>
+          </div>
         </template>
       </section>
     </main>
 
-    <!-- ===== RIGHT: output panel ===== -->
+    <!-- ===== RIGHT: summary panel ===== -->
     <aside class="output">
-      <h2 class="section-title">Output</h2>
+      <h2 class="section-title">In summary</h2>
 
-      <!-- Progress summary, rebuilt by JS every time a step is ticked -->
+      <!-- One line per step's field, rebuilt by JS on every change -->
       <div class="output-box">
-        <h3 class="kv-heading">Startup progress</h3>
         <pre class="output-text" id="progress-summary"></pre>
       </div>
     </aside>
