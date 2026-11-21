@@ -266,3 +266,56 @@ test("leaving the page warns only when something was entered", async () => {
   assert.deepEqual(dialogs, ["beforeunload"], "should show the Leave site? box");
   assert.equal(await value("#more-1"), "Sunny Day Tacos", "Stay keeps the typing");
 });
+
+// ----- Steps that don't fit every client -----
+
+test("a sole proprietorship marks steps 4 and 6 'Not needed', and LLC clears them", async () => {
+  await openFreshPage();
+  await pick("#question-3", "Sole proprietorship (no ACC filing)");
+  assert.equal(await value("#question-4"), "Not needed (no ACC filing)");
+  assert.equal(await value("#question-6"), "Not needed (no ACC filing)");
+  assert.equal(await cardState(4), "done");
+  assert.equal(await cardState(6), "done");
+  assert.equal(await value("#question-5"), "", "step 5 is left for them to choose");
+
+  await pick("#question-3", "LLC");
+  assert.equal(await value("#question-4"), "", "switching to LLC clears the automatic answer");
+  assert.equal(await cardState(6), "");
+});
+
+test("step 6: 'Rejected' is red", async () => {
+  await openFreshPage();
+  await pick("#question-6", "Rejected, fix and resubmit");
+  assert.equal(await cardState(6), "flagged");
+});
+
+test("step 9: 'Not needed (uses SSN)' is green", async () => {
+  await openFreshPage();
+  await pick("#question-9", "Not needed (uses SSN)");
+  assert.equal(await cardState(9), "done");
+});
+
+test("step 5: a name reservation turns red once its end date has passed", async () => {
+  await openFreshPage();
+  await click("#step-grid li:nth-child(5) .step-card");
+  await pick("#question-5", "Reserved the name");
+
+  // A date 30 days from now: still green, and says how long is left
+  await inPage(`(() => {
+    const box = document.querySelector("#more-5");
+    const d = new Date(); d.setDate(d.getDate() + 30);
+    box.value = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+    box.dispatchEvent(new Event("input", { bubbles: true }));
+  })()`);
+  assert.equal(await cardState(5), "done");
+  assert.match(await inPage(`document.querySelectorAll(".step-value")[4].textContent`), /\(30 days left\)/);
+
+  // A date in the past: red, marked expired
+  await inPage(`(() => {
+    const box = document.querySelector("#more-5");
+    box.value = "2020-01-01";
+    box.dispatchEvent(new Event("input", { bubbles: true }));
+  })()`);
+  assert.equal(await cardState(5), "flagged");
+  assert.match(await text("#progress-summary"), /2020-01-01 \(expired\) \(not confirmed\)/);
+});

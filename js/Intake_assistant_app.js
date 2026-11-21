@@ -21,6 +21,17 @@
 //   `showWhen`: the answers that make it appear. Without `question`,
 //   it's always shown and typing in it finishes the step.
 //   `type`: "text" (default) or "date".
+//   `expires` (dates only): once the date has passed, the step isn't done.
+
+// Sole proprietorships and general partnerships don't file with the ACC,
+// so steps 4, 5 and 6 can be answered with this.
+const NO_ACC = "Not needed (no ACC filing)";
+
+// Step 3 answers that mean "no ACC filing". Picking one fills steps 4 and 6
+// with NO_ACC (step 5 is left alone: they may still want a trade name).
+const NO_ACC_TYPES = ["Sole proprietorship (no ACC filing)", "General partnership (no ACC filing)"];
+const NO_ACC_STEPS = [4, 6];
+
 const steps = [
   {
     title: "Choose A Name",
@@ -75,8 +86,8 @@ const steps = [
     linkText: "ACC: entity search",
     question: {
       label: "Is the name available?",
-      options: ["Available", "Taken, pick another name"],
-      done: ["Available"], // a taken name means they still need a new one
+      options: ["Available", "Taken, pick another name", NO_ACC],
+      done: ["Available", NO_ACC], // a taken name means they still need a new one
     },
   },
   {
@@ -87,10 +98,11 @@ const steps = [
     linkText: "Arizona Business Center (ACC online filing)",
     question: {
       label: "What did they choose?",
-      options: ["Reserved the name", "Registered a trade name", "Formed the entity"],
-      done: ["Reserved the name", "Registered a trade name", "Formed the entity"],
+      options: ["Reserved the name", "Registered a trade name", "Formed the entity", NO_ACC],
+      done: ["Reserved the name", "Registered a trade name", "Formed the entity", NO_ACC],
     },
-    more: { label: "Reservation ends", type: "date", showWhen: ["Reserved the name"] },
+    // expires: once this date has passed, the step turns red again
+    more: { label: "Reservation ends", type: "date", showWhen: ["Reserved the name"], expires: true },
   },
   {
     title: "File with the Arizona Corporation Commission Corporations Division",
@@ -100,8 +112,8 @@ const steps = [
     linkText: "Arizona Business Center (ACC online filing)",
     question: {
       label: "Filed with the ACC?",
-      options: ["Not yet", "Submitted, waiting", "Approved"],
-      done: ["Approved"],
+      options: ["Not yet", "Submitted, waiting", "Rejected, fix and resubmit", "Approved", NO_ACC],
+      done: ["Approved", NO_ACC],
     },
     more: { label: "Entity ID", placeholder: "e.g. 23673486", showWhen: ["Approved"] },
   },
@@ -129,7 +141,12 @@ const steps = [
       options: ["Yes", "Not yet", "Not needed", "Not sure"],
       done: ["Yes", "Not needed"],
     },
-    more: { label: "City and license number", placeholder: "e.g. Tempe, #12345", showWhen: ["Yes"] },
+    // One box for every city: several are separated with ";"
+    more: {
+      label: "City and license number (separate several with ;)",
+      placeholder: "e.g. Tempe #12345; Mesa #67890",
+      showWhen: ["Yes"],
+    },
   },
   {
     title: "Federal EIN or TIN - Internal Revenue Service",
@@ -139,8 +156,9 @@ const steps = [
     linkText: "IRS: get an EIN",
     question: {
       label: "Have an EIN?",
-      options: ["Yes", "Not yet"],
-      done: ["Yes"],
+      // Some sole proprietors with no employees use their Social Security number
+      options: ["Yes", "Not yet", "Not needed (uses SSN)"],
+      done: ["Yes", "Not needed (uses SSN)"],
     },
     more: { label: "EIN", placeholder: "e.g. 12-3456789", showWhen: ["Yes"] },
   },
@@ -202,12 +220,37 @@ function showsMore(index) {
   return step.more.showWhen.includes(session.answers[index]);
 }
 
-// A step is done when its first answer is a "done" answer.
+// Days from today until a "YYYY-MM-DD" date (negative = already passed).
+// Returns null for an empty or broken date.
+function daysUntil(dateText) {
+  const parts = dateText.split("-").map(Number); // "2026-03-05" -> [2026, 3, 5]
+  if (parts.length !== 3 || parts.some(isNaN)) {
+    return null;
+  }
+  const date = new Date(parts[0], parts[1] - 1, parts[2]); // months count from 0
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // compare whole days, not times
+  const oneDay = 24 * 60 * 60 * 1000;
+  return Math.round((date - today) / oneDay);
+}
+
+// Has this step's follow-up date (e.g. the name reservation) passed?
+function isExpired(index) {
+  const more = steps[index].more;
+  if (!more || !more.expires || !showsMore(index)) {
+    return false;
+  }
+  const days = daysUntil(session.details[index]);
+  return days !== null && days < 0;
+}
+
+// A step is done when its first answer is a "done" answer
+// (and its date, if it has one that expires, hasn't passed).
 // Steps with only a box (step 1) are done once something is typed.
 function isDone(index) {
   const step = steps[index];
   if (step.question) {
-    return step.question.done.includes(session.answers[index]);
+    return step.question.done.includes(session.answers[index]) && !isExpired(index);
   }
   return session.details[index] !== "";
 }
@@ -220,7 +263,18 @@ function answerText(index) {
     parts.push(session.answers[index]);
   }
   if (showsMore(index) && session.details[index] !== "") {
-    parts.push(session.details[index]);
+    let detail = session.details[index];
+
+    // Dates that expire also say how long is left
+    if (steps[index].more.expires) {
+      const days = daysUntil(detail);
+      if (days !== null && days < 0) {
+        detail += " (expired)";
+      } else if (days !== null) {
+        detail += " (" + days + " days left)";
+      }
+    }
+    parts.push(detail);
   }
   return parts.join(" · ");
 }
@@ -346,6 +400,11 @@ function renderStepDetails() {
 
       menu.addEventListener("input", function () {
         session.answers[index] = menu.value;
+
+        // Step 3 (entity type) can fill or clear steps 4 and 6
+        if (index === 2) {
+          applyEntityType(menu.value);
+        }
         updatePage();
       });
     }
@@ -380,6 +439,26 @@ function renderStepDetails() {
     });
 
     list.appendChild(copy);
+  });
+}
+
+// Sole proprietorships and partnerships don't file with the ACC.
+// Picking one of them answers steps 4 and 6 with "Not needed (no ACC
+// filing)", but only if those steps are still blank. Switching back to
+// an entity that files (e.g. LLC) clears those automatic answers.
+function applyEntityType(entityType) {
+  const noFiling = NO_ACC_TYPES.includes(entityType);
+
+  NO_ACC_STEPS.forEach(function (stepNumber) {
+    const index = stepNumber - 1;
+    const menu = document.querySelector("#question-" + stepNumber);
+
+    if (noFiling && session.answers[index] === "") {
+      session.answers[index] = NO_ACC;
+    } else if (!noFiling && session.answers[index] === NO_ACC) {
+      session.answers[index] = "";
+    }
+    menu.value = session.answers[index];
   });
 }
 
