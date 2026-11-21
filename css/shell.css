@@ -1,0 +1,280 @@
+/* Advisor Toolbox shell: area themes, sidebar groups, Home cards, Automations filter, phone pills and bottom bar.
+   Loaded after leedlime.css. Light only. Each area sets only its icon tile and mark colors:
+   Client Intake = moss rounded squares, Toolbox = ochre circles, shared pages = neutral. */
+
+[data-space="shared"] {
+  --tile-bg: #F4F3EF;
+  --tile-fg: #3A3A36;
+  --tile-radius: 10px;
+  --mark-bg: #B6E04A;
+}
+[data-space="intake"] {
+  --tile-bg: #E7F0D8;
+  --tile-fg: #3F6B28;
+  --tile-radius: 12px;
+  --mark-bg: #3F6B28;
+  --mark-radius: 3px;
+}
+[data-space="toolbox"] {
+  --tile-bg: #F3E6C8;
+  --tile-fg: #6B4F1A;
+  --tile-radius: 50%;
+  --mark-bg: #C17A3A;
+  --mark-radius: 50%;
+}
+
+/* Area marks: moss rounded square, ochre circle (colors come from the nearest [data-space]) */
+.space-mark {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  flex: 0 0 10px;
+  margin-right: 8px;
+  border-radius: var(--mark-radius, 3px);
+  background: var(--mark-bg);
+  vertical-align: middle;
+}
+
+/* Sidebar: area groups */
+.side .sec.space-sec {
+  display: flex;
+  align-items: center;
+  color: #3A3A36;
+  margin-top: 18px;
+}
+.side .nav-group a.nl { padding-left: 14px; }
+.side a.nl[data-nav="home"] { margin-top: 4px; }
+.side .mini .progress { background: #EDECE7 !important; }
+
+/* Only show the search box / AI picker / phone badge for the area you are in */
+.topbar [data-for], .mob-top .mob-stat { display: none !important; }
+body[data-space="toolbox"] .topbar [data-for="toolbox"],
+body[data-space="intake"] .topbar [data-for="intake"],
+body[data-space="shared"] .topbar .topsearch[data-for="toolbox"] { display: flex !important; }
+body[data-space="intake"] .topbar .topsearch[data-for="intake"],
+body[data-space="toolbox"] .topbar .topsearch[data-for="toolbox"],
+body[data-space="shared"] .topbar .topsearch[data-for="toolbox"] { display: block !important; }
+body[data-space="intake"] .mob-top #mobReady,
+body:not([data-space="intake"]) .mob-top #mobDue { display: inline-flex !important; }
+
+/* Home: one card per area */
+.space-card .card-body { display: flex; flex-direction: column; }
+.space-card .card-title { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; font-size: 26px !important; letter-spacing: -0.02em; }
+.space-card .space-sub { color: #6B6A64; margin: 10px 0 14px; }
+.space-card .space-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  border-top: 1px solid #E7E5DF;
+  padding-top: 14px;
+  margin-top: auto;
+}
+.space-card .space-stats .big { font-size: 30px; line-height: 1.1; }
+.space-card .space-stats .lbl { margin-top: 2px; }
+.space-card { border-top: 4px solid var(--mark-bg) !important; }
+
+/* Area tag on each automation row */
+.area-tag {
+  background: var(--tile-bg) !important;
+  color: var(--tile-fg) !important;
+  font-size: 11px;
+  margin: 2px 0 4px;
+}
+.arow .amain .card-title { display: inline; margin-right: 8px; }
+
+/* Automations filter chips */
+.afilter { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; }
+.afilter .chip { display: inline-flex; align-items: center; font: inherit; font-size: 13px; padding: 6px 14px; cursor: pointer; }
+.afilter .chip[aria-pressed="true"] { background: #111 !important; border-color: #111 !important; color: #fff !important; }
+#automations[data-filter="intake"] [data-area="toolbox"],
+#automations[data-filter="toolbox"] [data-area="intake"] { display: none !important; }
+
+/* Phone: area pills, page pills and a bottom bar. All solid white, never over the painting. */
+.mob-pills, .mob-sub, .mob-tabbar { display: none; }
+@media (max-width: 991px) {
+  .mob-top { flex-wrap: wrap; row-gap: 8px; }
+  .mob-top .mob-stat { margin-left: auto; }
+  .mob-pills, .mob-sub {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+  .mob-sub[hidden] { display: none; }
+  .mob-pills::-webkit-scrollbar, .mob-sub::-webkit-scrollbar { display: none; }
+  .mob-pills .mpill, .mob-sub .msub {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    text-decoration: none;
+    border-radius: 999px;
+    border: 1px solid #D9D6CE;
+    background: #fff;
+    color: #161616;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 6px 14px;
+  }
+  .mob-sub .msub { font-size: 13px; font-weight: 500; padding: 4px 12px; background: #F4F3EF; border-color: #E7E5DF; color: #3A3A36; }
+  .mob-pills .mpill.active, .mob-sub .msub.active { background: #111; border-color: #111; color: #fff; }
+  .mob-pills .mpill.active .space-mark { box-shadow: 0 0 0 2px #fff; }
+
+  .mob-tabbar {
+    display: flex;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 950;
+    background: #fff;
+    border-top: 1px solid #E7E5DF;
+    padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
+    box-shadow: 0 -6px 20px rgba(20, 20, 10, .08);
+  }
+  .mob-tabbar a {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 4px 2px;
+    border-radius: 12px;
+    color: #6B6A64;
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .mob-tabbar a .icon { width: 22px; height: 22px; }
+  .mob-tabbar a span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .mob-tabbar a.active { color: #111; background: #F4F3EF; }
+  .main { padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px)) !important; }
+  .sbdc-chip { bottom: calc(76px + env(safe-area-inset-bottom, 0px)) !important; }
+  .toast2 { bottom: calc(84px + env(safe-area-inset-bottom, 0px)) !important; }
+  .space-card .space-stats .big { font-size: 24px; }
+}
+
+/* In-app browsers (Snapchat, Instagram): keep every heading a real dark color */
+.hello, .page-head h1, .space-card .card-title, .ll-sechead h2 {
+  color: #111 !important;
+  -webkit-text-fill-color: #111 !important;
+}
+
+@media print {
+  .mob-tabbar, .mob-pills, .mob-sub { display: none !important; }
+}
+
+/* Readiness ring: light track and white center, even before anything is entered */
+.ring {
+  background: conic-gradient(from -90deg, #3F6B28 0deg, #3F6B28 calc(var(--p, 0) * 3.6deg), #E7E5DF calc(var(--p, 0) * 3.6deg)) !important;
+  filter: none !important;
+}
+.ring:after { background: #fff !important; box-shadow: inset 0 0 0 1px #E7E5DF !important; }
+
+/* Server button sits in the top bar (desktop) or phone top bar, never floating over cards */
+.sbdc-chip.docked {
+  position: static !important;
+  flex: 0 0 auto;
+  white-space: nowrap;
+  box-shadow: none !important;
+  font-weight: 500;
+}
+.topbar .sbdc-chip.docked { margin-left: auto; }
+.mob-top .sbdc-chip.docked { margin-left: auto; padding: 4px 10px; font-size: 12px; max-width: 56vw; overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 991px) {
+  body[data-space] .mob-top #mobReady, body[data-space] .mob-top #mobDue { display: none !important; }
+}
+
+/* Settings: things an advisor sets once (which AI tool opens) live here, not in the top bar. */
+.side .side-settings { margin-top: 8px; }
+.side .side-settings summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+.side .side-settings summary::-webkit-details-marker { display: none; }
+.side .side-settings summary::after { content: ""; width: 7px; height: 7px; border-right: 2px solid #8A887F; border-bottom: 2px solid #8A887F; transform: rotate(45deg); margin-right: 3px; }
+.side .side-settings[open] summary::after { transform: rotate(-135deg); }
+.side .side-settings .form-select { width: 100%; }
+
+/* Toolbox: "My tools / All tools". The chips only appear once a tool is set up.
+   Needs :has(); a browser without it shows every tool and no chips, as before. */
+.tview { display: none; margin-top: 10px; flex-wrap: wrap; gap: 8px; }
+#toolbox:has(.tcard[data-set="1"]) .tview { display: flex; }
+.tview .chip { display: inline-flex; align-items: center; font: inherit; font-size: 13px; padding: 6px 14px; cursor: pointer; }
+.tview .chip[aria-pressed="true"] { background: #111 !important; border-color: #111 !important; color: #fff !important; }
+#toolbox.only-mine:has(.tcard[data-set="1"]) .tcell:has(> .tcard[data-set="0"]),
+#toolbox.only-mine:has(.tcard[data-set="1"]) .tsec:not(:has(.tcard[data-set="1"])) { display: none; }
+
+/* Client intake is one sidebar link. Its four pages are tabs at the top of the page. */
+.subtabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 16px; }
+.subtabs[hidden] { display: none; }
+.subtabs .chip { display: inline-flex; align-items: center; font-size: 13px; padding: 6px 14px; text-decoration: none; background: #fff; border: 1px solid #E7E5DF; border-radius: 999px; color: #3A3A36; }
+.subtabs .chip:hover { border-color: #111; color: #111; }
+.subtabs .chip[aria-current="page"] { background: #111; border-color: #111; color: #fff; }
+/* Intake progress in the sidebar only matters while the advisor is in Client intake. */
+body:not([data-space="intake"]) .side .intake-only { display: none; }
+
+/* Less repeated on screen. Nothing is removed: each of these is still one click or one address away. */
+/* Tools page: the section chips already show how many tools each section has. */
+.sh-count:not(:has(b)) { display: none; }
+/* A tool that is not set up has no status and no outputs to link to, so its footer strip stays away. */
+.tcard[data-set="0"] .tc-foot:not(.live) { display: none; }
+/* Sidebar: with Overview folded away the Toolbox group is one link, so it sits flush like the others. */
+.side .nav-group[data-area="toolbox"] .sec { display: none; }
+.side .nav-group[data-area="toolbox"] a.nl { padding-left: 10px; }
+/* Fold-away rows, such as the example bots. */
+details.fold { margin-top: 16px; }
+details.fold > summary { display: flex; align-items: center; gap: 10px; cursor: pointer; list-style: none; background: #fff; border: 1px solid #E7E5DF; border-radius: 18px; padding: 14px 18px; font-weight: 600; color: #111; }
+details.fold > summary::-webkit-details-marker { display: none; }
+details.fold > summary::after { content: ""; margin-left: auto; width: 8px; height: 8px; border-right: 2px solid #111; border-bottom: 2px solid #111; transform: translateY(-2px) rotate(45deg); }
+details.fold[open] > summary::after { transform: translateY(2px) rotate(-135deg); }
+details.fold > summary:hover { border-color: #111; }
+
+/* Clients page: grade ring, list rows, the breakdown */
+.gring{--p:0;--c:var(--muted);flex:none;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--c) calc(var(--p)*1%),var(--line-2) 0);position:relative}
+.gring::before{content:"";position:absolute;inset:5px;border-radius:50%;background:var(--surface)}
+.gring b{position:relative;font-size:14px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--fg)}
+.gring.big{width:104px;height:104px}.gring.big::before{inset:9px}.gring.big b{font-size:26px}
+.gring[data-tone=a],.cl-band[data-tone=a]{--c:#2f9e5b}.gring[data-tone=b],.cl-band[data-tone=b]{--c:#6a9a2f}
+.gring[data-tone=c],.cl-band[data-tone=c]{--c:#c98a1b}.gring[data-tone=d],.cl-band[data-tone=d]{--c:#c1583a}
+.cl-band{background:color-mix(in srgb,var(--c,var(--muted)) 16%,transparent);color:var(--fg);border:1px solid color-mix(in srgb,var(--c,var(--muted)) 45%,transparent)}
+.cl-list>li{padding:0}.cl-row{display:flex;align-items:center;gap:var(--s3);padding:14px var(--s3);width:100%;color:var(--fg);text-decoration:none;min-height:64px}
+.cl-row:hover{background:var(--surface-2)}.cl-who{display:grid;min-width:0;flex:1}.cl-who b{font-size:16px}.cl-who span{color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cl-meta{display:grid;justify-items:end;gap:4px;color:var(--muted);font-size:13px;text-align:right}
+.cl-search{flex:1;min-width:200px;max-width:340px}
+.cl-empty h2,.cl-topt h2{font-size:20px;margin:0 0 6px}.cl-empty p{color:var(--muted);max-width:560px}
+.cl-back{margin:0 0 var(--s2)}.cl-back a{display:inline-flex;align-items:center;gap:6px}.cl-back .icon{transform:rotate(180deg);width:16px;height:16px}
+.cl-top{display:flex;gap:var(--s3);align-items:center;flex-wrap:wrap}.cl-topt p{margin:0 0 6px;color:var(--muted)}
+.cl-secs{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:var(--s3);padding:0 var(--s3) var(--s3)}
+.cl-sec span{color:var(--muted);font-variant-numeric:tabular-nums}.cl-bar{height:8px;border-radius:99px;background:var(--line-2);margin-top:6px;overflow:hidden}.cl-bar span{display:block;height:100%;background:#6a9a2f;border-radius:99px}
+.cl-raise{margin:0;padding-left:20px;display:grid;gap:10px}
+.cl-items,.cl-sess{list-style:none;margin:0;padding:0}.cl-items li{display:grid;grid-template-columns:1fr auto 90px;gap:var(--s2);padding:8px 0;border-top:1px solid var(--line)}
+.cl-items li:first-child{border-top:0}.cl-items b{text-align:right;font-variant-numeric:tabular-nums}.cl-items li[data-known=false] b{color:var(--muted);font-weight:500}
+.cl-facts{display:grid;grid-template-columns:minmax(120px,200px) 1fr;gap:6px var(--s3);margin:0}.cl-facts dt{color:var(--muted);font-weight:500}.cl-facts dd{margin:0}
+.cl-sess li{padding:4px 0}
+@media (max-width:640px){.cl-meta{display:none}.cl-items li{grid-template-columns:1fr 80px}.cl-items li span:nth-child(2){display:none}.cl-facts{grid-template-columns:1fr}.cl-facts dd{margin-bottom:6px}}
+.cl-row:hover,.cl-row:hover *{text-decoration:none}
+/* ---------- Condensed: things that belong together share one card ----------
+   A heading used to be its own white card sitting above the card it described. Now the two are joined:
+   same words, same order, one card. Nothing is hidden by these rules. */
+.ll-sechead:has(+ .card) { margin-bottom: 0 !important; border-bottom: 0 !important; border-radius: 18px 18px 0 0 !important; box-shadow: none !important; padding-bottom: 4px; }
+.ll-sechead + .card { margin-top: 0 !important; border-top: 0 !important; border-radius: 0 0 18px 18px !important; }
+/* Home: the greeting and the Toolbox summary are one card. */
+#home > .page-head { margin-bottom: 0 !important; border-bottom: 0 !important; border-radius: 18px 18px 0 0 !important; box-shadow: none !important; padding-bottom: 0; }
+#home > .page-head + .row-cards { margin-top: 0 !important; }
+#home > .page-head + .row-cards > [class*="col"] { margin-top: 0 !important; padding-top: 0 !important; }
+#home > .page-head + .row-cards .space-card { border-top: 0 !important; border-radius: 0 0 18px 18px !important; }
+#home > .page-head + .row-cards .space-card .card-body { padding-top: 14px; }
+/* Outputs: while the counters are empty, the page heading and the list are one card. */
+#outputs > .page-head:has(+ #oKpis[hidden]) { margin-bottom: 0 !important; border-bottom: 0 !important; border-radius: 18px 18px 0 0 !important; box-shadow: none !important; }
+#outputs > #oKpis[hidden] + .opanel { margin-top: 0 !important; border-top: 0 !important; border-radius: 0 0 18px 18px !important; }
+/* Automations: while the counters are empty, the page heading and "Your Toolbox bots" are one card. */
+#automations > .page-head:has(+ #aKpis[hidden]) { margin-bottom: 0 !important; border-bottom: 0 !important; border-radius: 18px 18px 0 0 !important; box-shadow: none !important; }
+#automations > #aKpis[hidden] + .abots > .ll-sechead { margin-top: 0 !important; border-top: 0 !important; border-radius: 0 !important; }
+#home > .page-head { padding-bottom: 18px; }
+#home > .page-head + .row-cards .space-card { border-top: 1px solid #EFEDE7 !important; }
+#home > .page-head + .row-cards .space-card .card-body { padding-top: 18px; }
+#home .ll-sechead[hidden] + .row-cards { margin-top: 20px; }
+
+.fs-now{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-height:44px}.fs-now #fsName{font-weight:500}
