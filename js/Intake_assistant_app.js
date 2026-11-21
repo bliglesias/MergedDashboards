@@ -236,6 +236,18 @@ function currentStep() {
   return -1;
 }
 
+// Has anything been entered? (any answer picked or anything typed)
+// Used to warn before the page or the client is changed.
+function hasWork() {
+  const anyAnswer = session.answers.some(function (answer) {
+    return answer !== "";
+  });
+  const anyDetail = session.details.some(function (detail) {
+    return detail !== "";
+  });
+  return anyAnswer || anyDetail;
+}
+
 // How many steps are done
 function doneCount() {
   let count = 0;
@@ -427,7 +439,20 @@ function setupClientPicker() {
     select.appendChild(copy);
   });
 
+  // Remember the last choice, so it can be put back if the user cancels
+  let lastChoice = select.value;
+
   select.addEventListener("change", function () {
+    // Switching clients clears everything: ask first if there's work
+    if (hasWork()) {
+      const ok = confirm("Switching clients clears what you've entered for every step. Continue?");
+      if (!ok) {
+        select.value = lastChoice; // put the menu back
+        return;
+      }
+    }
+    lastChoice = select.value;
+
     // value is "" for "Choose a client"
     const client = select.value === "" ? null : clients[select.value];
     fillFromClient(client);
@@ -614,9 +639,47 @@ function updatePage() {
   updateSummary();
 }
 
+// ===== PROTECT THE WORK =====
+
+// Refreshing, closing the tab or leaving the page wipes everything
+// (nothing is saved). If something was entered, ask the browser to
+// show its "Leave site?" box. The browser writes the message itself;
+// pages can't change the wording or use alert() here.
+function setupLeaveWarning() {
+  window.addEventListener("beforeunload", function (event) {
+    if (hasWork()) {
+      event.preventDefault();
+    }
+  });
+}
+
+// "Copy summary" button: puts the summary text on the clipboard.
+function setupCopyButton() {
+  const button = document.querySelector("#copy-summary");
+
+  button.addEventListener("click", async function () {
+    const text = document.querySelector("#progress-summary").textContent;
+
+    try {
+      await navigator.clipboard.writeText(text);
+      button.textContent = "Copied!";
+    } catch (error) {
+      // Some browsers block the clipboard; say so instead of failing quietly
+      button.textContent = "Couldn't copy. Select the text instead.";
+    }
+
+    // Put the label back after 2 seconds
+    setTimeout(function () {
+      button.textContent = "Copy summary";
+    }, 2000);
+  });
+}
+
 // ===== START =====
 
 renderStepCards();
 renderStepDetails();
 setupClientPicker();
+setupLeaveWarning();
+setupCopyButton();
 selectStep(0); // show step 1 to start
