@@ -1,0 +1,350 @@
+/* SBDC Advisor Helper side panel.
+   Same look as the Advisor Toolbox dashboard (leedlime.css + shell.css): landscape painting behind,
+   solid white cards, DM Sans body, Instrument Serif headings, black pill buttons, lime mark. Light only.
+   Values are copied from the dashboard's CSS so the two stay in step. Fonts are packaged (no network). */
+@font-face { font-family: "DM Sans"; src: url("../fonts/dm-sans-latin-wght-normal.woff2") format("woff2"); font-weight: 100 1000; font-display: swap; }
+@font-face { font-family: "Instrument Serif"; src: url("../fonts/instrument-serif-latin-400-normal.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+
+:root {
+  color-scheme: only light;
+  --bg: #FAFAF8;
+  --surface: #FFFFFF;
+  --surface-2: #F4F3EF;
+  --line: #E7E5DF;
+  --line-2: #D9D6CE;
+  --fg: #161616;
+  --muted: #6B6A64;
+  --faint: #8A887F;
+  --acc: #111111;
+  --ok: #3F6B28;
+  --ok-fg: #2F5D1E;
+  --ok-bg: #EAF6D8;
+  --lime: #B6E04A;
+  --warn: #8A6A16;
+  --warn-bg: #F8EFC3;
+  --bad: #9A2E24;
+  --bad-bg: #F8D9D6;
+  --s1: 8px; --s2: 16px; --s3: 24px;
+  --sans: "DM Sans", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --serif: "Instrument Serif", Georgia, "Times New Roman", serif;
+  /* shared-area tiles and mark, as in shell.css [data-space="shared"] */
+  --tile-bg: #F4F3EF;
+  --tile-fg: #3A3A36;
+  --tile-radius: 10px;
+  --mark-bg: #B6E04A;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; min-height: 100%; }
+html { height: 100%; }
+body {
+  font: 14px/1.5 var(--sans);
+  color: var(--fg);
+  background: #3a5a32 url("../img/landscape.webp") center / cover no-repeat fixed;
+  min-width: 300px;
+  display: flex; flex-direction: column; min-height: 100vh;
+}
+.icon { width: 18px; height: 18px; flex: 0 0 auto; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* Top bar: the dashboard's phone header (solid white, wordmark, serif product name) */
+.top {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  background: #fff; border-bottom: 1px solid var(--line);
+  padding: 10px 16px;
+}
+.brandblock { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
+.wordmark { width: 78px; height: auto; display: block; color: #111; }
+.wordmark .accent { fill: var(--mark-bg); }
+.brandblock b { font-family: var(--serif); font-weight: 400; font-size: 17px; line-height: 1.2; letter-spacing: -0.02em; color: #111; }
+
+main { flex: 1 0 auto; padding: 12px 12px 16px; display: grid; gap: 12px; align-content: start; }
+
+.card {
+  background: #fff; border: 1px solid var(--line); border-radius: 18px;
+  box-shadow: 0 8px 24px rgba(20, 20, 10, .06); color: var(--fg);
+}
+.card-body { padding: 16px; }
+.headrow { display: flex; align-items: center; gap: 8px; min-height: 32px; }
+.headrow .badge { margin-left: auto; }
+h2 { margin: 0; }
+.lbl { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; font-weight: 600; color: var(--faint); }
+.tile {
+  width: 32px; height: 32px; flex: 0 0 32px; display: grid; place-items: center;
+  background: var(--tile-bg); color: var(--tile-fg); border-radius: var(--tile-radius);
+}
+.pagename { font-family: var(--serif); font-size: 26px; font-weight: 400; line-height: 1.15; letter-spacing: -0.02em; color: #111; margin: 0; overflow-wrap: anywhere; }
+.sub { color: var(--muted); margin: 6px 0 0; font-size: 13px; overflow-wrap: anywhere; }
+
+.badge {
+  display: inline-flex; align-items: center; border-radius: 999px; padding: 3px 9px;
+  font-size: 11.5px; font-weight: 600; line-height: 1.3; white-space: nowrap; letter-spacing: .02em;
+}
+.bg-secondary-lt { background: var(--surface-2); color: var(--muted); }
+.bg-green-lt { background: var(--ok-bg); color: var(--ok-fg); }
+.bg-yellow-lt { background: var(--warn-bg); color: var(--warn); }
+.bg-red-lt { background: var(--bad-bg); color: var(--bad); }
+.bg-dark { background: #111; color: #fff; }
+
+.acts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  min-height: 34px; padding: 6px 14px; border-radius: 999px; border: 1px solid transparent;
+  font: 600 13px/1.3 var(--sans); cursor: pointer; text-decoration: none; background: none; color: var(--fg);
+}
+.btn .icon { width: 16px; height: 16px; }
+.btn-primary { background: #111; color: #fff; }
+.btn-primary:hover { background: #2a2a2a; }
+.btn-outline { background: #fff; border-color: var(--line-2); color: #111; }
+.btn-outline:hover { background: var(--surface-2); }
+.btn-ghost { color: #3A3A36; }
+.btn-ghost:hover { background: var(--surface-2); }
+.btn-danger { background: #fff; border-color: #E7B8B3; color: var(--bad); }
+.btn-danger:hover { background: var(--bad-bg); }
+.btn-sm { min-height: 28px; padding: 3px 11px; font-size: 12px; }
+.btn:disabled { opacity: .45; cursor: default; }
+:focus-visible { outline: 2px solid #111; outline-offset: 2px; }
+
+.form-control, .form-select {
+  width: 100%; background: #fff; border: 1px solid var(--line-2); color: var(--fg);
+  border-radius: 12px; padding: 8px 12px; font: 14px/1.45 var(--sans);
+}
+textarea.form-control { margin-top: 12px; resize: vertical; min-height: 96px; font-size: 13px; }
+.form-control::placeholder { color: var(--faint); }
+.form-control:focus, .form-select:focus { outline: none; border-color: #111; box-shadow: 0 0 0 3px rgba(17, 17, 17, .08); }
+.form-select { width: auto; padding: 5px 10px; font-size: 13px; }
+
+/* Rows with dividers, as in the dashboard's .rows / .rowlink lists */
+.rows { list-style: none; margin: 10px 0 0; padding: 0; }
+.rows > li { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-top: 1px solid var(--line); min-width: 0; }
+.rows > li:first-child { border-top: 0; }
+.rows .grow { flex: 1; min-width: 0; }
+.rows .name { font-weight: 500; overflow-wrap: anywhere; }
+.rows .meta { color: var(--muted); font-size: 12px; overflow-wrap: anywhere; }
+.rowlink { display: flex; align-items: center; gap: 10px; padding: 8px 6px; border-top: 1px solid var(--line); border-radius: 10px; color: var(--fg); text-decoration: none; font-weight: 500; }
+.rowlink:hover { background: var(--surface-2); color: #111; }
+.rowlink .ri { width: 28px; height: 28px; flex: 0 0 28px; display: inline-grid; place-items: center; background: var(--tile-bg); color: var(--tile-fg); border-radius: var(--tile-radius); }
+.rowlink .ri .icon { width: 15px; height: 15px; }
+.grouphead { display: flex; align-items: center; margin: 14px 0 4px; color: #3A3A36; }
+.grouphead:first-child { margin-top: 10px; }
+.grouphead + .rowlink { border-top: 0; }
+.space-mark { display: inline-block; width: 10px; height: 10px; flex: 0 0 10px; margin-right: 8px; border-radius: var(--mark-radius, 3px); background: var(--mark-bg); }
+[data-space="intake"] { --tile-bg: #E7F0D8; --tile-fg: #3F6B28; --tile-radius: 12px; --mark-bg: #3F6B28; --mark-radius: 3px; }
+[data-space="toolbox"] { --tile-bg: #F3E6C8; --tile-fg: #6B4F1A; --tile-radius: 50%; --mark-bg: #C17A3A; --mark-radius: 50%; }
+
+details.found { margin-top: 12px; border-top: 1px solid var(--line); padding-top: 10px; }
+details.found summary { cursor: pointer; font-weight: 500; color: #3A3A36; font-size: 13px; }
+
+.progress { height: 4px; border-radius: 999px; background: #EDECE7; overflow: hidden; margin-top: 12px; }
+.progress-bar { height: 100%; width: 0; background: #111; transition: width .2s ease; }
+.progress-bar.done { background: var(--ok); }
+
+.steps { list-style: none; margin: 8px 0 0; padding: 0; }
+.steps > li { display: grid; grid-template-columns: 22px 1fr; gap: 2px 8px; padding: 10px 8px; border-top: 1px solid var(--line); border-radius: 10px; }
+.steps > li:first-child { border-top: 0; }
+.steps > li.now { background: var(--surface-2); box-shadow: inset 3px 0 0 var(--lime); }
+.steps input[type="checkbox"] { width: 16px; height: 16px; margin: 3px 0 0; accent-color: #111; }
+.steps .mark { width: 18px; height: 18px; margin-top: 2px; border-radius: 50%; display: grid; place-items: center; }
+.steps .mark .icon { width: 12px; height: 12px; stroke-width: 3; }
+.steps .mark.ok { background: var(--ok-bg); color: var(--ok-fg); }
+.steps .mark.bad { background: var(--bad-bg); color: var(--bad); }
+.steps .what { font-weight: 500; overflow-wrap: anywhere; }
+.steps .what .verb { color: var(--muted); font-weight: 400; }
+.steps .val { grid-column: 2; background: var(--surface-2); border: 1px solid var(--line); border-radius: 8px; padding: 4px 8px; font-size: 12.5px; white-space: pre-wrap; overflow-wrap: anywhere; max-height: 84px; overflow: auto; }
+.steps .note { grid-column: 2; font-size: 12px; color: var(--muted); display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.steps .note.bad { color: var(--bad); }
+
+.runrow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
+.speed { margin-left: auto; display: inline-flex; align-items: center; gap: 8px; }
+.result { margin: 12px 0 0; padding: 10px 12px; border-radius: 14px; background: var(--ok-bg); color: var(--ok-fg); font-weight: 500; }
+.result.warn { background: var(--warn-bg); border: 1px solid #E7D9A0; color: #6B5420; }
+
+.addsite { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+.addrow { display: flex; gap: 8px; margin-top: 6px; }
+.addrow .form-control { min-width: 0; }
+.err { color: var(--bad); font-size: 12.5px; margin: 6px 0 0; }
+
+.promise {
+  display: flex; gap: 8px; align-items: flex-start; margin: 0; padding: 12px 14px;
+  background: #fff; border: 1px solid var(--line); border-radius: 18px; color: var(--muted); font-size: 12.5px;
+}
+.promise .icon { width: 16px; height: 16px; margin-top: 1px; color: var(--ok); }
+
+.toast {
+  position: fixed; left: 50%; bottom: 104px; transform: translateX(-50%); max-width: calc(100% - 24px);
+  background: #111; color: #fff; border-radius: 18px; padding: 8px 16px; font-size: 13px; font-weight: 500; z-index: 20; width: max-content;
+  box-shadow: 0 8px 24px rgba(20, 20, 10, .25);
+}
+
+@media (prefers-reduced-motion: reduce) { .progress-bar { transition: none; } }
+
+/* Simple by default: one card, one main button. Everything else sits under "More". */
+.sub.next { color: #3A3A36; font-size: 14px; }
+details.found summary .badge { margin-left: 6px; }
+main > .result { margin: 0; border: 1px solid #D5E8B8; }
+main > .result.warn { border-color: #E7D9A0; }
+.more > summary { display: flex; align-items: center; gap: 8px; padding: 12px 16px; cursor: pointer; list-style: none; }
+.more > summary::-webkit-details-marker { display: none; }
+.more > summary::after { content: ""; margin-left: auto; width: 8px; height: 8px; border-right: 2px solid var(--faint); border-bottom: 2px solid var(--faint); transform: rotate(45deg); }
+.more[open] > summary::after { transform: rotate(-135deg); }
+.more > .card-body { padding-top: 4px; }
+.more h3 { margin: 0; }
+.more .sechead { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); margin-bottom: 8px; }
+.more .acts { margin-top: 10px; }
+
+.chooser { margin-top: 12px; padding: 12px; border-radius: 14px; background: var(--warn-bg); border: 1px solid #E7D9A0; }
+.chooser .what { font-weight: 600; color: #6B5420; overflow-wrap: anywhere; }
+.choices { display: grid; gap: 6px; margin: 10px 0 8px; max-height: 260px; overflow: auto; }
+.choice { text-align: left; background: #fff; border: 1px solid var(--line-2); border-radius: 12px; padding: 7px 10px; font: inherit; cursor: pointer; color: var(--fg); }
+.choice:hover { border-color: #111; }
+.choice b { display: block; font-weight: 600; font-size: 12.5px; }
+.choice span { display: block; color: var(--muted); font-size: 12.5px; overflow-wrap: anywhere; }
+
+/* The job in two steps, always in view: pick something up, then write it. */
+.flow { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.flow li { display: flex; align-items: center; gap: 8px; min-width: 0; background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 8px 10px; }
+.flow .n { width: 22px; height: 22px; flex: 0 0 22px; display: grid; place-items: center; border-radius: 50%; border: 1.5px solid var(--line-2); font-size: 12px; font-weight: 600; color: var(--muted); }
+.flow .t { display: grid; min-width: 0; line-height: 1.25; }
+.flow .t b { font-size: 13px; font-weight: 600; }
+.flow .t span { font-size: 11.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.flow li.now { border-color: #111; }
+.flow li.now .n { background: #111; border-color: #111; color: #fff; }
+.flow li.done .n { background: var(--lime); border-color: var(--lime); color: #111; }
+
+/* Settings stays out of the way until the Quick access bar opens it. */
+#more:not([open]) { display: none; }
+
+/* Quick access: a bar that stays at the bottom of the panel on every page. */
+.quick { position: sticky; bottom: 0; z-index: 10; background: #fff; border-top: 1px solid var(--line); padding: 8px 8px 10px; box-shadow: 0 -8px 24px rgba(20, 20, 10, .08); }
+.quick > .lbl { padding: 0 6px 6px; }
+.qrow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; }
+.q { display: grid; justify-items: center; gap: 4px; padding: 6px 2px; border: 0; background: none; border-radius: 12px; cursor: pointer; font: 600 11px/1.2 var(--sans); color: #3A3A36; min-width: 0; }
+.q .tile { width: 34px; height: 34px; flex: none; }
+.q:hover { background: var(--surface-2); color: #111; }
+.q:hover .tile { background: #E9E7E0; }
+.q.off { opacity: .45; }
+.q[aria-expanded="true"] .tile { background: #111; color: #fff; }
+.q:disabled { opacity: .45; cursor: default; }
+
+/* ---------- Bigger and clearer ----------
+   Advisors should not have to squint or guess what can be pressed: larger type, taller buttons, and every
+   control that can be pressed has an edge and a filled background. Things that are not buttons (the two
+   steps, labels) are flat so they do not look pressable. */
+body { font-size: 15.5px; }
+.sub { font-size: 14.5px; color: #55544E; }
+.sub.next { font-size: 15.5px; color: #2B2B28; }
+.lbl { font-size: 12px; color: #55544E; }
+.badge { font-size: 12.5px; padding: 4px 10px; }
+.pagename { font-size: 28px; }
+.brandblock b { font-size: 18px; }
+
+.btn { min-height: 44px; padding: 9px 18px; font-size: 15px; border-width: 1.5px; box-shadow: 0 1px 2px rgba(20, 20, 10, .10); }
+.btn .icon { width: 18px; height: 18px; }
+.btn-primary { border-color: #111; }
+.btn-outline { border-color: #111; }
+.btn-ghost { background: #fff; border-color: var(--line-2); color: #111; }
+.btn-ghost:hover { background: var(--surface-2); border-color: #111; }
+.btn-danger { border-color: var(--bad); }
+.btn-sm { min-height: 38px; padding: 6px 14px; font-size: 14px; }
+.btn:disabled { opacity: 1; background: var(--surface-2); border-color: var(--line-2); color: #8A887F; box-shadow: none; }
+.btn:active:not(:disabled), .q:active:not(:disabled), .choice:active { transform: translateY(1px); box-shadow: none; }
+.acts { gap: 10px; }
+
+.form-control, .form-select { font-size: 15px; border-width: 1.5px; border-color: #B9B6AC; }
+.form-select { min-height: 42px; padding: 7px 12px; font-size: 15px; }
+textarea.form-control { font-size: 14px; }
+
+/* The fold-out rows ("Ready to write", "3 details have no box here") are pressable, so they look it. */
+details.found { border-top: 0; padding-top: 0; margin-top: 14px; }
+details.found > summary { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 8px 14px; background: #fff; border: 1.5px solid var(--line-2); border-radius: 14px; font-size: 15px; font-weight: 600; color: #111; list-style: none; box-shadow: 0 1px 2px rgba(20, 20, 10, .10); }
+details.found > summary::-webkit-details-marker { display: none; }
+details.found > summary::after { content: ""; margin-left: auto; width: 8px; height: 8px; flex: 0 0 8px; border-right: 2px solid #111; border-bottom: 2px solid #111; transform: translateY(-2px) rotate(45deg); }
+details.found[open] > summary::after { transform: translateY(2px) rotate(-135deg); }
+details.found > summary:hover { border-color: #111; }
+details.found summary .badge { margin-left: 0; }
+.more > summary { min-height: 52px; }
+.more > summary .lbl { font-size: 13px; color: #111; }
+
+.choice { padding: 10px 12px; border-width: 1.5px; box-shadow: 0 1px 2px rgba(20, 20, 10, .10); }
+.choice b { font-size: 14.5px; }
+.choice span { font-size: 13.5px; }
+.chooser .what { font-size: 15.5px; }
+
+.steps input[type="checkbox"] { width: 20px; height: 20px; margin-top: 2px; }
+.steps > li { grid-template-columns: 26px 1fr; padding: 12px 8px; }
+.steps .val { font-size: 14px; padding: 6px 10px; }
+.steps .note { font-size: 13.5px; }
+.rows .meta { font-size: 13.5px; }
+.rowlink { min-height: 44px; }
+.promise { font-size: 13.5px; color: #55544E; }
+.toast { font-size: 14.5px; padding: 10px 18px; bottom: 124px; }
+.result { font-size: 15px; }
+
+/* The two steps are a status strip, not buttons: one flat bar, no separate edges. */
+.flow { gap: 0; background: #fff; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+.flow li, .flow li.now { border: 0; border-radius: 0; background: none; padding: 9px 12px; }
+.flow li + li { border-left: 1px solid var(--line); }
+.flow .n { width: 24px; height: 24px; flex: 0 0 24px; font-size: 13px; }
+.flow .t b { font-size: 14.5px; color: #8A887F; }
+.flow li.now .t b, .flow li.done .t b { color: #111; }
+.flow .t span { font-size: 12.5px; color: #55544E; }
+
+/* Quick access: five real buttons. */
+.quick { padding: 10px 10px 12px; }
+.quick > .lbl { padding: 0 2px 8px; }
+.qrow { gap: 6px; }
+.q { align-content: start; gap: 5px; min-height: 76px; padding: 8px 2px 6px; background: #fff; border: 1.5px solid #111; border-radius: 14px; font-size: 12.5px; line-height: 1.15; color: #111; box-shadow: 0 1px 2px rgba(20, 20, 10, .10); }
+.q .tile { width: 32px; height: 32px; background: none; color: #111; }
+.q .tile .icon { width: 22px; height: 22px; }
+.q:hover { background: var(--surface-2); }
+.q:hover .tile { background: none; }
+.q.off { opacity: 1; border-color: var(--line-2); border-style: dashed; color: #77756D; box-shadow: none; }
+.q.off .tile { color: #77756D; }
+.q[aria-expanded="true"] { background: #111; color: #fff; }
+.q[aria-expanded="true"] .tile { background: none; color: #fff; }
+.q:disabled { opacity: 1; border-color: var(--line-2); color: #8A887F; }
+
+/* Narrow panels (Chrome's side panel is often about 350px wide): nothing is cut off with "…", and the
+   Quick access labels break in the same place at every width. */
+.flow .t span { white-space: normal; overflow: visible; text-overflow: clip; line-height: 1.2; }
+.flow li { align-items: flex-start; }
+.q { min-height: 70px; align-content: center; gap: 3px; padding: 6px 2px; }
+.q .tile { width: 26px; height: 26px; }
+.q > span:last-child { display: grid; align-content: center; min-height: 29px; }
+
+/* ---------- Room to breathe ----------
+   More space between the cards, inside them, and between buttons, so nothing looks squeezed together. */
+.top { padding: 14px 18px; }
+main { padding: 16px 14px 22px; gap: 16px; }
+.card-body { padding: 22px 20px; }
+.pagename { line-height: 1.2; }
+.sub.next { margin-top: 12px; line-height: 1.55; }
+.sub { line-height: 1.5; }
+.acts { margin-top: 20px; gap: 12px; }
+details.found { margin-top: 20px; }
+details.found > summary { padding: 10px 16px; }
+details.found[open] > summary { margin-bottom: 12px; }
+.chooser { margin-top: 18px; padding: 16px; }
+.choices { gap: 10px; margin: 14px 0 12px; }
+.flow li, .flow li.now { padding: 13px 14px; gap: 10px; }
+.flow .t { gap: 2px; }
+.steps > li { padding: 14px 8px; gap: 6px 10px; }
+.runrow { margin-top: 18px; padding-top: 18px; gap: 12px; }
+.rows > li { padding: 12px 0; }
+.more > .card-body { padding-top: 8px; }
+.more .sechead { margin-top: 26px; padding-top: 20px; margin-bottom: 12px; }
+.promise { padding: 14px 16px; gap: 10px; line-height: 1.5; }
+.quick { padding: 12px 12px 14px; }
+.quick > .lbl { padding: 0 2px 10px; }
+.qrow { gap: 8px; }
+.q { min-height: 74px; gap: 5px; }
+.toast { bottom: 138px; }
+
+/* ---------- Condensed: one card instead of three ----------
+   The two steps, this page and the "you always save it yourself" line belong together, so they share one
+   card: steps across the top, the page in the middle, the promise as its last line. */
+.flow { margin-bottom: -16px; border-bottom: 0; border-radius: 18px 18px 0 0; box-shadow: none; position: relative; z-index: 1; }
+.flow + .card { border-radius: 0 0 18px 18px; border-top: 1px solid var(--line); }
+.card .promise { margin: 20px 0 0; padding: 16px 0 0; background: none; border: 0; border-top: 1px solid var(--line); border-radius: 0; }
