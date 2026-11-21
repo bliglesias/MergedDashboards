@@ -13,6 +13,11 @@
   --flag-blue-hover: rgba(10, 49, 97, 0.06); /* faint blue, on hover */
   --flag-red: #b31942;
   --radius: 10px;
+
+  /* Prompt library privacy levels (traffic-light dots) */
+  --privacy-green: #2e7d32;
+  --privacy-yellow: #e0a800;
+  --privacy-red: var(--flag-red);
 }
 
 * {
@@ -521,6 +526,72 @@ a.card {
   margin: 0;
   color: var(--muted);
   font-size: 0.9rem;
+}
+
+/* ----- Prompt library ----- */
+
+/* Results grid: same card styles as the actions, a bit of space above */
+.prompt-grid {
+  margin-top: 12px;
+  margin-bottom: 0;
+}
+
+/* Category on the left, privacy dot on the right */
+.prompt-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Privacy level: a colored dot before the word (e.g. "● Yellow") */
+.privacy-badge {
+  font-size: 0.7rem;
+  white-space: nowrap;
+}
+
+.privacy-badge::before {
+  content: "● ";
+  color: var(--muted);
+}
+
+.privacy-badge[data-level="green"]::before {
+  color: var(--privacy-green);
+}
+
+.privacy-badge[data-level="yellow"]::before {
+  color: var(--privacy-yellow);
+}
+
+.privacy-badge[data-level="red"]::before {
+  color: var(--privacy-red);
+}
+
+/* Topic chips on each result card */
+.topic-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.topic-chip {
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  color: var(--flag-blue);
+  background: var(--white);
+}
+
+/* Output panel: the "Before you use this" toggle */
+.prompt-cautions {
+  margin-top: 14px;
+}
+
+.prompt-cautions summary {
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
 }
 /* ===== Tablet: hide sidebar, 2 columns ===== */
 @media (max-width: 1024px) {

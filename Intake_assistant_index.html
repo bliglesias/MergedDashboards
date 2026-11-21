@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Intern Dashboard</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="Intake_assistant_styles.css">
   <!-- defer: download now, run after the HTML is ready (keeps this order) -->
-  <script src="data/prompts.js" defer></script>
-  <script src="app.js" defer></script>
+  <script src="data/Intake_assistant_prompts.js" defer></script>
+  <script src="Intake_assistant_app.js" defer></script>
 </head>
 <body>
   <!-- The whole page is one CSS Grid:
@@ -21,7 +21,7 @@
       <h1 class="page-title">Intern Dashboard</h1>
       <h2 class="section-title">Actions</h2>
 
-      <!-- Empty list: app.js fills it from the `actions` array
+      <!-- Empty list: Intake_assistant_app.js fills it from the `actions` array
            using the two <template>s below -->
       <ul class="card-grid" id="card-grid"></ul>
 
@@ -113,7 +113,7 @@
       <p class="sidebar-note">Nothing is saved. Refreshing clears everything.</p>
 
       <!-- Logo pinned to the bottom of the sidebar -->
-      <img class="sidebar-logo" src="images/sbdc-logo.svg" alt="America's SBDC">
+      <img class="sidebar-logo" src="images/Intake_assistant_sbdc-logo.svg" alt="America's SBDC">
     </aside>
 
     <!-- ===== CENTER: forms ===== -->
@@ -122,7 +122,7 @@
            panel whose id matches the active card and hides the rest. -->
       <div class="form-area">
 
-        <!-- CIC template. Each input's `name` matches a field in app.js -->
+        <!-- CIC template. Each input's `name` matches a field in Intake_assistant_app.js -->
         <form class="form-panel" data-panel="cic">
           <h2 class="section-title">CIC template</h2>
           <div class="field">
@@ -136,7 +136,7 @@
           <!-- Dropdown + manual entry: a normal <select>. Picking
                "Other (type it)" reveals the text box underneath.
                The text box's name is the select's name + "Other";
-               app.js uses that pattern to find it. -->
+               Intake_assistant_app.js uses that pattern to find it. -->
           <div class="field">
             <label for="cic-businessType">Business type</label>
             <select id="cic-businessType" name="businessType">
@@ -253,10 +253,43 @@
           <p class="placeholder-text">Form not designed yet.</p>
         </section>
 
-        <section class="form-panel" data-panel="prompts">
+        <!-- Prompt library: type a topic, matching prompts appear as cards.
+             Data comes from the Google Sheet (see data/Intake_assistant_prompts.js). -->
+        <form class="form-panel" data-panel="prompts">
           <h2 class="section-title">Prompt library</h2>
-          <p class="placeholder-text">Form not designed yet.</p>
-        </section>
+          <div class="field">
+            <label for="prompt-search">Search by topic</label>
+            <!-- type="search" adds a small x to clear the box -->
+            <input type="search" id="prompt-search" name="query" placeholder="e.g. start-up, managing business" autocomplete="off">
+          </div>
+
+          <!-- Loading / error / "showing 3 of 20" messages -->
+          <p class="placeholder-text" id="prompt-status"></p>
+
+          <!-- Results reuse the action-card grid and card styles -->
+          <ul class="card-grid prompt-grid" id="prompt-results"></ul>
+
+          <!-- Blueprint for one result card. data-column="..." names the
+               sheet column whose value goes in that spot. -->
+          <template id="prompt-card-template">
+            <li>
+              <button class="card" type="button">
+                <span class="prompt-card-top">
+                  <span class="card-type" data-column="Use-Case Category"></span>
+                  <span class="privacy-badge" data-column="Privacy Level"></span>
+                </span>
+                <span class="card-title" data-column="Prompt Name"></span>
+                <span class="card-desc" data-column="Recommended Use"></span>
+                <span class="topic-chips"></span>
+              </button>
+            </li>
+          </template>
+
+          <!-- Blueprint for one topic chip on a card -->
+          <template id="topic-chip-template">
+            <span class="topic-chip"></span>
+          </template>
+        </form>
 
       </div>
     </main>
@@ -311,6 +344,34 @@
           <dt>IMPACT AREA:</dt>
           <dd>[Impact area]</dd>
         </dl>
+      </div>
+
+      <!-- Prompt library output: the picked prompt, ready to copy into Gemini.
+           Each data-column="..." spot gets that column from the sheet. -->
+      <div class="output-box" data-panel="prompts">
+        <p class="client-name" data-column="Prompt Name">[Pick a prompt]</p>
+
+        <h3 class="kv-heading">Prompt template</h3>
+        <pre class="output-text" data-column="Prompt Template">[Prompt Template]</pre>
+
+        <h3 class="kv-heading">Fill-in field guide</h3>
+        <pre class="output-text" data-column="Fill-in Field Guide">[Fill-in Field Guide]</pre>
+
+        <h3 class="kv-heading">Verification checklist</h3>
+        <pre class="output-text" data-column="Verification Checklist">[Verification Checklist]</pre>
+
+        <!-- <details> opens and closes on click, no JS needed -->
+        <details class="prompt-cautions">
+          <summary>Before you use this</summary>
+          <dl class="kv-stack">
+            <dt>Limitations</dt>
+            <dd data-column="Limitations">[Limitations]</dd>
+            <dt>Do not use for</dt>
+            <dd data-column="Do Not Use For">[Do Not Use For]</dd>
+            <dt>Human review</dt>
+            <dd data-column="Human Review">[Human Review]</dd>
+          </dl>
+        </details>
       </div>
 
       <!-- My template output: the staff member's template with tags filled in -->
