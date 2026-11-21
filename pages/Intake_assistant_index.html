@@ -3,84 +3,45 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Intern Dashboard</title>
+  <title>Intake Assistant</title>
   <link rel="stylesheet" href="../css/Intake_assistant_styles.css">
-  <!-- defer: download now, run after the HTML is ready (keeps this order) -->
-  <script src="../js/Intake_assistant_prompts.js" defer></script>
+  <!-- defer: download now, run after the HTML is ready -->
   <script src="../js/Intake_assistant_app.js" defer></script>
 </head>
 <body>
   <!-- The whole page is one CSS Grid:
-       row 1: page title + action cards (full width)
-       row 2: progress stepper (full width)
-       row 3: sidebar | forms | output -->
+       row 1: page title + the 10 step cards (full width)
+       row 2: sidebar | step drop-downs | output -->
   <div class="layout">
 
-    <!-- ===== ROW 1: page title + action cards ===== -->
-    <section class="actions-top">
-      <h1 class="page-title">Intern Dashboard</h1>
-      <h2 class="section-title">Actions</h2>
+    <!-- ===== ROW 1: page title + step cards (the progress map) ===== -->
+    <section class="actions-top" aria-labelledby="progress-title">
+      <h1 class="page-title">Intake Assistant</h1>
 
-      <!-- Empty list: Intake_assistant_app.js fills it from the `actions` array
-           using the two <template>s below -->
-      <ul class="card-grid" id="card-grid"></ul>
+      <!-- Title on the left, "3 of 10 done" on the right -->
+      <div class="page-progress-text">
+        <h2 class="page-progress-title" id="progress-title">Business startup progress</h2>
+        <span class="page-progress-count" id="progress-count">0 of 10 done</span>
+      </div>
 
-      <!-- Blueprint for one action card (not shown until JS copies it).
-           type="button" stops it acting as a submit button -->
-      <template id="card-template">
+      <!-- Empty list: Intake_assistant_app.js fills it from the `steps`
+           array using the template below. An <ol> because the steps
+           happen in order. -->
+      <ol class="step-grid" id="step-grid"></ol>
+
+      <!-- Blueprint for one step card (not shown until JS copies it).
+           JS adds a class to the card: done = solid bar, now = half bar,
+           no class = not started, active = the step open in the middle. -->
+      <template id="step-card-template">
         <li>
-          <button class="card" type="button">
-            <span class="card-type"></span>
-            <span class="card-title"></span>
-            <span class="card-desc"></span>
+          <button class="card step-card" type="button">
+            <span class="step-bar"></span>
+            <span class="card-type step-number"></span>
+            <span class="card-title step-title"></span>
+            <span class="step-status"></span>
           </button>
         </li>
       </template>
-
-      <!-- Blueprint for a link card: opens an outside website in a new tab.
-           It's an <a> (not a <button>) because it goes somewhere.
-           rel="noopener noreferrer" stops the new tab from reaching back
-           into this page and hides which page sent the visitor. -->
-      <template id="card-link-template">
-        <li>
-          <a class="card" href="" target="_blank" rel="noopener noreferrer">
-            <span class="card-type"></span>
-            <span class="card-title"></span>
-            <span class="card-desc"></span>
-          </a>
-        </li>
-      </template>
-
-      <!-- Blueprint for an unused slot (the grid always shows 8) -->
-      <template id="card-empty-template">
-        <li class="card card-empty">
-          <span class="card-title">Coming soon</span>
-          <span class="card-desc">Slot for a future action.</span>
-        </li>
-      </template>
-    </section>
-
-    <!-- ===== ROW 2: startup stepper (sample: steps 1-3 done, 4 now) =====
-         An ordered list, because the steps happen in order.
-         done = solid bar, now = half bar, no class = not started -->
-    <section class="page-progress" aria-labelledby="progress-title">
-      <div class="page-progress-text">
-        <h2 class="page-progress-title" id="progress-title">Business startup progress</h2>
-        <span class="page-progress-count">3 of 10 done</span>
-      </div>
-
-      <ol class="stepper">
-        <li class="step done"><div class="step-bar"></div><span>Choose a name<small>Step 1</small></span></li>
-        <li class="step done"><div class="step-bar"></div><span>Domain name<small>Step 2</small></span></li>
-        <li class="step done"><div class="step-bar"></div><span>Entity type<small>Step 3</small></span></li>
-        <li class="step now"><div class="step-bar"></div><span>Name availability · now<small>Step 4</small></span></li>
-        <li class="step"><div class="step-bar"></div><span>Secure or form<small>Step 5</small></span></li>
-        <li class="step"><div class="step-bar"></div><span>File with ACC<small>Step 6</small></span></li>
-        <li class="step"><div class="step-bar"></div><span>AZ Dept. of Revenue<small>Step 7</small></span></li>
-        <li class="step"><div class="step-bar"></div><span>Local taxes &amp; license<small>Step 8</small></span></li>
-        <li class="step"><div class="step-bar"></div><span>Federal EIN / TIN<small>Step 9</small></span></li>
-        <li class="step"><div class="step-bar"></div><span>Bank account<small>Step 10</small></span></li>
-      </ol>
     </section>
 
     <!-- ===== LEFT: sidebar (client forms checklist + logo) ===== -->
@@ -116,271 +77,51 @@
       <img class="sidebar-logo" src="../assets/img/Intake_assistant_sbdc-logo.svg" alt="America's SBDC">
     </aside>
 
-    <!-- ===== CENTER: forms ===== -->
+    <!-- ===== CENTER: the big box with one drop-down per step ===== -->
     <main class="main">
-      <!-- Every panel has data-panel="<card id>". JS shows only the
-           panel whose id matches the active card and hides the rest. -->
-      <div class="form-area">
+      <section class="form-panel" aria-labelledby="steps-title">
+        <h2 class="section-title" id="steps-title">Business startup steps</h2>
 
-        <!-- CIC template. Each input's `name` matches a field in Intake_assistant_app.js -->
-        <form class="form-panel" data-panel="cic">
-          <h2 class="section-title">CIC template</h2>
-          <div class="field">
-            <label for="cic-name">Name</label>
-            <input type="text" id="cic-name" name="name" placeholder="Client Name" autocomplete="off">
-          </div>
-          <div class="field">
-            <label for="cic-businessName">Business name</label>
-            <input type="text" id="cic-businessName" name="businessName" placeholder="Business Name" autocomplete="off">
-          </div>
-          <!-- Dropdown + manual entry: a normal <select>. Picking
-               "Other (type it)" reveals the text box underneath.
-               The text box's name is the select's name + "Other";
-               Intake_assistant_app.js uses that pattern to find it. -->
-          <div class="field">
-            <label for="cic-businessType">Business type</label>
-            <select id="cic-businessType" name="businessType">
-              <option value="">Choose an industry</option>
-              <option>Retail</option>
-              <option>E-commerce</option>
-              <option>Restaurant / Food service</option>
-              <option>Food truck</option>
-              <option>Construction / Contractor</option>
-              <option>Professional services</option>
-              <option>Health care</option>
-              <option>Beauty / Personal care</option>
-              <option>Fitness / Wellness</option>
-              <option>Real estate</option>
-              <option>Transportation / Trucking</option>
-              <option>Automotive repair</option>
-              <option>Cleaning / Janitorial</option>
-              <option>Landscaping</option>
-              <option>Manufacturing</option>
-              <option>Technology / Software</option>
-              <option>Childcare / Education</option>
-              <option>Arts / Entertainment</option>
-              <option>Agriculture</option>
-              <option>Nonprofit</option>
-              <option value="other">Other (type it)</option>
-            </select>
-            <input type="text" name="businessTypeOther" placeholder="Type the industry" aria-label="Other business type" autocomplete="off" hidden>
-          </div>
-          <div class="field">
-            <label for="cic-annualSales">Annual sales</label>
-            <select id="cic-annualSales" name="annualSales">
-              <option value="">Choose a range</option>
-              <option>Pre-revenue (startup)</option>
-              <option>Under $50,000</option>
-              <option>$50,000 - $99,999</option>
-              <option>$100,000 - $249,999</option>
-              <option>$250,000 - $499,999</option>
-              <option>$500,000 - $999,999</option>
-              <option>$1,000,000 - $4,999,999</option>
-              <option>$5,000,000 or more</option>
-              <option value="other">Other (type an amount)</option>
-            </select>
-            <!-- inputmode shows a number keypad on phones -->
-            <input type="text" name="annualSalesOther" placeholder="e.g. $82,000" aria-label="Annual sales amount" inputmode="decimal" autocomplete="off" hidden>
-          </div>
-          <div class="field">
-            <label for="cic-naics">NAICS code</label>
-            <!-- NAICS codes are 2 to 6 digits -->
-            <input type="text" id="cic-naics" name="naics" placeholder="NAICS Code" inputmode="numeric" maxlength="6" autocomplete="off">
-          </div>
-        </form>
+        <!-- Empty: JS adds one drop-down per step from the template below -->
+        <div class="step-list" id="step-list"></div>
 
-        <!-- Business startup steps (sample: first 3 checked) -->
-        <form class="form-panel" data-panel="startup">
-          <h2 class="section-title">Business startup steps</h2>
-          <!-- fieldset + legend group the checkboxes under one label -->
-          <fieldset class="checklist-group">
-            <legend class="checklist-heading">Steps completed</legend>
-            <div class="checklist">
-              <label class="checklist-item"><input type="checkbox" checked><span>1. Choose A Name</span></label>
-              <label class="checklist-item"><input type="checkbox" checked><span>2. Purchase A Domain Name or See Numbers 3, 4, and 5 Below</span></label>
-              <label class="checklist-item"><input type="checkbox" checked><span>3. Choose An Entity Type</span></label>
-              <label class="checklist-item"><input type="checkbox"><span>4. Check Name Availability With the Arizona Corporation Commission</span></label>
-              <label class="checklist-item"><input type="checkbox"><span>5. Secure the Name or Form the Entity - You Choose</span></label>
-              <label class="checklist-item"><input type="checkbox"><span>6. File with the Arizona Corporation Commission Corporations Division</span></label>
-              <label class="checklist-item"><input type="checkbox"><span>7. Arizona Department of Revenue</span></label>
-              <label class="checklist-item"><input type="checkbox"><span>8. City or County Taxes and Business Licensing</span></label>
-              <label class="checklist-item"><input type="checkbox"><span>9. Federal EIN or TIN - Internal Revenue Service</span></label>
-              <label class="checklist-item"><input type="checkbox"><span>10. Business Bank Account</span></label>
+        <!-- Blueprint for one step drop-down.
+             <details> opens and closes when its <summary> is clicked.
+             name="step" makes them work as a group: opening one closes
+             the one that was open. -->
+        <template id="step-detail-template">
+          <details class="step-detail" name="step">
+            <summary class="step-summary">
+              <span class="step-summary-title"></span>
+              <span class="step-summary-status"></span>
+            </summary>
+
+            <div class="step-body">
+              <p class="step-todo"></p>
+
+              <!-- Opens the official site in a new tab so nothing typed
+                   on this page is lost. noopener: the new tab can't
+                   reach back into this page. -->
+              <a class="btn step-open" href="" target="_blank" rel="noopener"></a>
+
+              <label class="checklist-item step-done">
+                <input type="checkbox">
+                <span>Mark this step done</span>
+              </label>
             </div>
-          </fieldset>
-        </form>
-
-        <!-- Zoom summary: paste in, button fills the output -->
-        <form class="form-panel" data-panel="zoom">
-          <h2 class="section-title">Zoom summary</h2>
-          <div class="field">
-            <label for="zoom-summary">Paste the Zoom meeting summary</label>
-            <textarea id="zoom-summary" rows="8" placeholder="Paste Zoom summary here"></textarea>
-          </div>
-          <button class="btn" type="button">Fill output</button>
-        </form>
-
-        <!-- My template: staff paste their own wording with [Field] tags -->
-        <form class="form-panel" data-panel="my-template">
-          <h2 class="section-title">My template</h2>
-          <div class="field">
-            <label for="custom-template">Your template</label>
-            <textarea id="custom-template" rows="8" placeholder="Hi [Client Name], thanks for meeting about [Business Name]. Your next steps: [Client Next Steps]"></textarea>
-          </div>
-
-          <!-- Click a tag to add it to the template (works once JS is added) -->
-          <fieldset class="checklist-group">
-            <legend class="checklist-heading">Available fields</legend>
-            <div class="tag-list">
-              <button class="tag" type="button">[Client Name]</button>
-              <button class="tag" type="button">[Business Name]</button>
-              <button class="tag" type="button">[Business Type]</button>
-              <button class="tag" type="button">[Annual Sales]</button>
-              <button class="tag" type="button">[NAICS Code]</button>
-              <button class="tag" type="button">[Current Step]</button>
-              <button class="tag" type="button">[Purpose of Session]</button>
-              <button class="tag" type="button">[Business Description]</button>
-              <button class="tag" type="button">[Client Next Steps]</button>
-              <button class="tag" type="button">[Advisor Next Steps]</button>
-              <button class="tag" type="button">[Impact Area]</button>
-            </div>
-          </fieldset>
-        </form>
-
-        <!-- Not designed yet (no inputs, so <section> instead of <form>) -->
-        <section class="form-panel" data-panel="email">
-          <h2 class="section-title">Follow-up email</h2>
-          <p class="placeholder-text">Form not designed yet.</p>
-        </section>
-
-        <!-- Prompt library: type a topic, matching prompts appear as cards.
-             Data comes from the Google Sheet (see js/Intake_assistant_prompts.js). -->
-        <form class="form-panel" data-panel="prompts">
-          <h2 class="section-title">Prompt library</h2>
-          <div class="field">
-            <label for="prompt-search">Search by topic</label>
-            <!-- type="search" adds a small x to clear the box -->
-            <input type="search" id="prompt-search" name="query" placeholder="e.g. start-up, managing business" autocomplete="off">
-          </div>
-
-          <!-- Loading / error / "showing 3 of 20" messages -->
-          <p class="placeholder-text" id="prompt-status"></p>
-
-          <!-- Results reuse the action-card grid and card styles -->
-          <ul class="card-grid prompt-grid" id="prompt-results"></ul>
-
-          <!-- Blueprint for one result card. data-column="..." names the
-               sheet column whose value goes in that spot. -->
-          <template id="prompt-card-template">
-            <li>
-              <button class="card" type="button">
-                <span class="prompt-card-top">
-                  <span class="card-type" data-column="Use-Case Category"></span>
-                  <span class="privacy-badge" data-column="Privacy Level"></span>
-                </span>
-                <span class="card-title" data-column="Prompt Name"></span>
-                <span class="card-desc" data-column="Recommended Use"></span>
-                <span class="topic-chips"></span>
-              </button>
-            </li>
-          </template>
-
-          <!-- Blueprint for one topic chip on a card -->
-          <template id="topic-chip-template">
-            <span class="topic-chip"></span>
-          </template>
-        </form>
-
-      </div>
+          </details>
+        </template>
+      </section>
     </main>
 
     <!-- ===== RIGHT: output panel ===== -->
     <aside class="output">
       <h2 class="section-title">Output</h2>
 
-      <!-- Shown when the active card has no output box yet -->
-      <p class="placeholder-text" id="output-empty" hidden>No output for this card yet.</p>
-
-      <!-- CIC output. Each data-field="..." spot is filled by JS with the
-           matching input's value, or its [Placeholder] when empty. -->
-      <div class="output-box" data-panel="cic">
-        <div class="client-head">
-          <p class="client-name" data-field="name">[Client Name]</p>
-          <p class="client-sub">
-            <span data-field="businessName">[Business Name]</span> ·
-            <span data-field="businessType">[Business Type]</span>
-          </p>
-        </div>
-
-        <h3 class="kv-heading">Business details</h3>
-        <dl class="kv">
-          <dt>Business</dt>
-          <dd data-field="businessName">[Business Name]</dd>
-          <dt>Type</dt>
-          <dd data-field="businessType">[Business Type]</dd>
-          <dt>NAICS code</dt>
-          <dd data-field="naics">[NAICS Code]</dd>
-        </dl>
-
-        <h3 class="kv-heading">Financial picture</h3>
-        <dl class="kv">
-          <dt>Annual sales</dt>
-          <dd data-field="annualSales">[Annual Sales]</dd>
-        </dl>
-      </div>
-
-      <!-- Zoom summary output. Long labels, so each label sits above its value -->
-      <div class="output-box" data-panel="zoom">
-        <h3 class="kv-heading">Session notes</h3>
-        <dl class="kv-stack">
-          <dt>PURPOSE OF THIS SESSION:</dt>
-          <dd>[Purpose of this session]</dd>
-          <dt>BRIEF DESCRIPTION OF THE BUSINESS AND/OR OWNERS:</dt>
-          <dd>[Brief description of the business and/or owners]</dd>
-          <dt>NEXT STEPS &amp; FOLLOW-UP ACTIONS - CLIENT:</dt>
-          <dd>[Client next steps]</dd>
-          <dt>NEXT STEPS &amp; FOLLOW-UP ACTIONS - ADVISOR:</dt>
-          <dd>[Advisor next steps]</dd>
-          <dt>IMPACT AREA:</dt>
-          <dd>[Impact area]</dd>
-        </dl>
-      </div>
-
-      <!-- Prompt library output: the picked prompt, ready to copy into Gemini.
-           Each data-column="..." spot gets that column from the sheet. -->
-      <div class="output-box" data-panel="prompts">
-        <p class="client-name" data-column="Prompt Name">[Pick a prompt]</p>
-
-        <h3 class="kv-heading">Prompt template</h3>
-        <pre class="output-text" data-column="Prompt Template">[Prompt Template]</pre>
-
-        <h3 class="kv-heading">Fill-in field guide</h3>
-        <pre class="output-text" data-column="Fill-in Field Guide">[Fill-in Field Guide]</pre>
-
-        <h3 class="kv-heading">Verification checklist</h3>
-        <pre class="output-text" data-column="Verification Checklist">[Verification Checklist]</pre>
-
-        <!-- <details> opens and closes on click, no JS needed -->
-        <details class="prompt-cautions">
-          <summary>Before you use this</summary>
-          <dl class="kv-stack">
-            <dt>Limitations</dt>
-            <dd data-column="Limitations">[Limitations]</dd>
-            <dt>Do not use for</dt>
-            <dd data-column="Do Not Use For">[Do Not Use For]</dd>
-            <dt>Human review</dt>
-            <dd data-column="Human Review">[Human Review]</dd>
-          </dl>
-        </details>
-      </div>
-
-      <!-- My template output: the staff member's template with tags filled in -->
-      <div class="output-box" data-panel="my-template">
-        <h3 class="kv-heading">My template</h3>
-        <pre class="output-text">Hi [Client Name], thanks for meeting about [Business Name].
-
-Your next steps:
-[Client Next Steps]</pre>
+      <!-- Progress summary, rebuilt by JS every time a step is ticked -->
+      <div class="output-box">
+        <h3 class="kv-heading">Startup progress</h3>
+        <pre class="output-text" id="progress-summary"></pre>
       </div>
     </aside>
 
