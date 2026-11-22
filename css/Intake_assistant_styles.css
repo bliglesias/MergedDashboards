@@ -1,30 +1,48 @@
-/* ===== Colors and basics ===== */
+/* Intake Assistant styles
+   Order: 1. colors and sizes   2. basics   3. page layout
+          4. shared pieces (card, button, field, checkbox)
+          5. each area, top to bottom   6. tablet and phone sizes
+
+   Color rules:
+   - Blue means SELECTED, and nothing else changes to blue on hover or
+     for status. (Buttons, links and the page title are the brand blue.)
+   - Green means DONE.
+   - Red means ANSWERED, BUT NOT CONFIRMED (e.g. "Later", "Taken"). */
+
+
+/* ===== 1. Colors and sizes ===== */
 :root {
   --bg: #faf9f5;          /* warm off-white page */
-  --panel: #f0eee6;       /* sidebar / output background */
+  --panel: #f0eee6;       /* sidebar and summary background */
   --card: var(--white);
   --border: #e3e0d6;
   --text: #1f1e1d;
   --muted: #6b6a66;
   --white: #ffffff;
+  --hover: rgba(0, 0, 0, 0.04); /* faint gray behind things on hover */
 
-  /* Highlight color: US flag blue, for the selected card */
+  /* Blue: selected (and the brand color for buttons and links) */
   --flag-blue: #0a3161;
-  --flag-blue-hover: rgba(10, 49, 97, 0.06); /* faint blue, on hover */
-  --radius: 10px;
 
-  /* Green only means "done" */
+  /* Green: done */
   --done-green: #2e7d32;
   --done-green-hover: #276b2b;   /* a little darker, on hover */
 
-  /* Red only means "answered, but not confirmed" (e.g. "Later", "Taken") */
+  /* Red: answered, but not confirmed */
   --flag-red: #b31942;
   --flag-red-hover: #9a1538;     /* a little darker, on hover */
 
-  /* Step bars on a filled (green, red or blue) card */
-  --bar-on-color: rgba(255, 255, 255, 0.3);
+  /* On a filled (green, red or blue) card */
+  --text-on-color: rgba(255, 255, 255, 0.9); /* small near-white text */
+  --bar-on-color: rgba(255, 255, 255, 0.3);  /* see-through white bar */
+
+  /* Rounded corners */
+  --radius: 10px;        /* cards and big boxes */
+  --radius-small: 6px;   /* buttons, inputs, small boxes */
 }
 
+
+/* ===== 2. Basics ===== */
 * {
   box-sizing: border-box;
 }
@@ -36,32 +54,245 @@ body {
   color: var(--text);
 }
 
-/* ===== Main page grid (desktop: 3 columns) ===== */
+/* The hidden attribute should always hide, even when a rule below
+   gives the element a display (flex, grid…). One rule for all of them. */
+[hidden] {
+  display: none !important;
+}
+
+.section-title {
+  font-size: 1rem;
+  margin: 0 0 12px;
+}
+
+
+/* ===== 3. Page layout ===== */
+
+/* Desktop: 2 columns (sidebar + middle box).
+   Row 1: title and step cards across the top. Row 2: everything else. */
 .layout {
   display: grid;
-  grid-template-columns: 220px 1fr 320px;
-  /* row 1: title + step cards, row 2: everything else */
+  grid-template-columns: 220px 1fr;
   grid-template-rows: auto 1fr;
   min-height: 100vh;
 }
 
-/* ===== Title + step cards across the top ===== */
+/* Top section: full width, from the first column line to the last */
 .actions-top {
-  grid-column: 1 / -1; /* full width: from the first column line to the last */
+  grid-column: 1 / -1;
   padding: 20px 24px 16px;
   background: var(--bg);
   border-bottom: 1px solid var(--border);
 }
 
-/* Main page heading */
+/* Left column. Flex column so the logo can be pushed to the bottom. */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+  padding: 20px 16px;
+}
+
+/* Middle column */
+.main {
+  padding: 24px;
+}
+
+
+/* ===== 4. Shared pieces ===== */
+
+/* ----- Card (step cards and the "In summary" card) ----- */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+  padding: 16px;
+  line-height: 1.4;   /* space between lines when text wraps */
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+/* Hover: darker gray edge (not blue: blue is only for selected) */
+.card:hover {
+  border-color: var(--muted);
+}
+
+/* Selected: solid blue, white text, lifted with a shadow */
+.card.active,
+.card.active:hover {
+  background: var(--flag-blue);
+  border-color: var(--flag-blue);
+  color: var(--white);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(10, 49, 97, 0.35); /* flag blue, see-through */
+}
+
+/* Small uppercase label, e.g. "STEP 4" or "IN SUMMARY" */
+.card-type {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+
+.card.active .card-type {
+  color: var(--text-on-color);
+}
+
+.card-title {
+  font-weight: 600;
+}
+
+/* ----- Buttons ----- */
+
+/* Solid blue button (also used for <a> links that look like buttons) */
+.btn {
+  display: inline-block;
+  padding: 10px 16px;
+  border: none;
+  border-radius: var(--radius-small);
+  background: var(--flag-blue);
+  color: var(--white);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+/* Outline button: white with a blue edge, so it doesn't compete with
+   the solid blue buttons. Comes after .btn so it wins. */
+.btn-outline {
+  background: var(--white);
+  color: var(--flag-blue);
+  border: 1px solid var(--flag-blue);
+}
+
+.btn-outline:hover {
+  background: var(--hover);
+  opacity: 1;
+}
+
+/* ----- Form fields: label on top, box below ----- */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.field input,
+.field select {
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-small);
+  background: var(--white);
+  font: inherit;
+}
+
+/* Focus ring: shows which box the keyboard is in */
+.field input:focus,
+.field select:focus {
+  outline: 2px solid var(--flag-blue);
+  border-color: transparent;
+}
+
+/* ----- Checkboxes (the forms list) ----- */
+
+.checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* One clickable row: checkbox + text */
+.checklist-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--radius-small);
+  cursor: pointer;
+}
+
+.checklist-item:hover {
+  background: var(--hover);
+}
+
+.checklist-item input {
+  margin-top: 3px;
+  accent-color: var(--flag-blue); /* blue checkmarks */
+}
+
+
+/* ===== 5a. Top: title, summary card, button, client name ===== */
+
+/* Title on the left, the rest on the right.
+   flex-wrap: on narrow screens the right side drops below the title. */
+.page-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
 .page-title {
-  margin: 0 0 16px;
+  margin: 0;
   font-size: 1.4rem;
   color: var(--flag-blue);
 }
 
-/* "Fill from a saved client": label, drop-down and note on one line
-   (they wrap onto new lines when the screen is narrow) */
+.page-head-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* "In summary" card: a small version of a step card */
+.summary-card {
+  min-width: 140px;
+  padding: 8px 14px;
+  gap: 2px;
+}
+
+.summary-card .card-title {
+  font-size: 0.9rem;
+}
+
+/* Whose profile this is (the client's name) */
+.current-client {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-small);
+  background: var(--white);
+  font-weight: 600;
+}
+
+/* No client picked yet: gray, not bold */
+.current-client.empty {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+
+/* ===== 5b. "Fill from a saved client" row ===== */
+
+/* Label, menu and note on one line (they wrap on narrow screens) */
 .client-pick {
   display: flex;
   flex-wrap: wrap;
@@ -79,7 +310,7 @@ body {
   min-width: 240px;
   padding: 8px 10px;
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius-small);
   background: var(--white);
   font: inherit;
 }
@@ -94,11 +325,11 @@ body {
   color: var(--muted);
 }
 
-/* "Business startup progress" on the left, "3 of 10 done" on the right */
+
+/* ===== 5c. Step cards (the progress map) ===== */
+
+/* "Business startup progress" heading */
 .page-progress-text {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
   margin-bottom: 12px;
   font-size: 0.9rem;
 }
@@ -109,12 +340,7 @@ body {
   font-weight: 700;
 }
 
-.page-progress-count {
-  font-weight: 600;
-  color: var(--flag-blue);
-}
-
-/* ===== Step cards: 2 rows of 5 ===== */
+/* 2 rows of 5 */
 .step-grid {
   list-style: none; /* it's an <ol>: the numbers are already on the cards */
   padding: 0;
@@ -124,57 +350,10 @@ body {
   gap: 12px;
 }
 
-/* Shared card look (white box, rounded corners) */
-.card {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  text-align: left;
-  padding: 16px;
-  line-height: 1.4;   /* space between lines when text wraps */
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  font: inherit;
-  color: inherit;
-  cursor: pointer;
-}
-
-/* Hover: faint see-through blue over the whole card */
-.card:hover {
-  background: var(--flag-blue-hover);
-  border-color: var(--flag-blue);
-}
-
-/* Selected card (open in the middle box): solid blue, white text */
-.card.active {
-  background: var(--flag-blue);
-  border-color: var(--flag-blue);
-  color: var(--white);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(10, 49, 97, 0.35);
-}
-
-/* Small uppercase "STEP 4" line */
-.card-type {
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--muted);
-}
-
-.card-title {
-  font-weight: 600;
-}
-
-/* Step card colors:
-   white = not started or now, solid green = done, solid blue = selected.
-   Blue is ONLY for the selected card, green is ONLY for done. */
-
-/* Hover on a step card: darker gray edge (not blue) */
-.step-card:hover {
-  background: var(--card);
-  border-color: var(--muted);
+/* Each card button fills its whole list item, so cards line up */
+.step-grid > li > .card {
+  width: 100%;
+  height: 100%;
 }
 
 /* Progress bar at the top of each card.
@@ -188,12 +367,6 @@ body {
 
 .step-card.now .step-bar {
   background: linear-gradient(90deg, var(--done-green) 50%, var(--border) 50%);
-}
-
-/* Each card button fills its whole list item, so cards line up */
-.step-grid > li > .card {
-  width: 100%;
-  height: 100%;
 }
 
 /* The step's answer, e.g. "Approved · 23673486".
@@ -210,7 +383,7 @@ body {
   display: none;
 }
 
-/* "Not started" / "Now" / "✓ Done" under the title */
+/* "Not started" / "Now" / "✓ Done" / "! Not confirmed" under the title */
 .step-status {
   margin-top: auto; /* pushes it to the bottom so all cards line up */
   font-size: 0.75rem;
@@ -222,11 +395,16 @@ body {
   color: var(--text);
 }
 
-/* Done: solid green card with white text */
+/* Done: solid green card with white text, pressed in.
+   An inset shadow (dark along the inside top edge) makes the card look
+   sunk into the page; nudging it down 1px adds to the effect.
+   The selected card does the opposite: it lifts up. */
 .step-card.done {
   background: var(--done-green);
   border-color: var(--done-green);
   color: var(--white);
+  box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.35);
+  transform: translateY(1px);
 }
 
 .step-card.done:hover {
@@ -246,13 +424,15 @@ body {
   border-color: var(--flag-red-hover);
 }
 
-/* Selected: solid blue card with white text.
-   Comes after the green and red rules so the selected card is always blue. */
+/* Selected beats done and not confirmed: always solid blue.
+   (Same as .card.active; repeated here so it comes after the green
+   and red rules, which would otherwise win.) */
 .step-card.active,
 .step-card.active:hover {
   background: var(--flag-blue);
   border-color: var(--flag-blue);
-  color: var(--white);
+  transform: translateY(-2px);                    /* lifts, even if done */
+  box-shadow: 0 6px 16px rgba(10, 49, 97, 0.35);  /* instead of sinking */
 }
 
 /* On a filled card (green, red or blue): near-white small text */
@@ -260,9 +440,8 @@ body {
 .step-card.done .step-status,
 .step-card.flagged .card-type,
 .step-card.flagged .step-status,
-.step-card.active .card-type,
 .step-card.active .step-status {
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--text-on-color);
 }
 
 /* On a filled card: see-through white bar, solid white when done */
@@ -280,14 +459,20 @@ body {
   background: linear-gradient(90deg, var(--white) 50%, var(--bar-on-color) 50%);
 }
 
-/* ===== Sidebar ===== */
-/* Flex column so the logo can be pushed to the bottom */
-.sidebar {
+
+/* ===== 5d. Sidebar: feedback buttons, note and logo ===== */
+
+/* "Report bug" and "Suggest new feature", stacked, full width */
+.sidebar-actions {
   display: flex;
   flex-direction: column;
-  background: var(--panel);
-  border-right: 1px solid var(--border);
-  padding: 20px 16px;
+  gap: 25px;
+}
+
+.sidebar-actions .btn {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 0.85rem;
 }
 
 /* margin-top: auto takes up all leftover space above the logo,
@@ -298,6 +483,136 @@ body {
   width: 100%;
   max-width: 180px;
   height: auto;
+}
+
+.sidebar-note {
+  margin-top: 24px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+
+/* ===== 5e. Middle box: the selected step ===== */
+
+/* The big white box (holds the step, or the summary) */
+.form-panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+.step-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* The step's drop-down */
+.step-detail {
+  border: 2px solid var(--border); /* thickness, style, color */
+  border-radius: var(--radius-small);
+  background: var(--white);
+}
+
+/* Open (it's the selected step): blue edge, like the selected card */
+.step-detail[open] {
+  border-color: var(--flag-blue);
+}
+
+/* Clickable title row: step name on the left, status on the right */
+.step-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.step-summary:hover {
+  background: var(--hover);
+}
+
+/* "Now" in dark text, "✓ Done" in green, "! Not confirmed" in red */
+.step-summary-status {
+  font-size: 0.75rem;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.step-detail.done .step-summary-status {
+  color: var(--done-green);
+}
+
+.step-detail.flagged .step-summary-status {
+  color: var(--flag-red);
+}
+
+/* Inside the drop-down: what to do, note, link button, question, box */
+.step-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* button only as wide as its text */
+  gap: 12px;
+  padding: 0 14px 14px;
+}
+
+.step-todo {
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* "This step can wait…" note: soft gray box, so it reads as a tip,
+   not a warning (red and green already mean something on this page) */
+.step-note {
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: var(--radius-small);
+  background: var(--panel);
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* The question and follow-up box fill the drop-down's width */
+.step-question,
+.step-more {
+  align-self: stretch;
+}
+
+/* Empty spot (e.g. step 1 has no question): take up no space */
+.step-question:empty {
+  display: none;
+}
+
+
+/* ===== 5f. Middle box: the summary ===== */
+
+.output-box {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+/* Keeps the summary's line breaks; wraps long lines */
+.output-text {
+  margin: 0;
+  font-family: inherit;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+
+/* ===== 5g. Forms to give to the client (box below the steps) ===== */
+
+/* Space between the steps (or summary) box and this box */
+.forms-panel {
+  margin-top: 16px;
 }
 
 /* Form name (checkbox) on the left, "Open" link on the right */
@@ -323,247 +638,139 @@ body {
   text-decoration: underline;
 }
 
-.sidebar-hint {
+/* "Remove" on added forms: a quiet text button, not a big one */
+.form-remove {
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  font-size: 0.8rem;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.form-remove:hover {
+  color: var(--text);
+  text-decoration: underline;
+}
+
+/* Small gray note under the buttons */
+.forms-hint {
   margin: 8px 0 0;
   font-size: 0.75rem;
   color: var(--muted);
 }
 
-.sidebar-note {
-  margin-top: 24px;
-  font-size: 0.8rem;
-  color: var(--muted);
-}
 
-/* ===== Center column: the big box ===== */
-.main {
-  padding: 24px;
-}
-
-.section-title {
-  font-size: 1rem;
-  margin: 0 0 12px;
-}
-
-.form-panel {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px;
-}
-
-/* ----- Step drop-downs ----- */
-.step-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.step-detail {
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--white);
-}
-
-/* The open drop-down gets a blue edge, like the selected card */
-.step-detail[open] {
-  border-color: var(--flag-blue);
-}
-
-/* Clickable title row: step name on the left, status on the right */
-.step-summary {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.step-summary:hover {
-  background: var(--flag-blue-hover);
-}
-
-.step-summary-status {
+/* "your file" / "Google Drive" after an added form's name */
+.form-source {
   font-size: 0.75rem;
-  color: var(--flag-blue);
-  white-space: nowrap;
-}
-
-/* "✓ Done" in green and "! Not confirmed" in red, to match the cards */
-.step-detail.done .step-summary-status {
-  color: var(--done-green);
-}
-
-.step-detail.flagged .step-summary-status {
-  color: var(--flag-red);
-}
-
-/* Inside an open drop-down: what to do, link button, checkbox */
-.step-body {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start; /* button only as wide as its text */
-  gap: 12px;
-  padding: 0 14px 14px;
-}
-
-.step-todo {
-  margin: 0;
-  line-height: 1.5;
-}
-
-/* "This step can wait…" note: soft gray box, so it reads as a tip,
-   not a warning (red and green already mean something on this page) */
-.step-note {
-  margin: 0;
-  padding: 8px 12px;
-  border-radius: 6px;
-  background: var(--panel);
-  font-size: 0.85rem;
   color: var(--muted);
 }
 
-/* Make sure [hidden] wins over the display rules above */
-.step-note[hidden] {
-  display: none;
-}
-
-/* The question and follow-up box fill the drop-down's width */
-.step-question,
-.step-more {
-  align-self: stretch;
-}
-
-/* [hidden] normally hides things, but display rules can override it.
-   This makes sure a hidden follow-up box really disappears. */
-.step-more[hidden] {
-  display: none;
-}
-
-/* Empty spots (e.g. step 1 has no question) take up no space */
-.step-question:empty {
-  display: none;
-}
-
-/* Form fields: label on top, box below */
-.field {
+/* "Add file from computer" and "Add Google Drive link" side by side
+   (they wrap on narrow screens) */
+.form-add {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
 }
 
-.field label {
-  font-size: 0.85rem;
-  font-weight: 600;
+
+/* ===== 5h. Dialogs ("Add new client", "Add Google Drive link") ===== */
+
+/* The box in the middle of the screen */
+.dialog {
+  width: min(400px, 90vw); /* 400px, or 90% of a narrow screen */
+  padding: 20px;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--text);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
-.field input,
-.field select {
+/* The grayed-out page behind it */
+.dialog::backdrop {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+/* Space between two fields in a dialog */
+.dialog-field {
+  margin-top: 12px;
+}
+
+/* Big typing box in a dialog: full width, can be dragged taller */
+.field textarea {
   padding: 10px;
   border: 1px solid var(--border);
-  border-radius: 6px;
-  background: var(--white);
+  border-radius: var(--radius-small);
   font: inherit;
+  resize: vertical;
 }
 
-.field input:focus,
-.field select:focus {
+.field textarea:focus {
   outline: 2px solid var(--flag-blue);
   border-color: transparent;
 }
 
-/* Plain blue button (also used for the <a> link buttons) */
-.btn {
-  display: inline-block;
-  padding: 10px 16px;
-  border: none;
-  border-radius: 6px;
-  background: var(--flag-blue);
-  color: var(--white);
-  font: inherit;
-  font-weight: 600;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.btn:hover {
-  opacity: 0.9;
-}
-
-/* ----- Checkboxes ----- */
-
-/* fieldset groups checkboxes; remove its default border and spacing */
-.checklist-group {
-  border: none;
-  padding: 0;
-  margin: 0;
-  min-width: 0; /* lets it shrink inside narrow columns */
-}
-
-.checklist-heading {
-  padding: 0;
-  margin: 0 0 8px;
-  font-size: 0.85rem;
-  font-weight: 600;
-}
-
-.checklist {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-/* One clickable row: checkbox + text */
-.checklist-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 8px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.checklist-item:hover {
-  background: var(--flag-blue-hover);
-}
-
-.checklist-item input {
-  margin-top: 3px;
-  accent-color: var(--flag-blue); /* blue checkmarks */
-}
-
-/* ===== Output panel ===== */
-.output {
+/* "This clears what you've entered…": same soft box as the step notes */
+.dialog-warning {
+  margin: 0 0 14px;
+  padding: 8px 12px;
+  border-radius: var(--radius-small);
   background: var(--panel);
-  border-left: 1px solid var(--border);
-  padding: 24px 16px;
-}
-
-.output-box {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 12px;
-  margin-bottom: 12px;
-}
-
-
-/* Keeps the summary's line breaks; wraps long lines */
-.output-text {
-  margin: 0;
-  font-family: inherit;
   font-size: 0.85rem;
-  line-height: 1.5;
-  white-space: pre-wrap;
-  word-wrap: break-word;
 }
 
-/* ===== Tablet: hide sidebar, 2 columns ===== */
+.dialog-note {
+  margin: 8px 0 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* Cancel and Add on the right */
+.dialog-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+
+/* ===== 6. Screen sizes ===== */
+
+/* Desktop: app-style layout. The page is exactly the window's height and
+   never scrolls as a whole, so clicking between steps can't make it jump.
+   The top (title + step cards) stays put; the middle column and sidebar
+   scroll on their own when their content doesn't fit.
+   Tablets and phones (below) keep normal page scrolling: not enough room. */
+@media (min-width: 1025px) {
+  .layout {
+    height: 100vh;   /* older browsers */
+    height: 100dvh;  /* the window's height, even if browser bars change it */
+  }
+
+  /* min-height: 0 lets a grid row shrink to fit and scroll, instead of
+     growing to fit its content (which would push the page taller) */
+  .main,
+  .sidebar {
+    min-height: 0;
+    overflow-y: auto;
+  }
+
+  /* Always keep room for the middle column's scrollbar, so the content
+     doesn't shift sideways when the scrollbar appears or disappears */
+  .main {
+    scrollbar-gutter: stable;
+  }
+}
+
+/* Tablet: hide the sidebar, middle box takes the full width */
 @media (max-width: 1024px) {
   .layout {
-    grid-template-columns: 1fr 320px;
+    grid-template-columns: 1fr;
   }
 
   .sidebar {
@@ -571,12 +778,8 @@ body {
   }
 }
 
-/* ===== Mobile: 1 column, output below ===== */
+/* Phone: less padding, cards in 5 rows of 2 */
 @media (max-width: 700px) {
-  .layout {
-    grid-template-columns: 1fr;
-  }
-
   .actions-top {
     padding: 16px;
   }
@@ -585,14 +788,7 @@ body {
     padding: 16px;
   }
 
-  /* Phones: 5 rows of 2 */
   .step-grid {
     grid-template-columns: repeat(2, 1fr);
-  }
-
-  .output {
-    border-left: none;
-    border-top: 1px solid var(--border);
-    padding: 16px;
   }
 }

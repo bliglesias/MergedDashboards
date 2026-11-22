@@ -29,6 +29,23 @@ const TEST_CLIENT = {
   facts: { llc: "yes", ein: "yes", tpt: "na", website: "testtacos.example" },
 };
 
+// A made-up client saved with this page's own fact names
+// (docs/intake-assistant-data.md). Has the older llc fact too, to check
+// the newer accFiling answer wins.
+const NEW_FACTS_CLIENT = {
+  id: "t2",
+  name: "Second Test Client (fictional)",
+  biz: "Test Bikes LLC",
+  facts: {
+    llc: "yes",
+    entityType: "LLC",
+    accFiling: "Submitted, waiting",
+    tptLicense: "Yes",
+    tptNumber: "TPT-123",
+    bankAccount: "Not a real answer", // not a menu option: must be ignored
+  },
+};
+
 // ===== HELPERS =====
 
 let chrome;          // the Chrome process
@@ -38,6 +55,7 @@ let nextId = 0;
 const waiting = {};  // replies we're waiting for, by message id
 const dialogs = [];  // pop-ups the page opened (confirm, "Leave site?")
 let dialogAnswer = true; // true = click OK / Leave, false = Cancel / Stay
+let promptText = "";     // what to type into a prompt() box
 
 const pause = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -112,7 +130,7 @@ async function openFreshPage() {
   await pause(300);
   await send("Page.navigate", { url: PAGE });
   await pause(300);
-  await inPage(`localStorage.setItem("sbdc-clients", ${JSON.stringify(JSON.stringify({ v: 1, list: [TEST_CLIENT] }))})`);
+  await inPage(`localStorage.setItem("sbdc-clients", ${JSON.stringify(JSON.stringify({ v: 1, list: [TEST_CLIENT, NEW_FACTS_CLIENT] }))})`);
   await send("Page.reload");
   await pause(800);
   dialogs.length = 0;
@@ -129,7 +147,7 @@ test.before(async () => {
 
   // Wait for Chrome to be ready, then connect to its tab
   let tab;
-  for (let tries = 0; tries < 40 && !tab; tries++) {
+  for (let tries = 0; tries < 120 && !tab; tries++) { // up to 30 seconds
     await pause(250);
     try {
       const tabs = await (await fetch(`http://127.0.0.1:${PORT}/json`)).json();
@@ -147,7 +165,7 @@ test.before(async () => {
     // A pop-up opened: note it and answer it
     if (message.method === "Page.javascriptDialogOpening") {
       dialogs.push(message.params.type);
-      send("Page.handleJavaScriptDialog", { accept: dialogAnswer });
+      send("Page.handleJavaScriptDialog", { accept: dialogAnswer, promptText });
     }
     if (waiting[message.id]) {
       waiting[message.id](message);
@@ -174,7 +192,7 @@ test("page shows 10 step cards and only step 1 in the middle box", async () => {
   assert.equal(await inPage(`document.querySelectorAll(".step-card").length`), 10);
   const shown = await inPage(`[...document.querySelectorAll(".step-detail")].filter((d) => !d.hidden).length`);
   assert.equal(shown, 1, "only one step should show at a time");
-  assert.equal(await text("#progress-count"), "0 of 10 done");
+  assert.equal(await text("#summary-card-count"), "0 of 10 done");
 });
 
 test("clicking a card shows that step instead", async () => {
@@ -190,7 +208,7 @@ test("typing a business name turns step 1 green and fills the summary", async ()
   await click("#more-1");
   await type("Sunny Day Tacos");
   assert.equal(await cardState(1), "done");
-  assert.equal(await text("#progress-count"), "1 of 10 done");
+  assert.equal(await text("#summary-card-count"), "1 of 10 done");
   assert.match(await text("#progress-summary"), /Choose a name: Sunny Day Tacos/);
 });
 
@@ -336,4 +354,230 @@ test("steps 7-10 say they can wait until the ACC filing is approved", async () =
 
   await pick("#question-6", NO_ACC_TEXT);
   assert.equal(await noteShown(8), false, "no ACC filing needed: no note either");
+});
+
+// ----- Reading this page's own fact names from a saved client -----
+
+test("a saved client's new fact names fill their steps (and win over older facts)", async () => {
+  await openFreshPage();
+  await pick("#client-pick", "1");
+  assert.equal(await value("#question-3"), "LLC");
+  assert.equal(await value("#question-6"), "Submitted, waiting", "accFiling wins over llc: yes");
+  assert.equal(await value("#question-7"), "Yes");
+  assert.equal(await value("#more-7"), "TPT-123");
+  assert.equal(await value("#question-10"), "", "an answer that isn't a menu option is ignored");
+});
+
+
+// ----- Top right: Add new client (placeholder) and whose profile it is -----
+
+test("top right shows an 'Add new client' button and the picked client's name", async () => {
+  await openFreshPage();
+  assert.equal(await text("#add-client"), "Add new client");
+  assert.equal(await text("#current-client"), "No client picked");
+
+  await pick("#client-pick", "0");
+  assert.equal(await text("#current-client"), "Test Client (fictional)", "name only, no business");
+
+  await pick("#client-pick", "");
+  assert.equal(await text("#current-client"), "No client picked");
+});
+
+const dialogOpen = () => inPage(`document.querySelector("#new-client-dialog").open`);
+
+test("'Add new client' opens a box; Add clears the steps and shows the name", async () => {
+  await openFreshPage();
+  await pick("#client-pick", "0"); // start with a saved client's answers
+  assert.equal(await cardState(6), "done");
+
+  await click("#add-client");
+  assert.equal(await dialogOpen(), true, "the box opens");
+  assert.equal(await inPage(`document.querySelector("#new-client-warning").hidden`), false, "warns: there's work to lose");
+  assert.deepEqual(dialogs, [], "no browser pop-ups anymore");
+
+  await click("#new-client-name");
+  await type("Ana Ruiz");
+  await pressEnter(); // Enter in the name box = Add
+  await pause(200);
+  assert.equal(await dialogOpen(), false, "the box closes");
+  assert.equal(await text("#current-client"), "Ana Ruiz");
+  assert.equal(await value("#client-pick"), "", "client menu goes back to 'Choose a client'");
+  assert.equal(await cardState(6), "", "steps are cleared");
+  assert.match(await text("#progress-summary"), /Client: Ana Ruiz/);
+});
+
+test("'Add new client': Cancel changes nothing, and an empty name can't be added", async () => {
+  await openFreshPage();
+  await pick("#client-pick", "0");
+
+  await click("#add-client");
+  await click("#new-client-name");
+  await type("Ana Ruiz");
+  await click("#new-client-cancel");
+  await pause(200);
+  assert.equal(await dialogOpen(), false);
+  assert.equal(await text("#current-client"), "Test Client (fictional)", "Cancel keeps the old client");
+  assert.equal(await cardState(6), "done", "nothing was cleared");
+
+  await click("#add-client");
+  await click("#new-client-dialog button[value=add]"); // Add with an empty name
+  await pause(200);
+  assert.equal(await dialogOpen(), true, "stays open: the name is required");
+});
+
+test("'Add new client' on an empty page: no warning in the box", async () => {
+  await openFreshPage();
+  await click("#add-client");
+  assert.equal(await inPage(`document.querySelector("#new-client-warning").hidden`), true);
+});
+
+// ----- "In summary" card -----
+
+test("the 'In summary' card shows the summary in the middle, and a step card brings the steps back", async () => {
+  await openFreshPage();
+  const hidden = (id) => inPage(`document.querySelector("#${id}").hidden`);
+  assert.equal(await hidden("summary-panel"), true, "summary hidden at first");
+
+  await pick("#question-9", "Yes");
+  assert.equal(await text("#summary-card-count"), "1 of 10 done");
+
+  await click("#summary-card");
+  assert.equal(await hidden("summary-panel"), false, "summary shows");
+  assert.equal(await hidden("steps-panel"), true, "steps hide");
+  assert.equal(await inPage(`document.querySelector("#summary-card").classList.contains("active")`), true, "summary card is blue");
+  assert.equal(await inPage(`document.querySelectorAll(".step-card.active").length`), 0, "no step card is blue");
+
+  await click("#step-grid li:nth-child(3) .step-card");
+  assert.equal(await hidden("summary-panel"), true, "summary hides again");
+  assert.equal(await hidden("steps-panel"), false);
+  assert.equal(await inPage(`document.querySelector("#summary-card").classList.contains("active")`), false);
+});
+
+// ----- Forms to give to the client (sidebar) -----
+
+test("the sidebar lists the real forms, and ticked ones show in the summary", async () => {
+  await openFreshPage();
+  const names = await inPage(`[...document.querySelectorAll("#form-list .form-name")].map((n) => n.textContent)`);
+  assert.deepEqual(names, ["Business Model Canvas", "Loan document checklist", "Assets and equipment list"]);
+  assert.match(await inPage(`document.querySelector("#form-list .form-open").href`), /pages\/bmc\.html$/);
+  assert.match(await text("#progress-summary"), /Forms given to client: none yet/);
+
+  await click("#form-list .form-row:nth-child(2) input");
+  assert.match(await text("#progress-summary"), /Forms given to client: Loan document checklist/);
+
+  // Switching clients clears the ticks too
+  dialogAnswer = true;
+  await pick("#client-pick", "0");
+  assert.equal(await inPage(`document.querySelectorAll("#form-list input:checked").length`), 0);
+});
+
+test("'Add file from computer' adds the file to the list (nothing uploaded)", async () => {
+  await openFreshPage();
+  // Make a small made-up file and hand it to the hidden file picker
+  const tempFile = path.join(os.tmpdir(), "Blank test form.pdf");
+  fs.writeFileSync(tempFile, "%PDF-1.4 made-up test file");
+  const { root } = (await send("DOM.getDocument")).result;
+  const { nodeId } = (await send("DOM.querySelector", { nodeId: root.nodeId, selector: "#form-file" })).result;
+  await send("DOM.setFileInputFiles", { nodeId, files: [tempFile] });
+  await pause(200);
+  fs.rmSync(tempFile);
+
+  const last = `document.querySelector("#form-list .form-row:last-child")`;
+  assert.equal(await inPage(`${last}.querySelector(".form-name").textContent`), "Blank test form.pdf");
+  assert.equal(await inPage(`${last}.querySelector(".form-source").textContent`), "your file");
+  assert.match(await inPage(`${last}.querySelector(".form-open").href`), /^blob:/, "a temporary link in the browser, not an upload");
+});
+
+test("'Add Google Drive link' only takes Drive links, then adds them to the list", async () => {
+  await openFreshPage();
+  const driveOpen = () => inPage(`document.querySelector("#drive-dialog").open`);
+
+  await click("#add-drive-link");
+  assert.equal(await driveOpen(), true);
+  await click("#drive-name");
+  await type("Startup worksheet");
+  await click("#drive-link");
+  await type("https://example.com/form");
+  await click("#drive-dialog button[value=add]");
+  await pause(200);
+  assert.equal(await driveOpen(), true, "not a Drive link: stays open");
+
+  await inPage(`document.querySelector("#drive-link").value = ""`);
+  await click("#drive-link");
+  await type("https://drive.google.com/file/d/made-up-id/view");
+  await click("#drive-dialog button[value=add]");
+  await pause(200);
+  assert.equal(await driveOpen(), false, "Drive link: added and closed");
+
+  const last = `document.querySelector("#form-list .form-row:last-child")`;
+  assert.equal(await inPage(`${last}.querySelector(".form-name").textContent`), "Startup worksheet");
+  assert.equal(await inPage(`${last}.querySelector(".form-source").textContent`), "Google Drive");
+  assert.equal(await inPage(`${last}.querySelector(".form-open").href`), "https://drive.google.com/file/d/made-up-id/view");
+});
+
+// ----- App-style layout (desktop) -----
+
+test("desktop: the page never scrolls, and switching steps doesn't change its height", async () => {
+  await openFreshPage();
+  const pageHeight = () => inPage(`document.documentElement.scrollHeight`);
+  const windowHeight = await inPage(`window.innerHeight`);
+  assert.equal(await pageHeight(), windowHeight, "page is exactly the window's height");
+
+  const heights = new Set();
+  for (const n of [1, 5, 7, 10]) {
+    await click(`#step-grid li:nth-child(${n}) .step-card`);
+    heights.add(await pageHeight());
+  }
+  await click("#summary-card");
+  heights.add(await pageHeight());
+  assert.equal(heights.size, 1, "same height for every step and the summary");
+  assert.equal(await inPage(`getComputedStyle(document.querySelector(".main")).overflowY`), "auto", "the middle column scrolls on its own");
+});
+
+test("added forms can be removed; the site's own forms can't", async () => {
+  await openFreshPage();
+  const removable = () => inPage(`[...document.querySelectorAll("#form-list .form-remove")].map((b) => !b.hidden)`);
+  assert.deepEqual(await removable(), [false, false, false], "no Remove on the site's forms");
+
+  await inPage(`session.forms.push({ name: "Added form", url: "https://drive.google.com/x", given: true, from: "drive" }); renderFormList(); updatePage();`);
+  assert.deepEqual(await removable(), [false, false, false, true]);
+  assert.match(await text("#progress-summary"), /Forms given to client: Added form/);
+
+  await click("#form-list .form-row:last-child .form-remove");
+  assert.equal(await inPage(`document.querySelectorAll("#form-list .form-row").length`), 3);
+  assert.match(await text("#progress-summary"), /Forms given to client: none yet/, "gone from the summary too");
+});
+
+// ----- Report bug / Suggest new feature -----
+
+test("'Report bug' and 'Suggest new feature' open the box with their own wording", async () => {
+  await openFreshPage();
+  const open = () => inPage(`document.querySelector("#feedback-dialog").open`);
+
+  await click('.sidebar-actions [data-kind="bug"]');
+  assert.equal(await open(), true);
+  assert.equal(await text("#feedback-title"), "Report a bug");
+  assert.equal(await inPage(`document.querySelector("#feedback-email").hidden`), true, "no email address set: no Email button");
+
+  await click("#feedback-summary");
+  await type("Card stays red");
+  const link = await inPage(`document.querySelector("#feedback-github").href`);
+  assert.match(link, /github\.com\/bliglesias\/MergedDashboards\/issues\/new\?title=Bug%3A%20Card%20stays%20red/);
+  assert.match(link, /labels=bug/);
+  await click("#feedback-cancel");
+  assert.equal(await open(), false);
+
+  await click('.sidebar-actions [data-kind="feature"]');
+  assert.equal(await text("#feedback-title"), "Suggest a feature");
+  assert.equal(await value("#feedback-summary"), "", "starts empty each time");
+  await click("#feedback-cancel");
+});
+
+test("the GitHub link won't go anywhere without a summary", async () => {
+  await openFreshPage();
+  await click('.sidebar-actions [data-kind="bug"]');
+  await click("#feedback-github");
+  await pause(200);
+  assert.equal(await text("#feedback-status"), "Add a short summary first.");
+  assert.equal(await inPage(`document.querySelector("#feedback-dialog").open`), true);
 });

@@ -5,183 +5,12 @@
 //   that step in the middle box. A card shows the step's answer.
 // - Middle: the selected step: what to do, a link to the official page,
 //   a first question (a menu) and, for some answers, a follow-up box.
-// - Right: "In summary", one plain-text line per step.
+// - "In summary" card (top right): shows the summary in the middle box.
 // Nothing is saved: everything lives in `session` and clears on refresh.
 
 // ===== DATA =====
-
-// One object per step, in order.
-// `title`: full name (drop-down). `short`: card label and summary label.
-// `todo`: what the client does. `url` / `linkText`: the official page.
-//
-// `question` (optional): the first question, shown as a menu.
-//   `options`: the answers to pick from.
-//   `done`: which answers mean the step is finished.
-// `more` (optional): the follow-up box, e.g. "Entity ID".
-//   `showWhen`: the answers that make it appear. Without `question`,
-//   it's always shown and typing in it finishes the step.
-//   `type`: "text" (default) or "date".
-//   `expires` (dates only): once the date has passed, the step isn't done.
-
-// Sole proprietorships and general partnerships don't file with the ACC,
-// so steps 4, 5 and 6 can be answered with this.
-const NO_ACC = "Not needed (no ACC filing)";
-
-// Step 3 answers that mean "no ACC filing". Picking one fills steps 4 and 6
-// with NO_ACC (step 5 is left alone: they may still want a trade name).
-const NO_ACC_TYPES = ["Sole proprietorship (no ACC filing)", "General partnership (no ACC filing)"];
-const NO_ACC_STEPS = [4, 6];
-
-// The ACC says steps 7 to 10 can wait until the filing (step 6) is
-// approved. Those steps show WAIT_NOTE until step 6 is done.
-const ACC_FILING_STEP = 6;
-const AFTER_APPROVAL_STEPS = [7, 8, 9, 10];
-const WAIT_NOTE = "This step can wait until the ACC approves the filing in step 6.";
-
-const steps = [
-  {
-    title: "Choose A Name",
-    short: "Choose a name",
-    todo: "Pick a name and search online to make sure no one else is using it.",
-    url: "https://www.sba.gov/counseling/launch-your-business/#business-name",
-    linkText: "SBA: choose your business name",
-    more: { label: "Business name", placeholder: "e.g. Sunny Day Tacos" },
-  },
-  {
-    title: "Purchase A Domain Name or See Numbers 3, 4, and 5 Below",
-    short: "Domain name",
-    todo: "Optional, and can be done now or later. Owning a domain doesn't give any rights to the business name.",
-    url: "https://lookup.icann.org/en",
-    linkText: "ICANN: look up a domain",
-    question: {
-      label: "Bought a domain?",
-      options: ["Yes", "Later"],
-      done: ["Yes"], // "Later" isn't confirmed, so the card turns red
-    },
-    more: { label: "Domain name", placeholder: "e.g. sunnydaytacos.com", showWhen: ["Yes"] },
-  },
-  {
-    title: "Choose An Entity Type",
-    short: "Entity type",
-    todo: "LLC, corporation or nonprofit corporation. \"S corp\" and \"C corp\" are federal tax labels, not entity types. The ACC can't advise which one to pick.",
-    url: "https://www.sba.gov/counseling/launch-your-business/#business-structure",
-    linkText: "SBA: choose a business structure",
-    question: {
-      label: "Entity type",
-      options: [
-        "LLC",
-        "Corporation",
-        "Nonprofit corporation",
-        "Sole proprietorship (no ACC filing)",
-        "General partnership (no ACC filing)",
-      ],
-      done: [
-        "LLC",
-        "Corporation",
-        "Nonprofit corporation",
-        "Sole proprietorship (no ACC filing)",
-        "General partnership (no ACC filing)",
-      ],
-    },
-  },
-  {
-    title: "Check Name Availability With the Arizona Corporation Commission",
-    short: "Name availability",
-    todo: "On the Arizona Business Center: File, then Name, then Check Name Availability.",
-    url: "https://arizonabusinesscenter.azcc.gov/EntitySearch/Index",
-    linkText: "ACC: entity search",
-    question: {
-      label: "Is the name available?",
-      options: ["Available", "Taken, pick another name", NO_ACC],
-      done: ["Available", NO_ACC], // a taken name means they still need a new one
-    },
-  },
-  {
-    title: "Secure the Name or Form the Entity - You Choose",
-    short: "Secure or form",
-    todo: "Three choices: reserve the name with the ACC (lasts 120 days), register a trade name with the Secretary of State (lasts 5 years), or go straight to forming the entity.",
-    url: "https://arizonabusinesscenter.azcc.gov/",
-    linkText: "Arizona Business Center (ACC online filing)",
-    question: {
-      label: "What did they choose?",
-      options: ["Reserved the name", "Registered a trade name", "Formed the entity", NO_ACC],
-      done: ["Reserved the name", "Registered a trade name", "Formed the entity", NO_ACC],
-    },
-    // expires: once this date has passed, the step turns red again
-    more: { label: "Reservation ends", type: "date", showWhen: ["Reserved the name"], expires: true },
-  },
-  {
-    title: "File with the Arizona Corporation Commission Corporations Division",
-    short: "File with ACC",
-    todo: "Submit Articles of Organization (LLC) or Articles of Incorporation (corporation), online if possible. The ACC sends an approval letter, or a letter explaining what to fix.",
-    url: "https://arizonabusinesscenter.azcc.gov/",
-    linkText: "Arizona Business Center (ACC online filing)",
-    question: {
-      label: "Filed with the ACC?",
-      options: ["Not yet", "Submitted, waiting", "Rejected, fix and resubmit", "Approved", NO_ACC],
-      done: ["Approved", NO_ACC],
-    },
-    more: { label: "Entity ID", placeholder: "e.g. 23673486", showWhen: ["Approved"] },
-  },
-  {
-    title: "Arizona Department of Revenue",
-    short: "AZ Dept. of Revenue",
-    todo: "They might need a transaction privilege tax (TPT) license, usually if they sell goods or taxable services.",
-    url: "https://azdor.gov/business/transaction-privilege-tax",
-    linkText: "ADOR: transaction privilege tax",
-    question: {
-      label: "Have a TPT license?",
-      options: ["Yes", "Not yet", "Not needed", "Not sure"],
-      done: ["Yes", "Not needed"],
-    },
-    more: { label: "TPT license number", placeholder: "From ADOR", showWhen: ["Yes"] },
-  },
-  {
-    title: "City or County Taxes and Business Licensing",
-    short: "Local taxes & license",
-    todo: "Register with the city (or the county, outside city limits) for local taxes and any business licenses. The ACC doesn't issue licenses.",
-    url: "https://www.azcommerce.com/small-business/quick-links/business-licensing",
-    linkText: "Arizona Commerce Authority: business licensing",
-    question: {
-      label: "Have a city or county license?",
-      options: ["Yes", "Not yet", "Not needed", "Not sure"],
-      done: ["Yes", "Not needed"],
-    },
-    // One box for every city: several are separated with ";"
-    more: {
-      label: "City and license number (separate several with ;)",
-      placeholder: "e.g. Tempe #12345; Mesa #67890",
-      showWhen: ["Yes"],
-    },
-  },
-  {
-    title: "Federal EIN or TIN - Internal Revenue Service",
-    short: "Federal EIN / TIN",
-    todo: "Apply for an Employer Identification Number (EIN) from the IRS. It's free.",
-    url: "https://www.irs.gov/businesses/small-businesses-self-employed/get-an-employer-identification-number",
-    linkText: "IRS: get an EIN",
-    question: {
-      label: "Have an EIN?",
-      // Some sole proprietors with no employees use their Social Security number
-      options: ["Yes", "Not yet", "Not needed (uses SSN)"],
-      done: ["Yes", "Not needed (uses SSN)"],
-    },
-    more: { label: "EIN", placeholder: "e.g. 12-3456789", showWhen: ["Yes"] },
-  },
-  {
-    title: "Business Bank Account",
-    short: "Bank account",
-    todo: "Open a bank account just for the business. The ACC won't accept temporary checks without a printed name and address.",
-    url: "https://www.sba.gov/counseling/launch-your-business/#bank-account",
-    linkText: "SBA: open a business bank account",
-    question: {
-      label: "Business bank account open?",
-      options: ["Yes", "Not yet"],
-      done: ["Yes"],
-    },
-    more: { label: "Bank", placeholder: "e.g. Desert Community Bank", showWhen: ["Yes"] },
-  },
-];
+// The steps, answers, saved-client names and forms list are in
+// Intake_assistant_fields.js (loaded first). This file is the page code.
 
 // Shared state, kept in memory only (clears on refresh, nothing is saved).
 // One entry per step, in the same order as `steps`.
@@ -189,21 +18,16 @@ const session = {
   selected: 0,                                     // step showing in the middle box
   answers: steps.map(function () { return ""; }),  // first-question answers
   details: steps.map(function () { return ""; }),  // follow-up box values
-  client: null,                                    // saved client picked at the top
+  client: null,                                    // saved client picked, or a new one
+  menuChoice: "",                                  // last choice in the client menu
+  showSummary: false,                              // true: middle box shows the summary
+  // The forms list: the site's forms from FORMS, plus any files or Drive
+  // links added on the page. `given`: ticked (given to the client).
+  // `from`: "site", "computer" or "drive".
+  forms: FORMS.map(function (form) {
+    return { name: form.name, url: form.url, given: false, from: "site" };
+  }),
 };
-
-// Where the Toolbox's Clients page keeps its list in the browser.
-// This page only READS it; it never writes to it.
-const CLIENTS_KEY = "sbdc-clients";
-
-// Which saved answer fills which step's first question. `step` counts from 1.
-// `map`: the client's saved answer -> the answer to pick here.
-// e.g. a saved tpt of "na" (not applicable) picks "Not needed" on step 7.
-const AUTOFILL = [
-  { step: 6, fact: "llc", map: { yes: "Approved" } },
-  { step: 7, fact: "tpt", map: { yes: "Yes", no: "Not yet", na: "Not needed", unsure: "Not sure" } },
-  { step: 9, fact: "ein", map: { yes: "Yes", no: "Not yet" } },
-];
 
 // ===== HELPERS =====
 
@@ -305,7 +129,10 @@ function hasWork() {
   const anyDetail = session.details.some(function (detail) {
     return detail !== "";
   });
-  return anyAnswer || anyDetail;
+  const anyForm = session.forms.some(function (form) {
+    return form.given;
+  });
+  return anyAnswer || anyDetail || anyForm;
 }
 
 // How many steps are done
@@ -484,6 +311,123 @@ function goToNextStep(index) {
   firstField.focus();
 }
 
+// ===== FORMS TO GIVE TO THE CLIENT =====
+
+// Small label after an added form's name, so it's clear where it came from
+const FORM_SOURCE_LABELS = { computer: "your file", drive: "Google Drive" };
+
+// (Re)build the forms list from session.forms and the row template.
+// Runs again whenever a form is added.
+function renderFormList() {
+  const list = document.querySelector("#form-list");
+  const template = document.querySelector("#form-row-template");
+
+  list.replaceChildren(); // start from an empty list
+
+  session.forms.forEach(function (form) {
+    const copy = template.content.cloneNode(true);
+    const checkbox = copy.querySelector("input");
+
+    copy.querySelector(".form-name").textContent = form.name;
+    copy.querySelector(".form-source").textContent = FORM_SOURCE_LABELS[form.from] || "";
+    copy.querySelector(".form-open").href = form.url;
+    copy.querySelector(".form-open").setAttribute("aria-label", "Open " + form.name);
+    checkbox.checked = form.given;
+
+    // Ticked = given to the client. Shows up in the summary.
+    checkbox.addEventListener("change", function () {
+      form.given = checkbox.checked;
+      updatePage();
+    });
+
+    // Remove: only for forms added on the page, not the site's own
+    const removeButton = copy.querySelector(".form-remove");
+    removeButton.hidden = form.from === "site";
+    removeButton.setAttribute("aria-label", "Remove " + form.name);
+    removeButton.addEventListener("click", function () {
+      removeForm(form);
+    });
+
+    list.appendChild(copy);
+  });
+}
+
+// Take an added form off the list.
+function removeForm(form) {
+  // A file from the computer has a temporary browser link: free it
+  if (form.from === "computer") {
+    URL.revokeObjectURL(form.url);
+  }
+  session.forms = session.forms.filter(function (other) {
+    return other !== form;
+  });
+  renderFormList();
+  updatePage();
+}
+
+// "Add file from computer": pick files; they're added to the list.
+// The files stay in this browser tab: nothing is uploaded anywhere.
+// URL.createObjectURL makes a temporary link to the file that works
+// until the page is refreshed or closed.
+function setupAddFormFile() {
+  const fileInput = document.querySelector("#form-file");
+
+  // The real file picker is hidden; the button opens it
+  document.querySelector("#add-form-file").addEventListener("click", function () {
+    fileInput.click();
+  });
+
+  fileInput.addEventListener("change", function () {
+    for (const file of fileInput.files) {
+      session.forms.push({
+        name: file.name,
+        url: URL.createObjectURL(file),
+        given: false,
+        from: "computer",
+      });
+    }
+    fileInput.value = ""; // so the same file can be picked again later
+    renderFormList();
+    updatePage();
+  });
+}
+
+// "Add Google Drive link": a dialog asks for a name and a Drive link.
+// The page never talks to Google: opening the link takes the advisor to
+// Google Drive, where they sign in themselves.
+function setupAddDriveLink() {
+  const dialog = document.querySelector("#drive-dialog");
+  const nameBox = document.querySelector("#drive-name");
+  const linkBox = document.querySelector("#drive-link");
+
+  document.querySelector("#add-drive-link").addEventListener("click", function () {
+    nameBox.value = "";
+    linkBox.value = "";
+    dialog.returnValue = ""; // forget how it was closed last time
+    dialog.showModal();
+  });
+
+  document.querySelector("#drive-cancel").addEventListener("click", function () {
+    dialog.close();
+  });
+
+  // The form checks the link looks like a Google Drive or Docs link
+  // (the pattern on the input) before it lets "Add" close the dialog.
+  dialog.addEventListener("close", function () {
+    if (dialog.returnValue !== "add") {
+      return;
+    }
+    session.forms.push({
+      name: nameBox.value.trim(),
+      url: linkBox.value.trim(),
+      given: false,
+      from: "drive",
+    });
+    renderFormList();
+    updatePage();
+  });
+}
+
 // ===== SAVED CLIENTS =====
 
 // Read the saved client list. It's stored as JSON text, shaped like:
@@ -525,19 +469,16 @@ function setupClientPicker() {
     select.appendChild(copy);
   });
 
-  // Remember the last choice, so it can be put back if the user cancels
-  let lastChoice = select.value;
-
   select.addEventListener("change", function () {
     // Switching clients clears everything: ask first if there's work
     if (hasWork()) {
       const ok = confirm("Switching clients clears what you've entered for every step. Continue?");
       if (!ok) {
-        select.value = lastChoice; // put the menu back
+        select.value = session.menuChoice; // put the menu back
         return;
       }
     }
-    lastChoice = select.value;
+    session.menuChoice = select.value;
 
     // value is "" for "Choose a client"
     const client = select.value === "" ? null : clients[select.value];
@@ -553,6 +494,11 @@ function fillFromClient(client) {
   // Clear everything first, so switching clients doesn't mix them up
   session.answers = steps.map(function () { return ""; });
   session.details = steps.map(function () { return ""; });
+  // Untick every form (added files and links stay in the list)
+  session.forms.forEach(function (form) {
+    form.given = false;
+  });
+  renderFormList();
 
   if (client) {
     const facts = client.facts || {};
@@ -571,6 +517,23 @@ function fillFromClient(client) {
       const answer = rule.map[facts[rule.fact]];
       if (answer) {
         session.answers[rule.step - 1] = answer;
+      }
+    });
+
+    // Answers saved under this page's own fact names (see STEP_FACTS).
+    // An answer is only used if it's one of the step's menu options,
+    // so a typo in the record can't put a strange value in the menu.
+    Object.keys(STEP_FACTS).forEach(function (stepNumber) {
+      const index = stepNumber - 1;
+      const names = STEP_FACTS[stepNumber];
+      const savedAnswer = facts[names.answer];
+      const savedDetail = names.detail ? facts[names.detail] : "";
+
+      if (savedAnswer && steps[index].question.options.includes(savedAnswer)) {
+        session.answers[index] = savedAnswer;
+      }
+      if (savedDetail) {
+        session.details[index] = String(savedDetail).trim();
       }
     });
 
@@ -612,6 +575,7 @@ function fillFromClient(client) {
 // Called when a step card is clicked: show that step in the middle box.
 function selectStep(index) {
   session.selected = index;
+  session.showSummary = false; // a step takes the middle box back
 
   const allDetails = document.querySelectorAll(".step-detail");
   allDetails.forEach(function (details, i) {
@@ -630,7 +594,8 @@ function updateCards() {
     const done = isDone(index);
     const flagged = isFlagged(index);
     const isNow = index === now;
-    const isActive = index === session.selected;
+    // While the summary is showing, no step card is selected
+    const isActive = index === session.selected && !session.showSummary;
 
     card.classList.toggle("done", done);
     card.classList.toggle("flagged", flagged);
@@ -686,12 +651,6 @@ function updateDetails() {
   });
 }
 
-// "3 of 10 done" above the cards
-function updateCount() {
-  document.querySelector("#progress-count").textContent =
-    doneCount() + " of " + steps.length + " done";
-}
-
 // "In summary": one line per step, in plain text so it can be copied.
 // Unanswered steps show [Not answered]; red ones end in "(not confirmed)".
 function updateSummary() {
@@ -712,6 +671,15 @@ function updateSummary() {
     lines.push(step.short + ": " + answer);
   });
 
+  // Forms ticked in the sidebar
+  const given = session.forms.filter(function (form) {
+    return form.given;
+  }).map(function (form) {
+    return form.name;
+  });
+  lines.push("");
+  lines.push("Forms given to client: " + (given.length > 0 ? given.join(", ") : "none yet"));
+
   lines.push("");
   if (now === -1) {
     lines.push("All steps done.");
@@ -723,11 +691,36 @@ function updateSummary() {
   document.querySelector("#progress-summary").textContent = lines.join("\n");
 }
 
+// Top right: whose profile this is (the client's name only)
+function updateCurrentClient() {
+  const spot = document.querySelector("#current-client");
+  const name = session.client ? session.client.name : "";
+
+  spot.textContent = name || "No client picked";
+  spot.classList.toggle("empty", !name);
+}
+
+// Middle box: the steps panel or the summary panel, never both.
+// Also the "In summary" card: blue while the summary is showing.
+function updateSummaryCard() {
+  const card = document.querySelector("#summary-card");
+  const showing = session.showSummary;
+
+  document.querySelector("#steps-panel").hidden = showing;
+  document.querySelector("#summary-panel").hidden = !showing;
+
+  card.classList.toggle("active", showing);
+  card.setAttribute("aria-pressed", showing);
+  document.querySelector("#summary-card-count").textContent =
+    doneCount() + " of " + steps.length + " done";
+}
+
 function updatePage() {
   updateCards();
   updateDetails();
-  updateCount();
   updateSummary();
+  updateSummaryCard();
+  updateCurrentClient();
 }
 
 // ===== PROTECT THE WORK =====
@@ -742,6 +735,52 @@ function setupLeaveWarning() {
       event.preventDefault();
     }
   });
+}
+
+// "Add new client" button: opens the dialog box to type the client's
+// name. "Add" clears every step and shows the name at the top right.
+// The new client lives in memory only: nothing is saved.
+function setupAddClientButton() {
+  const button = document.querySelector("#add-client");
+  const dialog = document.querySelector("#new-client-dialog");
+  const nameBox = document.querySelector("#new-client-name");
+
+  // Open the dialog, empty, with the warning only if there's work to lose
+  button.addEventListener("click", function () {
+    nameBox.value = "";
+    document.querySelector("#new-client-warning").hidden = !hasWork();
+    dialog.returnValue = ""; // forget how it was closed last time
+    dialog.showModal();
+  });
+
+  // Cancel: close without adding
+  document.querySelector("#new-client-cancel").addEventListener("click", function () {
+    dialog.close();
+  });
+
+  // "close" fires however it closed: Add, Cancel or Esc.
+  // Only "add" (the Add button's value) starts the new client.
+  dialog.addEventListener("close", function () {
+    const name = nameBox.value.trim();
+    if (dialog.returnValue !== "add" || name === "") {
+      return;
+    }
+    startNewClient(name);
+  });
+}
+
+// Clear every step and start a client with this name.
+function startNewClient(name) {
+  fillFromClient(null); // clears every step
+  session.client = { name: name };
+
+  // The client menu goes back to "Choose a client"
+  document.querySelector("#client-pick").value = "";
+  session.menuChoice = "";
+  document.querySelector("#client-pick-note").textContent =
+    "New client: not saved anywhere. Refreshing the page clears it.";
+
+  updatePage();
 }
 
 // "Copy summary" button: puts the summary text on the clipboard.
@@ -766,11 +805,120 @@ function setupCopyButton() {
   });
 }
 
+// ===== REPORT BUG / SUGGEST NEW FEATURE =====
+
+// The wording for each kind of feedback. `label` is the GitHub label.
+const FEEDBACK_KINDS = {
+  bug: {
+    title: "Report a bug",
+    detailsLabel: "What happened, and what did you expect?",
+    prefix: "Bug",
+    label: "bug",
+  },
+  feature: {
+    title: "Suggest a feature",
+    detailsLabel: "What should it do, and how would it help?",
+    prefix: "Feature idea",
+    label: "enhancement",
+  },
+};
+
+// The report as a subject line and a body, from what's typed in the box.
+// Only what the person typed: nothing from the page (no client data).
+function buildReport(kind) {
+  const summary = document.querySelector("#feedback-summary").value.trim();
+  const details = document.querySelector("#feedback-details").value.trim();
+  return {
+    subject: FEEDBACK_KINDS[kind].prefix + ": " + summary,
+    body: (details || "(no details)") + "\n\nPage: Intake Assistant",
+  };
+}
+
+function setupFeedback() {
+  const dialog = document.querySelector("#feedback-dialog");
+  const summaryBox = document.querySelector("#feedback-summary");
+  const detailsBox = document.querySelector("#feedback-details");
+  const status = document.querySelector("#feedback-status");
+  const emailLink = document.querySelector("#feedback-email");
+  const githubLink = document.querySelector("#feedback-github");
+  let kind = "bug"; // which button opened the box
+
+  // Only show the ways to send that have an address in FEEDBACK
+  emailLink.hidden = FEEDBACK.email === "";
+  githubLink.hidden = FEEDBACK.githubRepo === "";
+
+  // Keep the Email and GitHub links up to date with what's typed.
+  // encodeURIComponent makes the text safe to put in a link.
+  function updateLinks() {
+    const report = buildReport(kind);
+    emailLink.href = "mailto:" + FEEDBACK.email +
+      "?subject=" + encodeURIComponent(report.subject) +
+      "&body=" + encodeURIComponent(report.body);
+    githubLink.href = "https://github.com/" + FEEDBACK.githubRepo + "/issues/new" +
+      "?title=" + encodeURIComponent(report.subject) +
+      "&body=" + encodeURIComponent(report.body) +
+      "&labels=" + FEEDBACK_KINDS[kind].label;
+  }
+
+  // Both sidebar buttons open the same box, with their own wording
+  document.querySelectorAll(".sidebar-actions [data-kind]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      kind = button.dataset.kind;
+      document.querySelector("#feedback-title").textContent = FEEDBACK_KINDS[kind].title;
+      document.querySelector("#feedback-details-label").textContent = FEEDBACK_KINDS[kind].detailsLabel;
+      summaryBox.value = "";
+      detailsBox.value = "";
+      status.textContent = "";
+      updateLinks();
+      dialog.showModal();
+    });
+  });
+
+  summaryBox.addEventListener("input", updateLinks);
+  detailsBox.addEventListener("input", updateLinks);
+
+  // Email and GitHub need a summary first
+  [emailLink, githubLink].forEach(function (link) {
+    link.addEventListener("click", function (event) {
+      if (summaryBox.value.trim() === "") {
+        event.preventDefault(); // don't follow the link
+        status.textContent = "Add a short summary first.";
+        summaryBox.focus();
+      }
+    });
+  });
+
+  document.querySelector("#feedback-copy").addEventListener("click", async function () {
+    const report = buildReport(kind);
+    try {
+      await navigator.clipboard.writeText(report.subject + "\n\n" + report.body);
+      status.textContent = "Copied. Paste it into an email or message.";
+    } catch (error) {
+      status.textContent = "Couldn't copy. Select the text and copy it instead.";
+    }
+  });
+
+  document.querySelector("#feedback-cancel").addEventListener("click", function () {
+    dialog.close();
+  });
+}
+
 // ===== START =====
 
 renderStepCards();
 renderStepDetails();
+renderFormList();
+setupAddFormFile();
+setupAddDriveLink();
+setupFeedback();
 setupClientPicker();
 setupLeaveWarning();
 setupCopyButton();
+setupAddClientButton();
+
+// "In summary" card: show the summary in the middle box
+document.querySelector("#summary-card").addEventListener("click", function () {
+  session.showSummary = true;
+  updatePage();
+});
 selectStep(0); // show step 1 to start

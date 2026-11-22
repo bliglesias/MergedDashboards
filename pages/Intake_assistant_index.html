@@ -5,18 +5,43 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Intake Assistant</title>
   <link rel="stylesheet" href="../css/Intake_assistant_styles.css">
-  <!-- defer: download now, run after the HTML is ready -->
+  <!-- defer: download now, run after the HTML is ready, in this order.
+       Intake_assistant_fields.js: the data (steps, answers, client field
+       names, forms). Intake_assistant_app.js: the page code that uses it. -->
+  <script src="../js/Intake_assistant_fields.js" defer></script>
   <script src="../js/Intake_assistant_app.js" defer></script>
 </head>
 <body>
   <!-- The whole page is one CSS Grid:
        row 1: page title + the 10 step cards (full width)
-       row 2: sidebar | step drop-downs | output -->
+       row 2: sidebar | middle box (a step, or the summary) -->
   <div class="layout">
 
     <!-- ===== ROW 1: page title + step cards (the progress map) ===== -->
     <section class="actions-top" aria-labelledby="progress-title">
-      <h1 class="page-title">Intake Assistant</h1>
+      <!-- Title on the left; "In summary", "Add new client" and whose
+           profile this is on the right -->
+      <div class="page-head">
+        <h1 class="page-title">Intake Assistant</h1>
+
+        <div class="page-head-right">
+          <!-- "In summary" card: clicking it shows the summary in the
+               middle box instead of a step. Blue while it's showing. -->
+          <button class="card summary-card" type="button" id="summary-card" aria-pressed="false">
+            <span class="card-type">In summary</span>
+            <span class="card-title" id="summary-card-count">0 of 10 done</span>
+          </button>
+
+          <!-- Asks for a name, clears every step and starts a new client
+               (memory only, not saved). Later it could open the Toolbox's
+               Client Intake instead, so the client gets saved there. -->
+          <button class="btn btn-outline" type="button" id="add-client">Add new client</button>
+
+          <!-- The picked client's name. JS fills it. aria-live: screen
+               readers announce it when it changes. -->
+          <span class="current-client" id="current-client" aria-live="polite">No client picked</span>
+        </div>
+      </div>
 
       <!-- Pick a client saved on the Toolbox's Clients page. Their answers
            (LLC, EIN, TPT, website) tick the matching steps. JS fills the list. -->
@@ -34,10 +59,9 @@
         <option></option>
       </template>
 
-      <!-- Title on the left, "3 of 10 done" on the right -->
+      <!-- The "3 of 10 done" count is on the "In summary" card, top right -->
       <div class="page-progress-text">
         <h2 class="page-progress-title" id="progress-title">Business startup progress</h2>
-        <span class="page-progress-count" id="progress-count">0 of 10 done</span>
       </div>
 
       <!-- Empty list: Intake_assistant_app.js fills it from the `steps`
@@ -64,32 +88,13 @@
       </template>
     </section>
 
-    <!-- ===== LEFT: sidebar (client forms checklist + logo) ===== -->
+    <!-- ===== LEFT: sidebar (feedback buttons, note, logo) ===== -->
     <aside class="sidebar">
-      <!-- Forms to give to the client. Later these will come from Google Drive;
-           for now: placeholder names, and "Open" links that go nowhere. -->
-      <fieldset class="checklist-group">
-        <legend class="checklist-heading">Forms to give to client</legend>
-        <div class="checklist">
-          <div class="form-row">
-            <label class="checklist-item"><input type="checkbox"><span>Form 1</span></label>
-            <a class="form-open" href="#">Open</a>
-          </div>
-          <div class="form-row">
-            <label class="checklist-item"><input type="checkbox"><span>Form 2</span></label>
-            <a class="form-open" href="#">Open</a>
-          </div>
-          <div class="form-row">
-            <label class="checklist-item"><input type="checkbox"><span>Form 3</span></label>
-            <a class="form-open" href="#">Open</a>
-          </div>
-          <div class="form-row">
-            <label class="checklist-item"><input type="checkbox"><span>Form 4</span></label>
-            <a class="form-open" href="#">Open</a>
-          </div>
-        </div>
-        <p class="sidebar-hint">Forms will load from Google Drive.</p>
-      </fieldset>
+      <!-- Both open the same feedback box; data-kind says which kind -->
+      <div class="sidebar-actions">
+        <button class="btn btn-outline" type="button" data-kind="bug">Report bug</button>
+        <button class="btn btn-outline" type="button" data-kind="feature">Suggest new feature</button>
+      </div>
 
       <p class="sidebar-note">Nothing is saved. Refreshing clears everything.</p>
 
@@ -97,9 +102,10 @@
       <img class="sidebar-logo" src="../assets/img/Intake_assistant_sbdc-logo.svg" alt="America's SBDC">
     </aside>
 
-    <!-- ===== CENTER: the big box with one drop-down per step ===== -->
+    <!-- ===== CENTER: the big box. Shows either the selected step or the
+         summary (when the "In summary" card is picked). ===== -->
     <main class="main">
-      <section class="form-panel" aria-labelledby="steps-title">
+      <section class="form-panel" id="steps-panel" aria-labelledby="steps-title">
         <h2 class="section-title" id="steps-title">Business startup steps</h2>
 
         <!-- Empty: JS adds one drop-down per step from the template below -->
@@ -159,21 +165,153 @@
           </div>
         </template>
       </section>
+
+      <!-- The summary, shown here when the "In summary" card is picked.
+           One line per step, rebuilt by JS on every change. -->
+      <section class="form-panel" id="summary-panel" aria-labelledby="summary-title" hidden>
+        <h2 class="section-title" id="summary-title">In summary</h2>
+
+        <div class="output-box">
+          <pre class="output-text" id="progress-summary"></pre>
+        </div>
+
+        <!-- Copies the summary text, e.g. to paste into CIC or an email -->
+        <button class="btn" type="button" id="copy-summary">Copy summary</button>
+      </section>
+
+      <!-- Forms to give to the client: its own box below the steps.
+           Starts with FORMS from Intake_assistant_fields.js (blank forms).
+           Files and Google Drive links can be added; ticked forms are
+           listed in the summary. -->
+      <section class="form-panel forms-panel" aria-labelledby="forms-title">
+        <h2 class="section-title" id="forms-title">Forms to give to client</h2>
+
+        <!-- Empty: JS adds one row per form from the template below -->
+        <div class="checklist" id="form-list"></div>
+
+        <!-- Blueprint for one form: checkbox + name (+ where it came from)
+             on the left, "Open" on the right. Opens in a new tab so nothing
+             on this page is lost. -->
+        <template id="form-row-template">
+          <div class="form-row">
+            <label class="checklist-item">
+              <input type="checkbox">
+              <span class="form-name"></span>
+              <span class="form-source"></span>
+            </label>
+            <a class="form-open" href="" target="_blank" rel="noopener">Open</a>
+            <!-- Only on forms added on the page (JS hides it on the site's own) -->
+            <button class="form-remove" type="button">Remove</button>
+          </div>
+        </template>
+
+        <div class="form-add">
+          <!-- The real file picker is hidden; this button opens it -->
+          <button class="btn btn-outline" type="button" id="add-form-file">Add file from computer</button>
+          <input type="file" id="form-file" multiple hidden>
+
+          <button class="btn btn-outline" type="button" id="add-drive-link">Add Google Drive link</button>
+        </div>
+
+        <p class="forms-hint">
+          Files from your computer stay in this tab only (nothing is uploaded).
+          Drive links open Google Drive, where you sign in yourself.
+          Blank forms only, never a client's files.
+        </p>
+      </section>
     </main>
+  </div>
 
-    <!-- ===== RIGHT: summary panel ===== -->
-    <aside class="output">
-      <h2 class="section-title">In summary</h2>
+  <!-- "Add new client" box. A <dialog> opened with showModal() sits on
+       top of the page: the page behind is grayed out and can't be
+       clicked, and Esc closes it.
+       method="dialog": submitting the form closes the dialog instead of
+       reloading the page. The button that was used becomes the dialog's
+       returnValue ("add"), so the JS knows it wasn't cancelled. -->
+  <dialog class="dialog" id="new-client-dialog" aria-labelledby="new-client-title">
+    <form method="dialog">
+      <h2 class="section-title" id="new-client-title">Add new client</h2>
 
-      <!-- One line per step's field, rebuilt by JS on every change -->
-      <div class="output-box">
-        <pre class="output-text" id="progress-summary"></pre>
+      <!-- Only shown when something is already filled in (JS decides) -->
+      <p class="dialog-warning" id="new-client-warning">
+        This clears what you've entered for every step.
+      </p>
+
+      <div class="field">
+        <label for="new-client-name">Client name</label>
+        <!-- required: the Add button won't work while it's empty -->
+        <input type="text" id="new-client-name" placeholder="e.g. Ana Ruiz" autocomplete="off" required>
       </div>
 
-      <!-- Copies the summary text, e.g. to paste into CIC or an email -->
-      <button class="btn" type="button" id="copy-summary">Copy summary</button>
-    </aside>
+      <p class="dialog-note">Not saved anywhere. Refreshing the page clears it.</p>
 
-  </div>
+      <div class="dialog-buttons">
+        <button class="btn btn-outline" type="button" id="new-client-cancel">Cancel</button>
+        <!-- type="submit" (the one exception to type="button"): it sends
+             the form, so pressing Enter in the name box also adds -->
+        <button class="btn" type="submit" value="add">Add</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- "Add Google Drive link" box. Same kind of <dialog> as above.
+       pattern: the link must start with https://drive.google.com/ or
+       https://docs.google.com/, or "Add" won't work. -->
+  <dialog class="dialog" id="drive-dialog" aria-labelledby="drive-title">
+    <form method="dialog">
+      <h2 class="section-title" id="drive-title">Add Google Drive link</h2>
+
+      <div class="field">
+        <label for="drive-name">Form name</label>
+        <input type="text" id="drive-name" placeholder="e.g. Startup worksheet" autocomplete="off" required>
+      </div>
+
+      <div class="field dialog-field">
+        <label for="drive-link">Google Drive link</label>
+        <input type="url" id="drive-link" placeholder="https://drive.google.com/..." autocomplete="off" required
+               pattern="https://(drive|docs)\.google\.com/.*"
+               title="A link that starts with https://drive.google.com/ or https://docs.google.com/">
+      </div>
+
+      <p class="dialog-note">Opening it takes you to Google Drive, where you sign in yourself. Blank forms only.</p>
+
+      <div class="dialog-buttons">
+        <button class="btn btn-outline" type="button" id="drive-cancel">Cancel</button>
+        <button class="btn" type="submit" value="add">Add</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- "Report bug" / "Suggest new feature" box. One <dialog> for both:
+       JS changes the title and wording for the kind that was clicked.
+       Sending: Copy always works; "Email it" and "Open GitHub issue" only
+       show when FEEDBACK in Intake_assistant_fields.js has an address. -->
+  <dialog class="dialog" id="feedback-dialog" aria-labelledby="feedback-title">
+    <form method="dialog">
+      <h2 class="section-title" id="feedback-title">Report a bug</h2>
+
+      <p class="dialog-warning">Don't include client names or details.</p>
+
+      <div class="field">
+        <label for="feedback-summary">Short summary</label>
+        <input type="text" id="feedback-summary" autocomplete="off" required>
+      </div>
+
+      <div class="field dialog-field">
+        <label for="feedback-details" id="feedback-details-label">What happened, and what did you expect?</label>
+        <textarea id="feedback-details" rows="5"></textarea>
+      </div>
+
+      <!-- "Copied!" and similar messages -->
+      <p class="dialog-note" id="feedback-status" aria-live="polite"></p>
+
+      <div class="dialog-buttons">
+        <button class="btn btn-outline" type="button" id="feedback-cancel">Close</button>
+        <button class="btn btn-outline" type="button" id="feedback-copy">Copy</button>
+        <a class="btn btn-outline" id="feedback-email" href="" hidden>Email it</a>
+        <a class="btn" id="feedback-github" href="" target="_blank" rel="noopener" hidden>Open GitHub issue</a>
+      </div>
+    </form>
+  </dialog>
 </body>
 </html>
