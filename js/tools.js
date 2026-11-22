@@ -240,6 +240,22 @@ const TOOLS=[
    const email=`Hi ${first(v.client)},\n\nThanks for pulling your loan documents together. Here's what's still needed:\n\n${miss.map(([,t])=>'- '+t).join('\n')||'- Nothing. You have everything on the list.'}\n\nIf you get stuck on any of these, reply and we'll work through it together. As always, SBDC advising is free.\n\nBest,`;
    const t=`Loan package readiness${v.client?': '+v.client:''}\n${got.length} of ${need.length} items (${pct}%)\n\nHave:\n${got.map(([,t])=>'- '+t).join('\n')||'- Nothing yet'}\n\nStill needed:\n${miss.map(([,t])=>'- '+t).join('\n')||'- Nothing'}\n\n--- Email for the client ---\n${email}`;
    return {title:`Loan readiness ${pct}%${v.client?' · '+v.client:''}`,text:t,mail:{to:'',subject:'Your loan documents: what is still needed',body:email},files:[{name:'loan-readiness.txt',type:'text/plain',text:t}],meter:pct}}},
+ // ---------- Intake Assistant
+ // href: this card has no setup dialog. Its button says "Open" and goes
+ // straight to the Intake Assistant page (see openModal in toolbox.js).
+ // Empty setup and run lists: there is nothing to fill in here.
+ {
+  id: 'intake',
+  sec: 'before',
+  icon: 'clipboard-list',
+  title: 'Intake Assistant',
+  desc: 'Opens the Intake Assistant page.',
+  kw: 'intake assistant',
+  href: 'pages/Intake_assistant_index.html',
+  setup: [],
+  run: [],
+  exec() { return null; }
+ },
  // ---------- During / after
  {id:'breakeven',sec:'during',icon:'calculator',title:'Break-even calculator',desc:"The basic math most new clients haven't done: price, cost per sale, monthly costs.",kw:'break even margin math pricing numbers calculator',
   setup:[{id:'daily',label:'Also show sales per day',type:'select',opts:[['yes','Yes'],['no','No']]}],
